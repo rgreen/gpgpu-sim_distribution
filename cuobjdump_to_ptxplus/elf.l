@@ -75,7 +75,7 @@ hexdigit	[[:digit:]abcdef]
 	return C14BEGIN;
 }
 
-\.section" "\.symtab\tSYMTAB{newline}	{
+\.section" "\.symtab(\tSYMTAB)?{newline}	{
 	BEGIN(symtab);
 	return STBEGIN;
 }

@@ -52,7 +52,7 @@ cuobjdumpInst *instEntry;
 %token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET DSET G2R
 %token <string_value> GLD GST I2F I2I IADD IADD32 IADD32I IMAD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
-%token <string_value> ISET LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
+%token <string_value> ISET ISETP LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET RRO RSQ SIN SHL SHR SSY XOR XORS
 %token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX A2R FMAX FMIN TEX TEX32 C2R EXIT
 %token <string_value> GRED PBK BRK R2C GATOM VOTE
@@ -63,15 +63,15 @@ cuobjdumpInst *instEntry;
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 DOTU64
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
-%token <string_value> DOTCC DOTX DOTE DOTRED DOTPOPC
+%token <string_value> DOTCC DOTX DOTE DOTRED DOTPOPC DOTAND
 %token <string_value> REGISTER REGISTERLO REGISTERHI OFFSETREGISTER
-%token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER
+%token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
 %token <string_value> SMEMLOCATION ABSSMEMLOCATION GMEMLOCATION CMEMLOCATION LMEMLOCATION
 %token <string_value> IDENTIFIER
 %token <string_value> HEXLITERAL
-%token <string_value> LEFTBRACKET RIGHTBRACKET
-%token <string_value> PIPE TILDE
+%token <string_value> LEFTBRACKET RIGHTBRACKET AT QUOTE FLAGHEADER
+%token <string_value> PIPE TILDE EXCLAM
 %token <string_value> NEWLINE SEMICOLON /*COMMA*/
 %token <string_value> LABEL LABELSTART LABELEND
 %token <string_value> PTXHEADER ELFHEADER
@@ -103,6 +103,15 @@ functionList	: functionList function
 				;
 				
 function	:	FUNCTIONHEADER IDENTIFIER {
+					debug_print($1);
+					debug_print($2);
+					debug_print("\n");
+					g_instList->addEntry($2);
+					instEntry = new cuobjdumpInst();
+					instEntry->setBase(".entry");
+					g_instList->add(instEntry);
+					g_instList->getListEnd().addOperand($2);} statementList NEWLINE
+		|	FUNCTIONHEADER IDENTIFIER NEWLINE headerflags {
 					debug_print($1); 
 					debug_print($2);
 					debug_print("\n");
@@ -113,6 +122,12 @@ function	:	FUNCTIONHEADER IDENTIFIER {
 					g_instList->getListEnd().addOperand($2);} statementList NEWLINE
 					;
 
+headerflags	:	FLAGHEADER AT QUOTE flagsname QUOTE {
+					debug_print($1);
+					debug_print("\n");}
+					;
+
+flagsname	:	IDENTIFIER IDENTIFIER LEFTBRACKET IDENTIFIER RIGHTBRACKET;
 
 statementList	: statementList statement NEWLINE	{ debug_print("\n"); }
 		| statementList statement SEMICOLON NEWLINE	{ debug_print(";\n"); }
@@ -122,9 +137,11 @@ statementList	: statementList statement NEWLINE	{ debug_print("\n"); }
 		;
 
 statement	: { instEntry = new cuobjdumpInst(); } instructionLabel statementend
+	        | instructionHex
 			;
 
 statementend	: instructionHex assemblyInstruction
+	        | assemblyInstruction instructionHex
 		| /*blank*/ {instEntry->setBase("NOP"); g_instList->add(instEntry); debug_print("NOP");}
 		;
 
@@ -149,10 +166,15 @@ instructionLabel	: LABELSTART LABEL LABELEND	{ char* tempInput = $2;
 			;
 
 assemblyInstruction	: baseInstruction modifierList operandList	{ }
+			| baseInstruction modifierList operandList SEMICOLON	{ }
+			| predIdentifier baseInstruction modifierList operandList SEMICOLON	{ }
 					/*| baseInstruction operandList			{ }*/
 					/*| baseInstruction modifierList			{ }*/
 					/*| baseInstruction				{ }*/
 					;
+
+predIdentifier	: AT NEWPREDREGISTER { debug_print($2); debug_print(" "); g_instList->getListEnd().setPredicate($2); }
+		| AT EXCLAM NEWPREDREGISTER { debug_print("!"); debug_print($3); debug_print(" "); g_instList->getListEnd().setPredicate($3); g_instList->getListEnd().addPredicateModifier(".NE");}
 
 baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);}
 		| branchInstructions
@@ -167,7 +189,7 @@ simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | 
 					| IADD | IADD32 | IADD32I | IMAD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL 
 					| IMUL24 | IMUL24H | IMULS24 | IMUL32 | IMUL32S24 | IMUL32I | IMUL32I24 | IMUL32IS24
 					| IMUL32U24
-					| ISET | LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP 
+					| ISET | ISETP | LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
 					| NOT | NOTS | OR | ORS | R2A | R2G | R2GU16U8 | RCP | RCP32 | RET | RRO 
 					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS 
 					| LDS | SASS_ST | EXIT | BAR | IMIN | IMAX | A2R | FMAX | FMIN 
@@ -293,6 +315,8 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTNODEP		{ /*g_instList->getListEnd().addBaseModifier(".nodep"); */}
 		| DOTANY		{ g_instList->getListEnd().addBaseModifier(".any"); }
 		| DOTALL		{ g_instList->getListEnd().addBaseModifier(".all"); }
+		| DOTGE			{ g_instList->getListEnd().addBaseModifier(".ge"); }
+		| DOTAND		{ g_instList->getListEnd().addBaseModifier(".and"); }
 		;
 
 opTypes		: DOTF16	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
@@ -337,6 +361,7 @@ registerlocation	: REGISTER regMod	{ debug_print($1); g_instList->addCuobjdumpRe
 			| OFFSETREGISTER	{ debug_print($1); g_instList->addCuobjdumpRegister($1);}
 			| PREDREGISTER PREDREGISTER2	{ debug_print($1); debug_print(" "); debug_print($2); g_instList->addCuobjdumpDoublePredReg($1, $2);}
 			| PREDREGISTER REGISTER	{ debug_print($1); debug_print(" "); debug_print($2); g_instList->addCuobjdumpDoublePredReg($1, $2);}
+			| NEWPREDREGISTER	{ debug_print($1); g_instList->addCuobjdumpPredReg($1);}
 			/*| REGISTER PREDREGISTER3 { debug_print($1); debug_print(" "); debug_print($2); g_instList->addCuobjdumpRegister($1); debug_print("WEIRD CASE\n");}*/
 			;
 
@@ -434,5 +459,5 @@ predicateModifier	: DOTEQ	{ }
 void debug_print( const char *s )
 {
 	// uncomment to debug
-	// printf("%s",s);
+	 printf("%s",s);
 }

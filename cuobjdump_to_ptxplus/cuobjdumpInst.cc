@@ -400,7 +400,6 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 		else if( *basemod == ".x")
 		{
 			//".x" is an unknown base modifier, TODO: find out what it is
-			output(*basemod);
 		}
 		else if( *basemod == ".e")
 		{
@@ -410,6 +409,16 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 		else if( *basemod == ".ir")
 		{
 			//".ir" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".ge")
+		{
+			//".ge" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".and")
+		{
+			//".and" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
 		else if((*basemod == "IADD") ||
@@ -525,10 +534,12 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		output("%%nctaid.x");
 	} else if(mod =="g [0x5].u16") { //handling special register case: %nctaid.y
 		output("%%nctaid.y");
-	} else if(mod == "g [0x6].u16") {//handling special register case: %ctaid.x
+	} else if(mod == "g [0x6].u16" || mod == "sr_ctaid.x") {//handling special register case: %ctaid.x
 		output("%%ctaid.x");
 	} else if(mod == "g [0x7].u16") {//handling special register case: %ctaid.y
 		output("%%ctaid.y");
+	} else if (mod == "sr_tid.x") { //handling special register case: %tid.x
+		output("%%tid.x");
 	} else if(mod == "sr1") {//handling special register case: %clock
 		output("%%clock");
 	} else if(mod[0]=='r') { //basic register
@@ -562,7 +573,7 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			output("$");
 			printCuobjdumpOperandlohi(mod);
 		}
-	} else if(mod[0] == 'c' && mod.length() == 2) { //predicate register (conditional code)
+	} else if((mod[0] == 'c' || mod[0] == 'p') && mod.length() == 2) { //predicate register (conditional code)
 		output("$p");
 		output(mod.substr(1,1).c_str());
 	} else if(mod[0]=='a') {//offset register
@@ -791,7 +802,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "BRA")
+	else if(m_base == "BRA" || m_base == "BRA.U")
 	{
 		printCuobjdumpPredicate();
 		output("bra");
@@ -1533,6 +1544,15 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+	else if(m_base == "ISETP")
+	{
+		printCuobjdumpPredicate();
+		output("set");
+		printCuobjdumpBaseModifiers();
+
+		printCuobjdumpOperands();
+		output(";");
+	}
 	else if(m_base == "LG2")
 	{
 		printCuobjdumpPredicate();
@@ -1593,7 +1613,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "MOV32")
+	else if(m_base == "MOV32" || m_base == "MOV32I")
 	{
 		printCuobjdumpPredicate();
 		output("mov.half");

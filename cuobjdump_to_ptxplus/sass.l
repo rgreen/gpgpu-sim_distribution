@@ -80,6 +80,7 @@ fltliteral	[0-9]+\.[0-9]+
 "BAR.ARV.WAIT b0, 0xfff"	yylval.string_value = strdup(yytext); return BAR;
 ADA	yylval.string_value = strdup(yytext); return ADA;
 BRA	yylval.string_value = strdup(yytext); return BRA;
+BRA.U	yylval.string_value = strdup(yytext); return BRA;
 BRX	yylval.string_value = strdup(yytext); return BRX;
 CAL	yylval.string_value = strdup(yytext); return CAL;
 COS	yylval.string_value = strdup(yytext); return COS;
@@ -131,6 +132,7 @@ IMUL32I	yylval.string_value = strdup(yytext); return IMUL32I;
 IMUL32I\.S24\.S24	yylval.string_value = strdup(yytext); return IMUL32IS24;
 IMUL32I\.U24\.U24	yylval.string_value = strdup(yytext); return IMUL32I24;
 ISET	yylval.string_value = strdup(yytext); return ISET;
+ISETP	yylval.string_value = strdup(yytext); return ISETP;
 LG2	yylval.string_value = strdup(yytext); return LG2;
 LLD	yylval.string_value = strdup(yytext); return LLD;
 LOP\.AND	yylval.string_value = strdup(yytext); return AND;
@@ -144,6 +146,7 @@ LOP\.S\.XOR	yylval.string_value = strdup(yytext); return XORS;
 LST	yylval.string_value = strdup(yytext); return LST;
 MOV	yylval.string_value = strdup(yytext); return MOV;
 MOV32	yylval.string_value = strdup(yytext); return MOV32;
+MOV32I	yylval.string_value = strdup(yytext); return MOV32;
 MVC	yylval.string_value = strdup(yytext); return MVC;
 MVI	yylval.string_value = strdup(yytext); return MVI;
 NOP	yylval.string_value = strdup(yytext); return NOP;
@@ -229,6 +232,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.E		yylval.string_value = strdup(yytext); return DOTE;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
+\.AND	yylval.string_value = strdup(yytext); return DOTAND;
 
 	/*operand types*/
 \.F16	yylval.string_value = strdup(yytext); return DOTF16;
@@ -257,7 +261,9 @@ A{numeric}+	yylval.string_value = strdup(yytext); return OFFSETREGISTER;
 \.C{numeric}	yylval.string_value = strdup(yytext); return PREDREGISTER;
 "o ["{hexliteral}\]	yylval.string_value = strdup(yytext); return PREDREGISTER2;
 C{numeric}	 yylval.string_value = strdup(yytext); return PREDREGISTER3;
-"SR_"[^\.; \t]+	 yylval.string_value = strdup(yytext); return SREGISTER;
+P{numeric}	 yylval.string_value = strdup(yytext); return NEWPREDREGISTER;
+PT
+"SR_"[^; \t]+	 yylval.string_value = strdup(yytext); return SREGISTER;
 
 	/*tex operand*/
 
@@ -279,8 +285,11 @@ C{numeric}	 yylval.string_value = strdup(yytext); return PREDREGISTER3;
 "identifier = " yylval.string_value = strdup(yytext); return INFOIDENTIFIER;
 "code for "	yylval.string_value = strdup(yytext); return VERSIONHEADER;
 "Function : "	yylval.string_value = strdup(yytext); return FUNCTIONHEADER;
-"/*"{hexliteral}{whitespace}*"*/" 	yylval.string_value = strdup(yytext); return INSTHEX;
+".headerflags"[ ]+	yylval.string_value = strdup(yytext); return FLAGHEADER;
+"/*"[ ]?{hexliteral}{whitespace}*[ ]?"*/" 	yylval.string_value = strdup(yytext); return INSTHEX;
 "." yylval.string_value = strdup(yytext); return DOT;
+"\"" yylval.string_value = strdup(yytext); return QUOTE;
+"@" yylval.string_value = strdup(yytext); return AT;
 
 	/*memory location operands*/
 [\-]?"|g| ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return ABSSMEMLOCATION;
@@ -298,7 +307,7 @@ C{numeric}	 yylval.string_value = strdup(yytext); return PREDREGISTER3;
 [\-]?"global14 [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 
-[\-]?"c ["{hexliteral}"] ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
+[\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c ["{hexliteral}"] [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c ["{hexliteral}"] [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c ["{hexliteral}"] [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
@@ -334,6 +343,7 @@ C{numeric}	 yylval.string_value = strdup(yytext); return PREDREGISTER3;
 	/* pipe*/
 "|"	yylval.string_value = strdup(yytext); return PIPE;
 "~"	yylval.string_value = strdup(yytext); return TILDE;
+"!"	yylval.string_value = strdup(yytext); return EXCLAM;
 
 	/*Need to create to newline tokens*/
 {newline}+	return NEWLINE;

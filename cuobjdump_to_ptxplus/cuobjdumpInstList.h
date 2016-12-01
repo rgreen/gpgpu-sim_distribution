@@ -147,6 +147,7 @@ public:
 	void addCuobjdumpMemoryOperand(std::string mem, int memType);
 	std::string parseCuobjdumpRegister(std::string reg, bool lo, int vectorFlag);
 	void addCuobjdumpDoublePredReg(std::string pred, std::string reg, bool lo=false);
+	void addCuobjdumpPredReg(std::string pred);
 
 	void addCubojdumpLabel(std::string label);
 

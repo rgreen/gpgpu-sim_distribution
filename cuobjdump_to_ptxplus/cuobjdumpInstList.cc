@@ -408,9 +408,17 @@ void cuobjdumpInstList::addCuobjdumpMemoryOperand(std::string mem, int memType) 
 		else if(mem.substr(0, 7) == "c [0x0]"){
 			mem = "constant0" + mem.substr(7, mem.length());
 		}
+		else if(mem.substr(0, 6) == "c[0x0]"){
+			mem = "constant0" + mem.substr(7, mem.length());
+		}
 		else if(mem.substr(0, 5) == "c [0x"){
 			std::string out;
 			out = "constant1" + m_entryList.back().m_entryName + mem.substr(8);
+			mem = out.c_str();
+		}
+		else if(mem.substr(0, 4) == "c[0x"){
+			std::string out;
+			out = "constant1" + m_entryList.back().m_entryName + mem.substr(6);
 			mem = out.c_str();
 		}
 		else {
@@ -532,6 +540,16 @@ void cuobjdumpInstList::addCuobjdumpDoublePredReg(std::string pred, std::string 
 	strcpy(doublePredRegName, doublePredReg.c_str());
 	doublePredRegName[strlen(doublePredReg.c_str())] = '\0';
 	getListEnd().addOperand(doublePredRegName);
+}
+
+void cuobjdumpInstList::addCuobjdumpPredReg(std::string pred)
+{
+	std::string parsedPred = parseCuobjdumpPredicate(pred);
+
+	char* PredRegName = new char [strlen(pred.c_str())+1];
+	strcpy(PredRegName, pred.c_str());
+	PredRegName[strlen(pred.c_str())] = '\0';
+	getListEnd().addOperand(PredRegName);
 }
 
 std::string cuobjdumpInstList::parseCuobjdumpPredicate(std::string pred)
