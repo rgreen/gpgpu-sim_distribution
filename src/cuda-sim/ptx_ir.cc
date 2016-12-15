@@ -1196,6 +1196,18 @@ ptx_instruction::ptx_instruction( int opcode,
       case ABS_OPTION:
          m_abs = true;
          break;
+      case MRG_OPTION:
+         m_mrg = true;
+         break;
+      case PSL_OPTION:
+         m_psl = true;
+         break;
+      case CBCC_OPTION:
+         m_cbcc = true;
+         break;
+      case E_OPTION:
+	 // .E is for extended 64-bit pointers
+         break;
       case NEG_OPTION:
          m_neg = true;
          break;

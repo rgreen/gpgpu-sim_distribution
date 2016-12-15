@@ -421,6 +421,21 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			//".and" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
+		else if( *basemod == ".mrg")
+		{
+			//".mrg" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".psl")
+		{
+			//".psl" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".cbcc")
+		{
+			//".cbcc" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
 		else if((*basemod == "IADD") ||
 				(*basemod == "IMIN") ||
 				(*basemod == "IMAX"))
@@ -1153,6 +1168,15 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+	else if (m_base == "LDG")
+	{
+		printCuobjdumpPredicate();
+		//output("mov");
+		output("ld.global");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
 	else if(m_base == "GST")
 	{
 		printCuobjdumpPredicate();
@@ -1166,6 +1190,15 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		} else {
 			printCuobjdumpTypeModifiers();
 		}
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "STG")
+	{
+		printCuobjdumpPredicate();
+		//output("mov");
+		output("st.global");
+		printCuobjdumpBaseModifiers();
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -1332,6 +1365,14 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 			output(".s32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		else
 			printCuobjdumpTypeModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "XMAD")
+	{
+		printCuobjdumpPredicate();
+		output("xmad");
+		printCuobjdumpBaseModifiers();
 		printCuobjdumpOperands();
 		output(";");
 	}

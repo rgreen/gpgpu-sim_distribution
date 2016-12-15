@@ -75,6 +75,8 @@ fltliteral	[0-9]+\.[0-9]+
 
 "[" yylval.string_value = strdup(yytext); return OSQBRACKET;
 "]" yylval.string_value = strdup(yytext); return CSQBRACKET; 
+"{" yylval.string_value = strdup(yytext);
+"}" yylval.string_value = strdup(yytext);
 
 	/*base instructions*/
 "BAR.ARV.WAIT b0, 0xfff"	yylval.string_value = strdup(yytext); return BAR;
@@ -104,7 +106,9 @@ FSET	yylval.string_value = strdup(yytext); return FSET;
 DSET	yylval.string_value = strdup(yytext); return DSET;
 G2R	yylval.string_value = strdup(yytext); return G2R;
 GLD	yylval.string_value = strdup(yytext); return GLD;
+LDG	yylval.string_value = strdup(yytext); return GLD;
 GST	yylval.string_value = strdup(yytext); return GST;
+STG	yylval.string_value = strdup(yytext); return GST;
 I2F	yylval.string_value = strdup(yytext); return I2F;
 I2I	yylval.string_value = strdup(yytext); return I2I;
 S2R	yylval.string_value = strdup(yytext); return S2R;
@@ -121,6 +125,7 @@ IMAD\.U24	yylval.string_value = strdup(yytext); return IMAD24;
 IMAD\.S24	yylval.string_value = strdup(yytext); return IMAD24;
 IMAD32	yylval.string_value = strdup(yytext); return IMAD32;
 IMAD32I	yylval.string_value = strdup(yytext); return IMAD32I;
+XMAD	yylval.string_value = strdup(yytext); return XMAD;
 IMUL	yylval.string_value = strdup(yytext); return IMUL;
 IMUL\.U24\.U24	yylval.string_value = strdup(yytext); return IMUL24;
 IMUL\.S24\.S24	yylval.string_value = strdup(yytext); return IMULS24;
@@ -233,6 +238,10 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
 \.AND	yylval.string_value = strdup(yytext); return DOTAND;
+\.MRG	yylval.string_value = strdup(yytext); return DOTMRG;
+\.PSL	yylval.string_value = strdup(yytext); return DOTPSL;
+\.CBCC	yylval.string_value = strdup(yytext); return DOTCBCC;
+\.reuse	yylval.string_value = strdup(yytext); /* ignore reuse identifier */
 
 	/*operand types*/
 \.F16	yylval.string_value = strdup(yytext); return DOTF16;
@@ -249,6 +258,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.U24	yylval.string_value = strdup(yytext); return DOTU24;
 \.U64	yylval.string_value = strdup(yytext); return DOTU64;
 \.HI	yylval.string_value = strdup(yytext); return DOTHI;
+\.H1	yylval.string_value = strdup(yytext); return DOTHI;
 \.NOINC	yylval.string_value = strdup(yytext); return DOTNOINC;
 
 	/*geometries*/

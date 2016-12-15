@@ -199,6 +199,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token	DOWN_OPTION;
 %token	BFLY_OPTION;
 %token	IDX_OPTION;
+%token	MRG_OPTION;
+%token	PSL_OPTION;
+%token	CBCC_OPTION;
+%token	E_OPTION;
 
 %type <int_value> function_decl_header
 %type <ptr_value> function_decl
@@ -460,6 +464,10 @@ option: type_spec
 	| FULL_OPTION { add_option(FULL_OPTION); }
 	| EXIT_OPTION { add_option(EXIT_OPTION); }
 	| ABS_OPTION { add_option(ABS_OPTION); }
+	| MRG_OPTION { add_option(MRG_OPTION); }
+	| PSL_OPTION { add_option(PSL_OPTION); }
+	| CBCC_OPTION { add_option(CBCC_OPTION); }
+	| E_OPTION { add_option(E_OPTION); }
 	| atomic_operation_spec ;
 	| TO_OPTION { add_option(TO_OPTION); }
 	| HALF_OPTION { add_option(HALF_OPTION); }

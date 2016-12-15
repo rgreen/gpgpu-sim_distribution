@@ -50,7 +50,7 @@ cuobjdumpInst *instEntry;
 %token <string_value> BAR
 %token <string_value> ADA AND ANDS BRA BRX CAL COS DADD DMIN DMAX DFMA DMUL EX2 F2F F2I FADD
 %token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET DSET G2R
-%token <string_value> GLD GST I2F I2I IADD IADD32 IADD32I IMAD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY
+%token <string_value> GLD GST I2F I2I IADD IADD32 IADD32I IMAD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
 %token <string_value> ISET ISETP LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET RRO RSQ SIN SHL SHR SSY XOR XORS
@@ -63,7 +63,7 @@ cuobjdumpInst *instEntry;
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 DOTU64
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
-%token <string_value> DOTCC DOTX DOTE DOTRED DOTPOPC DOTAND
+%token <string_value> DOTCC DOTX DOTE DOTRED DOTPOPC DOTAND DOTMRG DOTPSL DOTCBCC
 %token <string_value> REGISTER REGISTERLO REGISTERHI OFFSETREGISTER
 %token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
@@ -186,7 +186,7 @@ baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); 
 simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | DMUL | EX2 | F2F 
 					| F2I | FADD | FADD32 | FADD32I | FMAD | FMAD32I | FMUL 
 					| FMUL32 | FMUL32I | FSET | DSET | G2R | GLD | GST | I2F | I2I 
-					| IADD | IADD32 | IADD32I | IMAD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL 
+					| IADD | IADD32 | IADD32I | IMAD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL | XMAD
 					| IMUL24 | IMUL24H | IMULS24 | IMUL32 | IMUL32S24 | IMUL32I | IMUL32I24 | IMUL32IS24
 					| IMUL32U24
 					| ISET | ISETP | LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
@@ -317,6 +317,9 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTALL		{ g_instList->getListEnd().addBaseModifier(".all"); }
 		| DOTGE			{ g_instList->getListEnd().addBaseModifier(".ge"); }
 		| DOTAND		{ g_instList->getListEnd().addBaseModifier(".and"); }
+		| DOTMRG		{ g_instList->getListEnd().addBaseModifier(".mrg"); }
+		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
+		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }
 		;
 
 opTypes		: DOTF16	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
@@ -341,6 +344,7 @@ operandList	: operandList { debug_print(" "); } /*COMMA*/ operand	{}
 			;
 
 operand		: registerlocation
+		| registerlocation opTypes { debug_print($2); g_instList->getListEnd().addTypeModifier($2);}
 		| PIPE registerlocation PIPE	{ g_instList->getListEnd().addBaseModifier(".abs"); }
 		| TILDE registerlocation
 		| LEFTBRACKET instructionPredicate RIGHTBRACKET

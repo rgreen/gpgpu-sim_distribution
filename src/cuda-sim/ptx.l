@@ -86,6 +86,7 @@ ldu     TC; ptx_lval.int_value = LDU_OP; return OPCODE;
 lg2	TC; ptx_lval.int_value = LG2_OP; return OPCODE;
 mad24   TC; ptx_lval.int_value = MAD24_OP; return OPCODE;
 mad     TC; ptx_lval.int_value = MAD_OP; return OPCODE;
+xmad     TC; ptx_lval.int_value = XMAD_OP; return OPCODE;
 madc	TC; ptx_lval.int_value = MADC_OP; return OPCODE;
 madp	TC; ptx_lval.int_value = MADP_OP; return OPCODE;
 max     TC; ptx_lval.int_value = MAX_OP; return OPCODE;
@@ -210,6 +211,7 @@ breakaddr  TC; ptx_lval.int_value = BREAKADDR_OP; return OPCODE;
 "%tid"  TC; ptx_lval.int_value = TID_REG; return SPECIAL_REGISTER;
 "%warpid"  TC; ptx_lval.int_value = WARPID_REG; return SPECIAL_REGISTER;
 "WARP_SZ"  TC; ptx_lval.int_value = WARPSZ_REG; return SPECIAL_REGISTER;
+"$rz"  TC; ptx_lval.int_value = 0; return SPECIAL_REGISTER;
 
 [a-zA-Z_][a-zA-Z0-9_$]*  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;
 [$%][a-zA-Z0-9_$]+  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;
@@ -335,6 +337,11 @@ breakaddr  TC; ptx_lval.int_value = BREAKADDR_OP; return OPCODE;
 \.down	TC; return DOWN_OPTION;
 \.bfly	TC; return BFLY_OPTION;
 \.idx	TC; return IDX_OPTION;
+
+\.mrg	TC; return MRG_OPTION;
+\.psl	TC; return PSL_OPTION;
+\.cbcc	TC; return CBCC_OPTION;
+\.e	TC; return E_OPTION;
 
 \.popc	TC; return ATOMIC_POPC;
 \.and	TC; return ATOMIC_AND;

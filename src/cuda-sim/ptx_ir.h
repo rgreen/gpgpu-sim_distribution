@@ -1061,6 +1061,9 @@ private:
    bool                m_lo;
    bool                m_exit;
    bool                m_abs;
+   bool                m_mrg;
+   bool                m_psl;
+   bool                m_cbcc;
    bool                m_neg;
    bool                m_uni; //if branch instruction, this evaluates to true for uniform branches (ie jumps)
    bool                m_to_option;

@@ -39,6 +39,7 @@
 #include <sstream>
 #include <string.h>
 #include <stdio.h>
+#include <iomanip>
 #include "cuobjdumpInstList.h"
 
 #define NON_ARRAY_IDENTIFIER 1
@@ -264,7 +265,7 @@ void add_version_info( float versionNumber, unsigned ext)
 
 	//convert double to char*
 	std::ostringstream strs;
-	strs << versionNumber;
+	strs << std::fixed << std::setprecision(1) << versionNumber;
 	char *versionNumber2 = strdup(strs.str().c_str());
 
 	g_headerList->getListEnd().addOperand(versionNumber2);

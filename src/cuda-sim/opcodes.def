@@ -69,6 +69,8 @@ OP_DEF(LDU_OP,ldu_impl,"ldu",1,5)
 OP_DEF(LG2_OP,lg2_impl,"lg2",1,4)
 OP_DEF(MAD24_OP,mad24_impl,"mad24",1,2)
 OP_DEF(MAD_OP,mad_impl,"mad",1,2)
+// TODO: Need to bind new implementation
+OP_DEF(XMAD_OP,mad_impl,"mad",1,2)
 OP_DEF(MADC_OP,madc_impl,"madc",1,2)
 OP_DEF(MADP_OP,madp_impl,"madp",1,2)
 OP_DEF(MAX_OP,max_impl,"max",1,1)
