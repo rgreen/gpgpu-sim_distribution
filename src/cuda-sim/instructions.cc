@@ -2552,6 +2552,53 @@ void mad24_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    thread->set_operand_value(dst, d, i_type, thread, pI);
 }
 
+void xmad_def( const ptx_instruction *pI, ptx_thread_info *thread);
+
+void xmad_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+   xmad_def(pI, thread);
+}
+
+void xmad_def( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+   const operand_info &dst  = pI->dst();
+   const operand_info &src1 = pI->src1();
+   const operand_info &src2 = pI->src2();
+   const operand_info &src3 = pI->src3();
+   ptx_reg_t d, t;
+
+   unsigned i_type = pI->get_type();
+   ptx_reg_t a = thread->get_operand_value(src1, dst, i_type, thread, 1);
+   ptx_reg_t b = thread->get_operand_value(src2, dst, i_type, thread, 1);
+   ptx_reg_t c = thread->get_operand_value(src3, dst, i_type, thread, 1);
+
+   switch ( i_type ) {
+   case U16_TYPE:
+       if (pI->is_mrg()) {
+	   assert(src2.get_operand_lohi() == 2);
+	   printf("mrg xmad running\n");
+	   t.u32 = a.u16 * (b.u32>>16);
+	   d.u64 = t.u32 + c.u16;
+	   d.u64 = (d.u64 & 0x0000ffff) | (b.u32<<16);
+       } else if (pI->is_cbcc()) {
+	   assert((src1.get_operand_lohi() == 2) && (src2.get_operand_lohi() == 2));
+	   printf("cbcc xmad running\n");
+	   t.u32 = (a.u32>>16) * (b.u32>>16);
+	   t.u32 = (t.u32<<16) + (b.u16<<16);
+	   d.u32 = t.u32 + c.u16;
+       } else {
+	   printf("normal xmad running\n");
+	   t.u32 = a.u16 * b.u16;
+	   d.u64 = t.u32 + c.u16;
+       }
+       break;
+   default:
+       assert(0);
+       break;
+   }
+   thread->set_operand_value(dst, d, U64_TYPE, thread, pI);
+}
+
 void mad_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 {
    mad_def(pI, thread, false);
