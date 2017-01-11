@@ -322,7 +322,7 @@ void cuobjdumpInst::printCuobjdumpTypeModifiers()
 			output(".u16");
 		else if(*typemod == ".U32")
 			output(".u32");
-		else if(*typemod == ".U64")
+		else if(*typemod == ".U64" || *typemod == ".E")
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
 		else if(*typemod == ".HI")
 			output(".hi");
@@ -539,7 +539,12 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 	}
 
 
-	if(mod == "g [0x1].u16") { //handling special register case: %ntid.x
+	if (g_is_pascal && (mod.substr(0,14) == "constant0[0x8]")) {
+		output("%%ntid.x");
+		if (mod.substr(14,17) == ".h1") {
+		    output(".h1");
+		}
+	} else if(mod == "g [0x1].u16") { //handling special register case: %ntid.x
 		output("%%ntid.x");
 	} else if(mod == "g [0x2].u16") { //handling special register case: %ntid.y
 		output("%%ntid.y");
@@ -605,6 +610,7 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		std::string modsub2;
 		std::string modsub3;
 		modsub = mod.c_str();
+		bool has_h1 = false;
 		int const_sharedFlag =0;
 		if(mod.find("global14") != std::string::npos) {
 			//Those instructions don't need the dereferencing done by g [*]
@@ -641,7 +647,12 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		}
 
 		modsub = modsub.substr(modsub.find_first_of("[]")+1);
-		modsub = modsub.substr(0, modsub.length()-1);
+		if (modsub[modsub.length()-1] == ']') {
+			modsub = modsub.substr(0, modsub.length()-1);
+		} else {
+			modsub = modsub.substr(0, modsub.length()-4);
+			has_h1 = true;
+		}
 		//Here we handle whatever was inside the []
 		int plusequalFlag = 0;
 		if(modsub.find("+++") !=  std::string::npos) {
@@ -729,6 +740,9 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			}
 		}
 		output("]");
+		if (has_h1) {
+		    output(".h1");
+		}
 	} else if(mod.substr(0,2) == "0x") { //immediate value
 		output("0x");
 		std::string outputhex;
@@ -1174,6 +1188,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		//output("mov");
 		output("ld.global");
 		printCuobjdumpBaseModifiers();
+		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -1199,6 +1214,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		//output("mov");
 		output("st.global");
 		printCuobjdumpBaseModifiers();
+		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -1373,6 +1389,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("xmad");
 		printCuobjdumpBaseModifiers();
+		output(".u16"); //TODO: setting default type modifier but I'm not sure if this is right.
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -1590,6 +1607,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("set");
 		printCuobjdumpBaseModifiers();
+		output(".u32.u32"); //TODO: setting default type modifier but I'm not sure if this is right.
 
 		printCuobjdumpOperands();
 		output(";");

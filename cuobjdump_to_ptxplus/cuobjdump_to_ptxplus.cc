@@ -36,6 +36,7 @@ using namespace std;
 
 cuobjdumpInstList *g_instList = new cuobjdumpInstList();
 cuobjdumpInstList *g_headerList = new cuobjdumpInstList();
+bool g_is_pascal = false;
 
 int sass_parse();
 extern FILE *sass_in;

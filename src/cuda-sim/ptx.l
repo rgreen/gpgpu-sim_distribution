@@ -211,7 +211,7 @@ breakaddr  TC; ptx_lval.int_value = BREAKADDR_OP; return OPCODE;
 "%tid"  TC; ptx_lval.int_value = TID_REG; return SPECIAL_REGISTER;
 "%warpid"  TC; ptx_lval.int_value = WARPID_REG; return SPECIAL_REGISTER;
 "WARP_SZ"  TC; ptx_lval.int_value = WARPSZ_REG; return SPECIAL_REGISTER;
-"$rz"  TC; ptx_lval.int_value = 0; return SPECIAL_REGISTER;
+"$rz"  TC; ptx_lval.int_value = RZ_REG; return SPECIAL_REGISTER;
 
 [a-zA-Z_][a-zA-Z0-9_$]*  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;
 [$%][a-zA-Z0-9_$]+  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;
@@ -281,6 +281,7 @@ breakaddr  TC; ptx_lval.int_value = BREAKADDR_OP; return OPCODE;
 \.lo    TC; return LO_OPTION;
 \.ls    TC; return LS_OPTION;
 \.hi    TC; return HI_OPTION;
+\.h1    TC; return HI_OPTION;
 \.hs    TC; return HS_OPTION;
 
 

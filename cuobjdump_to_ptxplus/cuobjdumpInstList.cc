@@ -408,8 +408,11 @@ void cuobjdumpInstList::addCuobjdumpMemoryOperand(std::string mem, int memType) 
 		else if(mem.substr(0, 7) == "c [0x0]"){
 			mem = "constant0" + mem.substr(7, mem.length());
 		}
-		else if(mem.substr(0, 6) == "c[0x0]"){
+		else if(mem.substr(0, 7) == "c[0x0] "){
 			mem = "constant0" + mem.substr(7, mem.length());
+		}
+		else if(mem.substr(0, 6) == "c[0x0]"){
+			mem = "constant0" + mem.substr(6, mem.length());
 		}
 		else if(mem.substr(0, 5) == "c [0x"){
 			std::string out;

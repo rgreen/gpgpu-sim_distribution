@@ -36,6 +36,7 @@
 
 // Local includes
 //#include "cuobjdumpInstList.h"
+extern bool g_is_pascal;
 
 class cuobjdumpInst
 {

@@ -998,6 +998,8 @@ public:
    bool is_abs() const { return m_abs;}
    bool is_neg() const { return m_neg;}
    bool is_to() const { return m_to_option; }
+   bool is_mrg() const { return m_mrg;}
+   bool is_cbcc() const { return (m_cbcc && m_psl);}
    unsigned cache_option() const { return m_cache_option; }
    unsigned rounding_mode() const { return m_rounding_mode;}
    unsigned saturation_mode() const { return m_saturation_mode;}

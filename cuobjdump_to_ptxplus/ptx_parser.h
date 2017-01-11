@@ -119,6 +119,7 @@ void end_inst_group(){PTX_PARSE_DPRINTF(" ");};
 /*non-dummy stuff below this point*/
 
 extern cuobjdumpInstList *g_headerList;
+extern bool g_is_pascal;
 
 // Global variable to track if we are currently inside a entry directive
 bool inEntryDirective = false;
@@ -280,6 +281,9 @@ void target_header(char* firstTarget)
 	g_headerList->add(instEntry);	
 
 	g_headerList->getListEnd().addOperand(firstTarget);
+	if (firstTarget[3] == '6') {
+		g_is_pascal = true;
+	}
 }
 
 void target_header2(char* firstTarget, char* secondTarget)
