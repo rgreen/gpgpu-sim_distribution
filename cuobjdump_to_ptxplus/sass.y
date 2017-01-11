@@ -63,7 +63,7 @@ cuobjdumpInst *instEntry;
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 DOTU64
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
-%token <string_value> DOTCC DOTX DOTE DOTRED DOTPOPC DOTAND DOTMRG DOTPSL DOTCBCC
+%token <string_value> DOTCC DOTX DOTRED DOTPOPC DOTAND DOTMRG DOTPSL DOTCBCC
 %token <string_value> REGISTER REGISTERLO REGISTERHI OFFSETREGISTER
 %token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
@@ -173,7 +173,7 @@ assemblyInstruction	: baseInstruction modifierList operandList	{ }
 					/*| baseInstruction				{ }*/
 					;
 
-predIdentifier	: AT NEWPREDREGISTER { debug_print($2); debug_print(" "); g_instList->getListEnd().setPredicate($2); }
+predIdentifier	: AT NEWPREDREGISTER { debug_print($2); debug_print(" "); instEntry->setPredicate($2); }
 		| AT EXCLAM NEWPREDREGISTER { debug_print("!"); debug_print($3); debug_print(" "); g_instList->getListEnd().setPredicate($3); g_instList->getListEnd().addPredicateModifier(".NE");}
 
 baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);}
@@ -307,7 +307,6 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTCEIL		{ g_instList->getListEnd().addBaseModifier(".rp"); }
 		| DOTFLOOR		{ g_instList->getListEnd().addBaseModifier(".rm"); }
 		| DOTX			{ g_instList->getListEnd().addBaseModifier(".x"); }
-		| DOTE			{ g_instList->getListEnd().addBaseModifier(".e"); }
 		| DOTRED		{ g_instList->getListEnd().addBaseModifier(".red"); }
 		| DOTPOPC		{ g_instList->getListEnd().addBaseModifier(".popc"); }
 		| DOTIR			{ g_instList->getListEnd().addBaseModifier(".ir"); }
@@ -344,7 +343,6 @@ operandList	: operandList { debug_print(" "); } /*COMMA*/ operand	{}
 			;
 
 operand		: registerlocation
-		| registerlocation opTypes { debug_print($2); g_instList->getListEnd().addTypeModifier($2);}
 		| PIPE registerlocation PIPE	{ g_instList->getListEnd().addBaseModifier(".abs"); }
 		| TILDE registerlocation
 		| LEFTBRACKET instructionPredicate RIGHTBRACKET

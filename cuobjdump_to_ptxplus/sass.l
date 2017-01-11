@@ -234,7 +234,6 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.CARRY{numeric}	yylval.string_value = strdup(yytext); /*unknown*/
 \.CC	yylval.string_value = strdup(yytext); return DOTCC;
 \.X		yylval.string_value = strdup(yytext); return DOTX;
-\.E		yylval.string_value = strdup(yytext); return DOTE;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
 \.AND	yylval.string_value = strdup(yytext); return DOTAND;
@@ -257,8 +256,8 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.U32	yylval.string_value = strdup(yytext); return DOTU32;
 \.U24	yylval.string_value = strdup(yytext); return DOTU24;
 \.U64	yylval.string_value = strdup(yytext); return DOTU64;
+\.E	yylval.string_value = strdup(yytext); return DOTU64;
 \.HI	yylval.string_value = strdup(yytext); return DOTHI;
-\.H1	yylval.string_value = strdup(yytext); return DOTHI;
 \.NOINC	yylval.string_value = strdup(yytext); return DOTNOINC;
 
 	/*geometries*/
@@ -266,7 +265,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 	/*register operands*/
 [\-]?R{numeric}+	yylval.string_value = strdup(yytext); return REGISTER;
 [\-]?R{numeric}+L	yylval.string_value = strdup(yytext); return REGISTERLO;
-[\-]?R{numeric}+H    yylval.string_value = strdup(yytext); return REGISTERHI;
+[\-]?R{numeric}+[\.]?H[1]?    yylval.string_value = strdup(yytext); return REGISTERHI;
 A{numeric}+	yylval.string_value = strdup(yytext); return OFFSETREGISTER;
 \.C{numeric}	yylval.string_value = strdup(yytext); return PREDREGISTER;
 "o ["{hexliteral}\]	yylval.string_value = strdup(yytext); return PREDREGISTER2;
@@ -317,10 +316,10 @@ PT
 [\-]?"global14 [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 
-[\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
-[\-]?"c ["{hexliteral}"] [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
-[\-]?"c ["{hexliteral}"] [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
-[\-]?"c ["{hexliteral}"] [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
+[\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"["{hexliteral}"]"".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
+[\-]?"c ["{hexliteral}"] [R"{numeric}+\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
+[\-]?"c ["{hexliteral}"] [A"{numeric}+\+{hexliteral}\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
+[\-]?"c ["{hexliteral}"] [A"{numeric}+\+\+\+{hexliteral}\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 
 [\-]?"local ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return LMEMLOCATION;
 [\-]?"local [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return LMEMLOCATION;
