@@ -541,6 +541,7 @@ operand: IDENTIFIER  { add_scalar_operand( $1 ); }
 	| EXCLAMATION IDENTIFIER { add_neg_pred_operand( $2 ); }
 	| MINUS IDENTIFIER  { add_scalar_operand( $2 ); change_operand_neg(); }
 	| memory_operand
+	| memory_operand HI_OPTION { change_operand_lohi(2);}
 	| literal_operand
 	| builtin_operand
 	| vector_operand
@@ -572,6 +573,7 @@ tex_operand: LEFT_SQUARE_BRACKET IDENTIFIER COMMA { add_scalar_operand($2); }
 
 builtin_operand: SPECIAL_REGISTER DIMENSION_MODIFIER { add_builtin_operand($1,$2); }
         | SPECIAL_REGISTER { add_builtin_operand($1,-1); }
+        | SPECIAL_REGISTER DIMENSION_MODIFIER HI_OPTION { add_builtin_operand($1,$2); change_operand_lohi(2); }
 	;
 
 memory_operand : LEFT_SQUARE_BRACKET address_expression RIGHT_SQUARE_BRACKET { add_memory_operand(); }

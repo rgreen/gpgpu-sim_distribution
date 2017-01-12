@@ -58,7 +58,8 @@ enum special_regs {
    SMID_REG,
    TID_REG,
    WARPID_REG,
-   WARPSZ_REG
+   WARPSZ_REG,
+   RZ_REG
 };
 
 #endif

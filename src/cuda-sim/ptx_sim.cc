@@ -292,6 +292,7 @@ unsigned ptx_thread_info::get_builtin( int builtin_id, unsigned dim_mod )
       abort();
       break;
    case WARPSZ_REG: return m_core->get_warp_size() ;
+   case RZ_REG: return 0;
    default:
       assert(0);
    }
