@@ -1508,7 +1508,7 @@ std::list<cuobjdumpSection*> pruneSectionList(std::list<cuobjdumpSection*> cuobj
 			printf("GPGPU-Sim: WARNING: Capability >= 20 are not supported in PTXPlus\n\tSetting forced_max_capability to 19\n");
 			forced_max_capability = 19;
 		} else {
-		    printf("GPGPU-Sim: WARNING: Supporting Capability 52!\n");
+		    printf("GPGPU-Sim: WARNING: Supporting Capability 61!\n");
 		}
 	}
 
