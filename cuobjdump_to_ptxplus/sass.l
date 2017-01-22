@@ -236,7 +236,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.X		yylval.string_value = strdup(yytext); return DOTX;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
-\.AND	yylval.string_value = strdup(yytext); return DOTAND;
+\.AND
 \.MRG	yylval.string_value = strdup(yytext); return DOTMRG;
 \.PSL	yylval.string_value = strdup(yytext); return DOTPSL;
 \.CBCC	yylval.string_value = strdup(yytext); return DOTCBCC;
@@ -311,6 +311,7 @@ PT
 [\-]?"g [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return SMEMLOCATION;
 [\-]?"g [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return SMEMLOCATION;
 
+[\-]?"[R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;

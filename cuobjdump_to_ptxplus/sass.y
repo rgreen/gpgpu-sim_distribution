@@ -315,7 +315,6 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTANY		{ g_instList->getListEnd().addBaseModifier(".any"); }
 		| DOTALL		{ g_instList->getListEnd().addBaseModifier(".all"); }
 		| DOTGE			{ g_instList->getListEnd().addBaseModifier(".ge"); }
-		| DOTAND		{ g_instList->getListEnd().addBaseModifier(".and"); }
 		| DOTMRG		{ g_instList->getListEnd().addBaseModifier(".mrg"); }
 		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
 		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }
@@ -353,10 +352,8 @@ operand		: registerlocation
 		| operandPredicate
 		| preOperand
 		;
-/* Register of the format [R0] will be converted to R0 */
 /* regMod will be also ignored */
 registerlocation	: REGISTER regMod	{ debug_print($1); g_instList->addCuobjdumpRegister($1);}
-			| OSQBRACKET REGISTER CSQBRACKET	{ debug_print($1); debug_print($2); debug_print($3); g_instList->addCuobjdumpRegister($2);}
 			| REGISTERLO	{ debug_print($1); g_instList->addCuobjdumpRegister($1,true);}
 			| REGISTERHI	{ debug_print($1); g_instList->addCuobjdumpRegister($1,true);}
 			| SREGISTER		{ debug_print($1); g_instList->addCuobjdumpRegister($1,false);}
@@ -386,6 +383,7 @@ memorylocation	: SMEMLOCATION	{ debug_print($1); g_instList->addCuobjdumpMemoryO
 				g_instList->addCuobjdumpMemoryOperand(temp,1);
 				g_instList->getListEnd().addBaseModifier(".abs");
 			}
+/* Register of the format [R0] will be recognize as global access R0 */
 		| GMEMLOCATION	{ debug_print($1); g_instList->addCuobjdumpMemoryOperand($1,2);}
 		| CMEMLOCATION	{ debug_print($1); g_instList->addCuobjdumpMemoryOperand($1,0);}
 		| LMEMLOCATION	{ debug_print($1); g_instList->addCuobjdumpMemoryOperand($1,3);}

@@ -320,9 +320,9 @@ void cuobjdumpInst::printCuobjdumpTypeModifiers()
 			output(".u8");
 		else if(*typemod == ".U16")
 			output(".u16");
-		else if(*typemod == ".U32")
+		else if(*typemod == ".U32" || *typemod == ".E")
 			output(".u32");
-		else if(*typemod == ".U64" || *typemod == ".E")
+		else if(*typemod == ".U64")
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
 		else if(*typemod == ".HI")
 			output(".hi");
@@ -602,7 +602,7 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		printCuobjdumpOperandlohi(mod);
 	} else if(mod[0]=='o') {//output register
 		output("$o127");
-	} else if (	mod[0]=='g' ||
+	} else if (	mod[0]=='[' || mod[0]=='g' ||
 				mod.substr(0,2) == "lo" ||
 				mod.substr(0,8) == "constant") {
 		//memory operands, global14 = global, g = shared, c = constant
@@ -621,6 +621,8 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 				output("[");
 			else
 				output("g[");
+		} else if(mod[0]=='['){
+			output("[");
 		} else if(mod[0]=='g') {
 			//Shared memory
 			output("s[");
