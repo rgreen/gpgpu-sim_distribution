@@ -1273,7 +1273,7 @@ void ptx_thread_info::ptx_exec_inst( warp_inst_t &inst, unsigned lane_id)
       const operand_info &pred = pI->get_pred();
       ptx_reg_t pred_value = get_operand_value(pred, pred, PRED_TYPE, this, 0);
       if(pI->get_pred_mod() == -1) {
-            skip = (pred_value.pred & 0x0001) ^ pI->get_pred_neg(); //ptxplus inverts the zero flag
+            skip = !((pred_value.pred & 0x0001) ^ pI->get_pred_neg()); //ptxplus inverts the zero flag
       } else {
             skip = !pred_lookup(pI->get_pred_mod(), pred_value.pred & 0x000F);
       }
