@@ -80,6 +80,7 @@ fltliteral	[0-9]+\.[0-9]+
 
 	/*base instructions*/
 "BAR.ARV.WAIT b0, 0xfff"	yylval.string_value = strdup(yytext); return BAR;
+"BAR.SYNC 0x0"	yylval.string_value = strdup(yytext); return BAR;
 ADA	yylval.string_value = strdup(yytext); return ADA;
 BRA	yylval.string_value = strdup(yytext); return BRA;
 BRA.U	yylval.string_value = strdup(yytext); return BRA;
@@ -312,6 +313,7 @@ PT
 [\-]?"g [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return SMEMLOCATION;
 
 [\-]?"[R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
+[\-]?"[R"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
