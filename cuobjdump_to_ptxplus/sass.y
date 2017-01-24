@@ -173,8 +173,8 @@ assemblyInstruction	: baseInstruction modifierList operandList	{ }
 					/*| baseInstruction				{ }*/
 					;
 
-predIdentifier	: AT NEWPREDREGISTER { debug_print($2); debug_print(" "); instEntry->setPredicate($2); }
-		| AT EXCLAM NEWPREDREGISTER { debug_print("!"); debug_print($3); debug_print(" "); g_instList->getListEnd().setPredicate($3); g_instList->getListEnd().addPredicateModifier(".NE");}
+predIdentifier	: AT NEWPREDREGISTER { debug_print($2); debug_print(" "); instEntry->setPredicate($2); instEntry->addPredicateModifier(".EQ");}
+		| AT EXCLAM NEWPREDREGISTER { debug_print("!"); debug_print($3); debug_print(" "); instEntry->setPredicate($3); instEntry->addPredicateModifier(".NE");}
 
 baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);}
 		| branchInstructions
