@@ -91,6 +91,7 @@ DADD	yylval.string_value = strdup(yytext); return DADD;
 DMIN	yylval.string_value = strdup(yytext); return DMIN;
 DMAX	yylval.string_value = strdup(yytext); return DMAX;
 DFMA	yylval.string_value = strdup(yytext); return DFMA;
+FFMA	yylval.string_value = strdup(yytext); return FFMA;
 DMUL	yylval.string_value = strdup(yytext); return DMUL;
 EX2	yylval.string_value = strdup(yytext); return EX2;
 F2F	yylval.string_value = strdup(yytext); return F2F;

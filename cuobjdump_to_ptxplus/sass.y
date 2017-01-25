@@ -48,7 +48,7 @@ cuobjdumpInst *instEntry;
 }
 
 %token <string_value> BAR
-%token <string_value> ADA AND ANDS BRA BRX CAL COS DADD DMIN DMAX DFMA DMUL EX2 F2F F2I FADD
+%token <string_value> ADA AND ANDS BRA BRX CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD
 %token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET DSET G2R
 %token <string_value> GLD GST I2F I2I IADD IADD32 IADD32I IMAD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
@@ -183,7 +183,7 @@ baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); 
 		| pbkInstruction
 		;
 
-simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | DMUL | EX2 | F2F 
+simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | FFMA | DMUL | EX2 | F2F
 					| F2I | FADD | FADD32 | FADD32I | FMAD | FMAD32I | FMUL 
 					| FMUL32 | FMUL32I | FSET | DSET | G2R | GLD | GST | I2F | I2I 
 					| IADD | IADD32 | IADD32I | IMAD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL | XMAD
