@@ -260,6 +260,8 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.E	yylval.string_value = strdup(yytext); return DOTU64;
 \.HI	yylval.string_value = strdup(yytext); return DOTHI;
 \.NOINC	yylval.string_value = strdup(yytext); return DOTNOINC;
+\.U.32	yylval.string_value = strdup(yytext); return DOTU32;
+\.U.128	yylval.string_value = strdup(yytext); return DOTU128;
 
 	/*geometries*/
 
