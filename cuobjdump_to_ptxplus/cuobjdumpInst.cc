@@ -314,13 +314,13 @@ void cuobjdumpInst::printCuobjdumpTypeModifiers()
 			output(".s32");
 		else if(*typemod == ".S64")
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
-		else if(*typemod == ".S128")
+		else if(*typemod == ".S128" || *typemod == ".U.128")
 			output(".bb128"); //TODO: might have to change to .ss64 in the future.
 		else if(*typemod == ".U8")
 			output(".u8");
 		else if(*typemod == ".U16")
 			output(".u16");
-		else if(*typemod == ".U32" || *typemod == ".E")
+		else if(*typemod == ".U32" || *typemod == ".E" || *typemod == ".U.32")
 			output(".u32");
 		else if(*typemod == ".U64")
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
@@ -414,6 +414,16 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 		else if( *basemod == ".ge")
 		{
 			//".ge" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".le")
+		{
+			//".le" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".lt")
+		{
+			//".lt" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
 		else if( *basemod == ".and")
@@ -556,10 +566,12 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		output("%%nctaid.y");
 	} else if(mod == "g [0x6].u16" || mod == "sr_ctaid.x") {//handling special register case: %ctaid.x
 		output("%%ctaid.x");
-	} else if(mod == "g [0x7].u16") {//handling special register case: %ctaid.y
+	} else if(mod == "g [0x7].u16" || mod == "sr_ctaid.y") {//handling special register case: %ctaid.y
 		output("%%ctaid.y");
 	} else if (mod == "sr_tid.x") { //handling special register case: %tid.x
 		output("%%tid.x");
+	} else if (mod == "sr_tid.y") { //handling special register case: %tid.x
+		output("%%tid.y");
 	} else if(mod == "sr1") {//handling special register case: %clock
 		output("%%clock");
 	} else if(mod[0]=='r') { //basic register
@@ -665,9 +677,15 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		{
 			//Handle a1+++0x1 or a1+0x1
 			modsub2 = modsub.substr(modsub.find("+")+1);
-
-			output("$ofs");
-			output(modsub.substr(1,1).c_str());
+			if (modsub[0] == 'a') {
+				output("$ofs");
+				output(modsub.substr(1,1).c_str());
+			} else if(modsub[0] == 'r') {
+				output("$");
+				output(modsub.substr(0, modsub.find_first_of("+")).c_str());
+			} else {
+				printf("Unidentified modifier: %s\n", modsub.c_str());
+			}
 
 			if(plusequalFlag == 1) {
 				output("+=");
@@ -815,6 +833,11 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		/*do nothing here*/
 	}
 	else if(m_base == "BAR.ARV.WAIT b0, 0xfff")
+	{
+		printCuobjdumpPredicate();
+		output("bar.sync 0x00000000;");
+	}
+	else if(m_base == "BAR.SYNC 0x0")
 	{
 		printCuobjdumpPredicate();
 		output("bar.sync 0x00000000;");
@@ -2157,6 +2180,14 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("fma.rz.ff64");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if(m_base == "FFMA")
+	{
+		printCuobjdumpPredicate();
+		output("fma.rz.f32");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpOperands();
 		output(";");
