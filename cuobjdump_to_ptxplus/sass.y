@@ -36,6 +36,7 @@ void debug_print( const char *s );
 extern cuobjdumpInstList *g_instList;
 
 cuobjdumpInst *instEntry;
+int delay_set = 0;
 %}
 
 
@@ -137,7 +138,10 @@ statementList	: statementList statement NEWLINE	{ debug_print("\n"); }
 		;
 
 statement	: { instEntry = new cuobjdumpInst(); } instructionLabel statementend
-	        | instructionHex
+	        | instructionHex	{
+						// delay setting label to next inst
+						delay_set = 1;
+					}
 			;
 
 statementend	: instructionHex assemblyInstruction
@@ -149,6 +153,33 @@ instructionHex	: INSTHEX
 				;
 
 instructionLabel	: LABELSTART LABEL LABELEND	{ char* tempInput = $2;
+							  if (delay_set) {
+							        instEntry->setBase("NOP");
+							        delay_set = 0;
+							        char* nopInput=new char[4];
+								strcpy(nopInput, tempInput);
+							        char* nopLabel = new char[12];
+							        unsigned long addr = strtol(nopInput, NULL, 16);
+							        nopLabel[0] = 'l';
+							        nopLabel[1] = '0';
+							        nopLabel[2] = 'x';
+							        /*TODO: assume all inst is 8 byte*/
+							        addr-=8;
+							        sprintf(nopInput, "%lx", addr);
+							        for(int i=0; i<(8-strlen(nopInput)); i++)
+							        {
+									nopLabel[3+i] = '0';
+							        }
+							        for(int i=(11-strlen(nopInput)); i<11; i++)
+							        {
+									nopLabel[i] = nopInput[i-(11-strlen(nopInput))];
+							        }
+							        nopLabel[11] = '\0';
+							        debug_print("Control Code\n");
+							        instEntry->setLabel(nopLabel);
+							        g_instList->add(instEntry);
+							        instEntry = new cuobjdumpInst();
+							  }
 							  char* tempLabel = new char[12];
 							  tempLabel[0] = 'l';
 							  tempLabel[1] = '0';
