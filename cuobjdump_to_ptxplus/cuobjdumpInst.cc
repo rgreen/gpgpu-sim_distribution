@@ -634,7 +634,12 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			else
 				output("g[");
 		} else if(mod[0]=='['){
-			output("[");
+			if (m_base == "STS" || m_base == "LDS") {
+				output("s[");
+				const_sharedFlag=1;
+			} else {
+				output("[");
+			}
 		} else if(mod[0]=='g') {
 			//Shared memory
 			output("s[");
@@ -2012,7 +2017,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if(m_base == "STS")
 	{
 		printCuobjdumpPredicate();
-		output("mov");
+		output("mov.u32");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
