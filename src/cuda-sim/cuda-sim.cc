@@ -242,7 +242,8 @@ void function_info::ptx_assemble()
          if ( labels.find(target.name()) == labels.end() ) {
             printf("GPGPU-Sim PTX: Loader error (%s:%u): Branch label \"%s\" does not appear in assembly code.",
                    pI->source_file(),pI->source_line(), target.name().c_str() );
-	    labels[target.name()] = ii - 8; // link dangling branch to its last instruction, might be exit
+            //abort();
+	    return;
          }
          unsigned index = labels[ target.name() ]; //determine address from name
          unsigned PC = m_instr_mem[index]->get_PC();
