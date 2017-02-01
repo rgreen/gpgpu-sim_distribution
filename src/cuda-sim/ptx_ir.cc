@@ -709,7 +709,9 @@ void function_info::find_ipostdominators( )
    }
    unsigned num_ipdoms=0;
    for ( int n = m_basic_blocks.size()-1; n >=0;--n) {
-      assert( m_basic_blocks[n]->Tmp_ids.size() <= 1 ); 
+      assert( m_basic_blocks[n]->Tmp_ids.size() <= 1
+		      || ( (m_basic_blocks[n]->Tmp_ids.size() > 1)
+		      && (m_basic_blocks[n]->successor_ids.size() == 1 && (*m_basic_blocks[n]->successor_ids.begin()) == n)));
          // if the above assert fails we have an error in either postdominator 
          // computation, the flow graph does not have a unique exit, or some other error
       if( !m_basic_blocks[n]->Tmp_ids.empty() ) {
