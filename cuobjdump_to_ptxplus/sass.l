@@ -187,6 +187,7 @@ GATOM	yylval.string_value = strdup(yytext); return GATOM;
 PBK	yylval.string_value = strdup(yytext); return PBK;
 BRK	yylval.string_value = strdup(yytext); return BRK;
 VOTE	yylval.string_value = strdup(yytext); return VOTE;
+BFE	yylval.string_value = strdup(yytext); return BFE;
 
 	/*instruction modifiers*/
 EQ	yylval.string_value = strdup(yytext); return EQ;

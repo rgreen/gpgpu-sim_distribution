@@ -56,7 +56,7 @@ int delay_set = 0;
 %token <string_value> ISET ISETP LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET RRO RSQ SIN SHL SHR SSY XOR XORS
 %token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX A2R FMAX FMIN TEX TEX32 C2R EXIT
-%token <string_value> GRED PBK BRK R2C GATOM VOTE
+%token <string_value> GRED PBK BRK R2C GATOM VOTE BFE
 
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
@@ -224,7 +224,7 @@ simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | 
 					| NOT | NOTS | OR | ORS | R2A | R2G | R2GU16U8 | RCP | RCP32 | RET | RRO 
 					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS 
 					| LDS | SASS_ST | EXIT | BAR | IMIN | IMAX | A2R | FMAX | FMIN 
-					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE
+					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE
 					;
 
 pbkInstruction	:	PBK {
@@ -349,6 +349,7 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTGE			{ g_instList->getListEnd().addBaseModifier(".ge"); }
 		| DOTLE			{ g_instList->getListEnd().addBaseModifier(".le"); }
 		| DOTLT			{ g_instList->getListEnd().addBaseModifier(".lt"); }
+		| DOTEQ			{ g_instList->getListEnd().addBaseModifier(".eq"); }
 		| DOTMRG		{ g_instList->getListEnd().addBaseModifier(".mrg"); }
 		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
 		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }
