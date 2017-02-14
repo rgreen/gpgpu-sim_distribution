@@ -95,6 +95,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token  B64_TYPE
 %token  BB64_TYPE
 %token  BB128_TYPE
+%token  V128_TYPE
 %token  PRED_TYPE
 %token  TEXREF_TYPE
 %token  SAMPLERREF_TYPE
@@ -384,6 +385,7 @@ scalar_type: S8_TYPE { add_scalar_type_spec( S8_TYPE ); }
 	| B64_TYPE   { add_scalar_type_spec( B64_TYPE ); }
 	| BB64_TYPE   { add_scalar_type_spec( BB64_TYPE ); }
 	| BB128_TYPE   { add_scalar_type_spec( BB128_TYPE ); }
+	| V128_TYPE   { add_scalar_type_spec( V128_TYPE ); }
 	| PRED_TYPE  { add_scalar_type_spec( PRED_TYPE ); }
 	| TEXREF_TYPE  { add_scalar_type_spec( TEXREF_TYPE ); }
 	| SAMPLERREF_TYPE  { add_scalar_type_spec( SAMPLERREF_TYPE ); }

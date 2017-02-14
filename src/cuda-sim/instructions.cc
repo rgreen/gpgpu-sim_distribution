@@ -106,7 +106,7 @@ ptx_reg_t ptx_thread_info::get_operand_value( const operand_info &op, operand_in
 
 
    if(op.get_double_operand_type() == 0) {
-      if(((opType != BB128_TYPE) && (opType != BB64_TYPE) && (opType != FF64_TYPE)) || (op.get_addr_space() != undefined_space)) {
+      if((((opType != BB128_TYPE) && (opType != BB64_TYPE) && (opType != FF64_TYPE)) || (op.get_addr_space() != undefined_space)) && (opType != V128_TYPE)) {
          if ( op.is_reg() ) {
             result = get_reg( op.get_symbol() );
          } else if ( op.is_builtin()) {
@@ -178,6 +178,43 @@ ptx_reg_t ptx_thread_info::get_operand_value( const operand_info &op, operand_in
           result.u128.low = get_reg( op.vec_symbol(1) ).u32;
           result.u128.high = get_reg( op.vec_symbol(2) ).u32;
           result.u128.highest = get_reg( op.vec_symbol(3) ).u32;
+      } else if (opType == V128_TYPE) {
+          // v128
+          if(op.is_reg()) {
+              // STS store from reg to shmem
+              result.u128.lowest = get_reg( op.get_symbol() ).u32;
+              const char *name = op.name().c_str();
+              int num = atoi(op.name().substr(2).c_str());
+              char* regNum1 = new char[4];
+              char* regNum2 = new char[4];
+              char* regNum3 = new char[4];
+              memset(regNum1, '\0', sizeof(regNum1));
+              memset(regNum2, '\0', sizeof(regNum2));
+              memset(regNum3, '\0', sizeof(regNum3));
+              sprintf(regNum1, "$r%d", num+1);
+              sprintf(regNum2, "$r%d", num+2);
+              sprintf(regNum3, "$r%d", num+3);
+              const symbol *s1 = m_symbol_table->lookup(regNum1);
+              const symbol *s2 = m_symbol_table->lookup(regNum2);
+              const symbol *s3 = m_symbol_table->lookup(regNum3);
+              result.u128.lowest = get_reg( op.get_symbol() ).u32;
+              result.u128.low = get_reg( s1 ).u32;
+              result.u128.high = get_reg( s2 ).u32;
+              result.u128.highest = get_reg( s3 ).u32;
+          } else if ( op.is_memory_operand() ) {
+              const symbol *sym = op.get_symbol();
+              const type_info *type = sym->type();
+              const type_info_key &info = type->get_key();
+              if ( info.is_reg() ) {
+                  const symbol *name = op.get_symbol();
+                  result.u64 = get_reg(name).u64 + op.get_addr_offset();
+              } else {
+                  const char *name = op.name().c_str();
+                  printf("GPGPU-Sim PTX: ERROR ** get_operand_value : unknown memory operand type for %s\n", name );
+                  abort();
+              }
+          }
+
       } else {
           // bb64 or ff64
           result.bits.ls = get_reg( op.vec_symbol(0) ).u32;
@@ -2822,7 +2859,7 @@ void mov_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    const operand_info &src1 = pI->src1();
    unsigned i_type = pI->get_type();
 
-   if( (src1.is_vector() || dst.is_vector()) && (i_type != BB64_TYPE) && (i_type != BB128_TYPE) && (i_type != FF64_TYPE) ) {
+   if( (src1.is_vector() || dst.is_vector()) && (i_type != BB64_TYPE) && (i_type != BB128_TYPE) && (i_type != FF64_TYPE) && (i_type != V128_TYPE) ) {
       // pack or unpack operation
       unsigned nbits_to_move;
       ptx_reg_t tmp_bits;

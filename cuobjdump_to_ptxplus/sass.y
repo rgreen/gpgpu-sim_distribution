@@ -61,7 +61,7 @@ int delay_set = 0;
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
 %token <string_value> DOTTRUNC DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL
-%token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 DOTU64 DOTU128
+%token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 DOTU64 DOTV128
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
 %token <string_value> DOTCC DOTX DOTRED DOTPOPC DOTAND DOTMRG DOTPSL DOTCBCC
@@ -367,7 +367,7 @@ opTypes		: DOTF16	//{ debug_print($1); g_instList->getListEnd().addTypeModifier(
 		| DOTU32	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTU24	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTU64	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
-		| DOTU128	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
+		| DOTV128	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTHI		//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		;
 

@@ -926,6 +926,7 @@ unsigned type_info_key::type_decode( int type, size_t &size, int &basic_type )
    case B64_TYPE: size=64; basic_type=0; return 15;
    case BB64_TYPE: size=64; basic_type=0; return 15;
    case BB128_TYPE: size=128; basic_type=0; return 16;
+   case V128_TYPE: size=128; basic_type=0; return 16;
    case TEXREF_TYPE: case SAMPLERREF_TYPE: case SURFREF_TYPE:
       size=32; basic_type=3; return 16;
    default: 

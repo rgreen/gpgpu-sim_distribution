@@ -831,6 +831,8 @@ static unsigned datatype2size( unsigned data_type )
          data_size = 8; break;
       case BB128_TYPE: 
          data_size = 16; break;
+      case V128_TYPE:
+         data_size = 16; break;
       default: assert(0); break;
    }
    return data_size; 
