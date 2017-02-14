@@ -122,6 +122,7 @@ IADD\.CARRY{numeric}	yylval.string_value = strdup(yytext); return IADDCARRY;
 IADD32	yylval.string_value = strdup(yytext); return IADD32;
 IADD32I	yylval.string_value = strdup(yytext); return IADD32I;
 IMAD	yylval.string_value = strdup(yytext); return IMAD;
+ISCADD	yylval.string_value = strdup(yytext); return ISCADD;
 ISAD	yylval.string_value = strdup(yytext); return ISAD;
 IMAD\.U24	yylval.string_value = strdup(yytext); return IMAD24;
 IMAD\.S24	yylval.string_value = strdup(yytext); return IMAD24;

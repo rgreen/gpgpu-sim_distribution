@@ -1390,6 +1390,20 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		output(";");
 	}
 
+	else if(m_base == "ISCADD")
+	{
+		printCuobjdumpPredicate();
+		output("iscadd");
+		printCuobjdumpBaseModifiers();
+
+		if(m_typeModifiers->size() == 0)
+			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		else
+			printCuobjdumpTypeModifiers();
+		printCuobjdumpOperands();
+		output(";");
+        }
+
 	else if(m_base == "IMAD.U24")
 	{
 		printCuobjdumpPredicate();
