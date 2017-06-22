@@ -295,6 +295,7 @@ directive_statement: variable_declaration SEMI_COLON
 	| LOC_DIRECTIVE INT_OPERAND INT_OPERAND INT_OPERAND 
 	| PRAGMA_DIRECTIVE STRING SEMI_COLON { add_pragma($2); }
 	| function_decl SEMI_COLON {/*Do nothing*/}
+	| CALLPROTOTYPE_DIRECTIVE LEFT_PAREN proto_list RIGHT_PAREN IDENTIFIER LEFT_PAREN proto_list RIGHT_PAREN SEMI_COLON {/*Do nothing*/}
 	;
 
 variable_declaration: variable_spec identifier_list { add_variables(); }
@@ -401,6 +402,13 @@ instruction: opcode_spec LEFT_PAREN operand RIGHT_PAREN { set_return(); } COMMA 
 	| opcode_spec
 	;
 
+proto_list: proto
+	| proto COMMA proto_list;
+
+proto: PARAM_DIRECTIVE ptr_align_spec type_spec IDENTIFIER
+        | PARAM_DIRECTIVE type_spec IDENTIFIER
+        | PARAM_DIRECTIVE ptr_align_spec type_spec IDENTIFIER LEFT_SQUARE_BRACKET INT_OPERAND RIGHT_SQUARE_BRACKET
+        | PARAM_DIRECTIVE type_spec IDENTIFIER LEFT_SQUARE_BRACKET INT_OPERAND RIGHT_SQUARE_BRACKET;
 opcode_spec: OPCODE { add_opcode($1); } option_list
 	| OPCODE { add_opcode($1); }
 
@@ -572,6 +580,7 @@ twin_operand : IDENTIFIER PLUS IDENTIFIER { add_double_operand($1,$3); change_do
 literal_operand : INT_OPERAND { add_literal_int($1); }
 	| FLOAT_OPERAND { add_literal_float($1); }
 	| DOUBLE_OPERAND { add_literal_double($1); }
+	| IDENTIFIER { add_literal_int(1); }
 	;
 
 address_expression: IDENTIFIER { add_address_operand($1,0); }
