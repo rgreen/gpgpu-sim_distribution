@@ -156,9 +156,16 @@ ptx_reg_t ptx_thread_info::get_operand_value( const operand_info &op, operand_in
          } else if ( op.is_function_address() ) {
 		 	result.u64 = (size_t)op.get_symbol()->get_pc();
          } else {
-            const char *name = op.name().c_str();
-            printf("GPGPU-Sim PTX: ERROR ** get_operand_value : unknown operand type for %s\n", name );
-            assert(0);
+            const symbol *sym = op.get_symbol();
+            const type_info *type = sym->type();
+            const type_info_key &info = type->get_key();
+            if ( info.is_param_local() ) {
+               result.u64 = sym->get_address() + op.get_addr_offset();
+            } else {
+               const char *name = op.name().c_str();
+               printf("GPGPU-Sim PTX: ERROR ** get_operand_value : unknown operand type for %s\n", name );
+               assert(0);
+	    }
          }
 
          if(op.get_operand_lohi() == 1) 
@@ -1459,6 +1466,8 @@ void breakaddr_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 void brev_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void brkpt_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 
+void decode_space( memory_space_t &space, ptx_thread_info *thread, const operand_info &op, memory_space *&mem, addr_t &addr);
+
 void call_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 {
    static unsigned call_uid_next = 1;
@@ -1488,6 +1497,29 @@ void call_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    std::string fname = target_func->get_name();
    if( fname == "vprintf" ) {
       gpgpusim_cuda_vprintf(pI, thread, target_func);
+      return;
+   }
+   // handle malloc system call
+   if( fname == "malloc" ) {
+      const operand_info &dst = pI->dst();
+      const operand_info &src = pI->src2();
+
+      unsigned type = U32_TYPE;
+
+      ptx_reg_t src_data = thread->get_operand_value(src, src, type, thread, 1);
+      ptx_reg_t data;
+      memory_space_t space = param_space_unclassified;
+
+      memory_space *mem = NULL;
+      addr_t addr = src_data.u32;
+
+      decode_space(space,thread,src,mem,addr);
+      mem->read(addr,8,&data.u64);
+      void * buffer = thread->get_gpu()->gpu_malloc((size_t)data.u64);
+
+      ptx_reg_t dst_data = thread->get_operand_value(dst, dst, type, thread, 1);
+      addr = dst_data.u32;
+      mem->write(addr,8, &buffer, thread, pI);
       return;
    }
 

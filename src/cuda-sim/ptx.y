@@ -392,6 +392,7 @@ literal_list: literal_operand
 	| literal_list COMMA literal_operand;
 
 instruction_statement:  instruction SEMI_COLON
+	| instruction COMMA IDENTIFIER SEMI_COLON
 	| IDENTIFIER COLON { add_label($1); }    
 	| pred_spec instruction SEMI_COLON;
 

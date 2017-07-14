@@ -1243,21 +1243,23 @@ ptx_instruction::ptx_instruction( int opcode,
 
    if (opcode == CALL_OP) {
        const operand_info &target  = func_addr();
-       assert( target.is_function_address() );
-       const symbol *func_addr = target.get_symbol();
-       const function_info *target_func = func_addr->get_pc();
-       std::string fname = target_func->get_name();
+       if (!target.is_reg()) {
+           assert( target.is_function_address() );
+           const symbol *func_addr = target.get_symbol();
+           const function_info *target_func = func_addr->get_pc();
+           std::string fname = target_func->get_name();
 
-       if (fname =="vprintf"){
-           m_is_printf = true;
+           if (fname =="vprintf"){
+               m_is_printf = true;
+           }
+           if(fname == "cudaStreamCreateWithFlags")
+               m_is_cdp = 1;
+           if(fname == "cudaGetParameterBufferV2")
+               m_is_cdp = 2;
+           if(fname == "cudaLaunchDeviceV2")
+               m_is_cdp = 4;
+
        }
-       if(fname == "cudaStreamCreateWithFlags")
-           m_is_cdp = 1;
-       if(fname == "cudaGetParameterBufferV2")
-           m_is_cdp = 2;
-       if(fname == "cudaLaunchDeviceV2")
-           m_is_cdp = 4;
-
    }
 }
 
