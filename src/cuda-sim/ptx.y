@@ -581,7 +581,7 @@ twin_operand : IDENTIFIER PLUS IDENTIFIER { add_double_operand($1,$3); change_do
 literal_operand : INT_OPERAND { add_literal_int($1); }
 	| FLOAT_OPERAND { add_literal_float($1); }
 	| DOUBLE_OPERAND { add_literal_double($1); }
-	| IDENTIFIER { add_literal_int(1); }
+	| IDENTIFIER { add_scalar_operand($1); }
 	;
 
 address_expression: IDENTIFIER { add_address_operand($1,0); }

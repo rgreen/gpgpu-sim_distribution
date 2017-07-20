@@ -2235,7 +2235,12 @@ static int load_static_globals( symbol_table *symtab, unsigned min_gaddr, unsign
 			std::list<operand_info> init_list = global->get_initializer();
 			for ( std::list<operand_info>::iterator i=init_list.begin(); i!=init_list.end(); i++ ) {
 				operand_info op = *i;
-				ptx_reg_t value = op.get_literal_value();
+				ptx_reg_t value;
+				if (op.is_function_address()) {
+					value = op.get_symbol()->get_pc()->get_start_PC();
+				} else {
+					value = op.get_literal_value();
+				}
 				assert( (addr+offset+nbytes) < min_gaddr ); // min_gaddr is start of "heap" for cudaMalloc
 				gpu->get_global_memory()->write(addr+offset,nbytes,&value,NULL,NULL); // assuming little endian here
 				offset+=nbytes;

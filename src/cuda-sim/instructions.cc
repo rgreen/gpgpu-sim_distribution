@@ -1473,9 +1473,15 @@ void call_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    static unsigned call_uid_next = 1;
     
    const operand_info &target  = pI->func_addr();
-   assert( target.is_function_address() );
-   const symbol *func_addr = target.get_symbol();
-   const function_info *target_func = func_addr->get_pc();
+   assert( target.is_function_address() || target.is_reg() );
+   const function_info *target_func;
+   if (target.is_reg()){
+       ptx_reg_t target_data = thread->get_operand_value(target, target, U32_TYPE, thread, 1);
+       target_func = g_pc_to_finfo[target_data];
+   } else {
+       const symbol *func_addr = target.get_symbol();
+       target_func = func_addr->get_pc();
+   }
 
    // check that number of args and return match function requirements
    if( pI->has_return() ^ target_func->has_return() ) {

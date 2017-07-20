@@ -1444,6 +1444,7 @@ struct textureInfo {
 };
 
 extern std::map<std::string,symbol_table*> g_sym_name_to_symbol_table;
+extern std::map<unsigned,function_info*> g_pc_to_finfo;
 
 
 extern bool g_keep_intermediate_files;
