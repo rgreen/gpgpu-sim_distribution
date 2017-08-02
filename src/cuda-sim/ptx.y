@@ -396,12 +396,15 @@ instruction_statement:  instruction SEMI_COLON
 	| IDENTIFIER COLON { add_label($1); }    
 	| pred_spec instruction SEMI_COLON;
 
-instruction: opcode_spec LEFT_PAREN operand RIGHT_PAREN { set_return(); } COMMA operand COMMA LEFT_PAREN operand_list RIGHT_PAREN
+instruction: opcode_spec LEFT_PAREN operand RIGHT_PAREN { set_return(); } call_addon
 	| opcode_spec operand COMMA LEFT_PAREN operand_list RIGHT_PAREN
 	| opcode_spec operand COMMA LEFT_PAREN RIGHT_PAREN
 	| opcode_spec operand_list 
 	| opcode_spec
 	;
+
+call_addon: COMMA operand COMMA LEFT_PAREN operand_list RIGHT_PAREN
+	| COMMA operand COMMA LEFT_PAREN RIGHT_PAREN
 
 proto_list: proto
 	| proto COMMA proto_list;
