@@ -864,6 +864,7 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
                     std::map<address_type,simt_mask_t>:: iterator it=divergent_paths.begin();
                     simt_stack_entry new_stack_entry1;
                     new_stack_entry1.m_pc = it->first;
+                    m_stack.back().m_recvg_pc = (unsigned)-2;
                     new_stack_entry1.m_active_mask = divergent_paths[it->first];
                     new_stack_entry1.m_branch_div_cycle = gpu_sim_cycle+gpu_tot_sim_cycle;
                     new_stack_entry1.m_type = STACK_ENTRY_TYPE_CALL;
@@ -878,7 +879,8 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
     		m_stack.pop_back();
 
     		assert(m_stack.size() > 0);
-                if (m_stack.back().m_type!=STACK_ENTRY_TYPE_CALL) {
+                if ((m_stack.back().m_type!=STACK_ENTRY_TYPE_CALL)
+				|| (m_stack.back().m_type==STACK_ENTRY_TYPE_CALL && m_stack.back().m_recvg_pc != (unsigned)-2)) {
                     m_stack.back().m_pc=tmp_next_pc;// set the PC of the stack top entry to return PC from  the call stack;
                 }
             // Check if the New top of the stack is reconverging
