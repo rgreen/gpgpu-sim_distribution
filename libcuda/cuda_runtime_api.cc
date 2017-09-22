@@ -2092,7 +2092,7 @@ cudaError_t CUDARTAPI cudaSetValidDevices(int *device_arr, int len)
 
 cudaError_t CUDARTAPI cudaSetDeviceFlags( int flags )
 {
-	cuda_not_implemented(__my_func__,__LINE__);
+	//cuda_not_implemented(__my_func__,__LINE__);
 	return g_last_cudaError = cudaErrorUnknown;
 }
 
