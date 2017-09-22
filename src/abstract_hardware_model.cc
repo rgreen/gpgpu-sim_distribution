@@ -309,11 +309,13 @@ void warp_inst_t::generate_mem_accesses()
     case tex_space: 
         cache_block_size = m_config->gpgpu_cache_texl1_linesize;
         break;
-    case const_space:  case param_space_kernel:
+    case const_space:
         cache_block_size = m_config->gpgpu_cache_constl1_linesize; 
         break;
-
-    case global_space: case local_space: case param_space_local:
+    case param_space_kernel:
+	cache_block_size = 0;
+	break;
+    case global_space: case local_space:
     	 if( m_config->gpgpu_coalesce_arch == 13 || m_config->gpgpu_coalesce_arch == 20) {
             if(isatomic())
                 memory_coalescing_arch_atomic(is_write, access_type);
@@ -322,6 +324,9 @@ void warp_inst_t::generate_mem_accesses()
          } else abort();
 
         break;
+    case param_space_local:
+	cache_block_size = 0;
+	break;
 
     default:
         abort();
@@ -347,6 +352,12 @@ void warp_inst_t::generate_mem_accesses()
     }
 
     if ( space.get_type() == global_space ) {
+        ptx_file_line_stats_add_uncoalesced_gmem( pc, m_accessq.size() - starting_queue_size );
+    }
+    if ( space.get_type() == param_space_kernel ) {
+        ptx_file_line_stats_add_uncoalesced_gmem( pc, m_accessq.size() - starting_queue_size );
+    }
+    if ( space.get_type() == param_space_local ) {
         ptx_file_line_stats_add_uncoalesced_gmem( pc, m_accessq.size() - starting_queue_size );
     }
     m_mem_accesses_created=true;

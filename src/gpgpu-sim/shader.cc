@@ -1486,6 +1486,8 @@ bool ldst_unit::memory_cycle( warp_inst_t &inst, mem_stage_stall_type &stall_rea
         (inst.space.get_type() != local_space) &&
         (inst.space.get_type() != param_space_local)) ) 
        return true;
+   if (inst.space.get_type() == param_space_local)
+	   return true;
    if( inst.active_count() == 0 ) 
        return true;
    assert( !inst.accessq_empty() );
