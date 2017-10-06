@@ -313,7 +313,23 @@ void warp_inst_t::generate_mem_accesses()
         cache_block_size = m_config->gpgpu_cache_constl1_linesize; 
         break;
     case param_space_kernel:
-	cache_block_size = 0;
+	if (m_config->gperfect_param) {
+		cache_block_size = 0;
+	} else {
+		cache_block_size = m_config->gpgpu_cache_constl1_linesize;
+	}
+	break;
+    case param_space_local:
+	if (m_config->gperfect_param) {
+		cache_block_size = 0;
+	} else {
+		if( m_config->gpgpu_coalesce_arch == 13 || m_config->gpgpu_coalesce_arch == 20) {
+			if(isatomic())
+				memory_coalescing_arch_atomic(is_write, access_type);
+			else
+				memory_coalescing_arch(is_write, access_type);
+		} else abort();
+	}
 	break;
     case global_space: case local_space:
     	 if( m_config->gpgpu_coalesce_arch == 13 || m_config->gpgpu_coalesce_arch == 20) {
@@ -324,9 +340,6 @@ void warp_inst_t::generate_mem_accesses()
          } else abort();
 
         break;
-    case param_space_local:
-	cache_block_size = 0;
-	break;
 
     default:
         abort();

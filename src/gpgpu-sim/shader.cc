@@ -1486,8 +1486,10 @@ bool ldst_unit::memory_cycle( warp_inst_t &inst, mem_stage_stall_type &stall_rea
         (inst.space.get_type() != local_space) &&
         (inst.space.get_type() != param_space_local)) ) 
        return true;
-   if (inst.space.get_type() == param_space_local)
-	   return true;
+   if (m_core->get_config()->gperfect_param) {
+	   if (inst.space.get_type() == param_space_local)
+		   return true;
+   }
    if( inst.active_count() == 0 ) 
        return true;
    assert( !inst.accessq_empty() );
@@ -1499,9 +1501,12 @@ bool ldst_unit::memory_cycle( warp_inst_t &inst, mem_stage_stall_type &stall_rea
        bypassL1D = true; 
    } else if (inst.space.is_global()) { // global memory access 
        // skip L1 cache if the option is enabled
-       if (m_core->get_config()->gmem_skip_L1D) 
+       if (m_core->get_config()->gmem_skip_L1D && (CACHE_L1 != inst.cache_op))
            bypassL1D = true; 
    }
+   //if (inst.cache_op == CACHE_L1) {
+   //        printf("pc: %d %d\n", inst.pc, bypassL1D);
+   //}
 
    if( bypassL1D ) {
        // bypass L1 cache
@@ -1934,7 +1939,7 @@ void ldst_unit::cycle()
                if ( CACHE_GLOBAL == mf->get_inst().cache_op || (m_L1D == NULL) ) {
                    bypassL1D = true; 
                } else if (mf->get_access_type() == GLOBAL_ACC_R || mf->get_access_type() == GLOBAL_ACC_W) { // global memory access 
-                   if (m_core->get_config()->gmem_skip_L1D)
+                   if (m_core->get_config()->gmem_skip_L1D && (CACHE_L1 != mf->get_inst().cache_op))
                        bypassL1D = true; 
                }
                if( bypassL1D ) {

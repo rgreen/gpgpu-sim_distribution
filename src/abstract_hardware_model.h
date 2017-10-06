@@ -341,6 +341,7 @@ struct core_config {
 
 	unsigned gpgpu_max_insn_issue_per_warp;
 	bool gmem_skip_L1D; // on = global memory access always skip the L1 cache
+	bool gperfect_param; // on = global memory access always skip the L1 cache
 };
 
 // bounded stack that implements simt reconvergence using pdom mechanism from MICRO'07 paper
@@ -663,6 +664,7 @@ enum cache_operator_type {
     CACHE_ALL,          // .ca
     CACHE_LAST_USE,     // .lu
     CACHE_VOLATILE,     // .cv
+    CACHE_L1,     // .nc
                        
     // loads and stores 
     CACHE_STREAMING,    // .cs
