@@ -771,7 +771,7 @@ void simt_stack::get_pdom_stack_top_info( unsigned *pc, unsigned *rpc ) const
 {
    assert(m_stack.size() > 0);
    *pc = m_stack.back().m_pc;
-   *rpc = m_stack.back().m_recvg_pc;
+   *rpc = m_stack.back().m_recvg_ps;
 }
 
 unsigned simt_stack::get_rp() const 
@@ -857,7 +857,6 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
 
 
     address_type not_taken_pc = next_inst_pc+next_inst_size;
-    assert(num_divergent_paths<=2);
     for(unsigned i=0; i<num_divergent_paths; i++){
     	address_type tmp_next_pc = null_pc;
     	simt_mask_t tmp_active_mask;
@@ -876,37 +875,27 @@ void simt_stack::update( simt_mask_t &thread_done, addr_vector_t &next_pc, addre
 
         // HANDLE THE SPECIAL CASES FIRST
     	if (next_inst_op== CALL_OPS){
-    		// Since call is not a divergent instruction, all threads should have executed a call instruction
-
     		simt_stack_entry new_stack_entry;
     		new_stack_entry.m_pc = tmp_next_pc;
     		new_stack_entry.m_active_mask = tmp_active_mask;
     		new_stack_entry.m_branch_div_cycle = gpu_sim_cycle+gpu_tot_sim_cycle;
     		new_stack_entry.m_type = STACK_ENTRY_TYPE_CALL;
     		m_stack.push_back(new_stack_entry);
-		if (num_divergent_paths == 2){
-                    std::map<address_type,simt_mask_t>:: iterator it=divergent_paths.begin();
-                    simt_stack_entry new_stack_entry1;
-                    new_stack_entry1.m_pc = it->first;
-                    m_stack.back().m_recvg_pc = (unsigned)-2;
-                    new_stack_entry1.m_active_mask = divergent_paths[it->first];
-                    new_stack_entry1.m_branch_div_cycle = gpu_sim_cycle+gpu_tot_sim_cycle;
-                    new_stack_entry1.m_type = STACK_ENTRY_TYPE_CALL;
-                    divergent_paths.erase(it->first);
-                    m_stack.push_back(new_stack_entry1);
-
-                }
-    		return;
+            // If this is the last diverged call, then return, otherwise keep populating the stack with call entries
+            if (i+1 == num_divergent_paths)
+                return;
+            else
+                continue;
     	}else if(next_inst_op == RET_OPS && top_type==STACK_ENTRY_TYPE_CALL){
     		// pop the CALL Entry
     		assert(num_divergent_paths == 1);
     		m_stack.pop_back();
 
     		assert(m_stack.size() > 0);
-                if ((m_stack.back().m_type!=STACK_ENTRY_TYPE_CALL)
-				|| (m_stack.back().m_type==STACK_ENTRY_TYPE_CALL && m_stack.back().m_recvg_pc != (unsigned)-2)) {
-                    m_stack.back().m_pc=tmp_next_pc;// set the PC of the stack top entry to return PC from  the call stack;
-                }
+
+            // when we pop a call and there is another call entry, then do not force the PC to the new value
+            if ( m_stack.back().m_type!=STACK_ENTRY_TYPE_CALL )
+                m_stack.back().m_pc=tmp_next_pc;// set the PC of the stack top entry to return PC from  the call stack;
             // Check if the New top of the stack is reconverging
             if (tmp_next_pc == m_stack.back().m_recvg_pc && m_stack.back().m_type!=STACK_ENTRY_TYPE_CALL){
             	assert(m_stack.back().m_type==STACK_ENTRY_TYPE_NORMAL);
