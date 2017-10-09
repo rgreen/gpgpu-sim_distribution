@@ -771,7 +771,7 @@ void simt_stack::get_pdom_stack_top_info( unsigned *pc, unsigned *rpc ) const
 {
    assert(m_stack.size() > 0);
    *pc = m_stack.back().m_pc;
-   *rpc = m_stack.back().m_recvg_ps;
+   *rpc = m_stack.back().m_recvg_pc;
 }
 
 unsigned simt_stack::get_rp() const 
