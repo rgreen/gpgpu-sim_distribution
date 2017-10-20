@@ -49,7 +49,7 @@ whitespace	[ \t]
 newline		[\n]
 notnewline	[^\n]
 newlines	{newline}+
-ident		[[:alnum:]_\.]
+ident		[[:alnum:]_\.\$]
 hexdigit	[[:digit:]abcdef]
 %%
 
@@ -107,7 +107,7 @@ hexdigit	[[:digit:]abcdef]
 	return STHEADER;
 }
 
-<symtab,cmem14>{whitespace}+ {}
+<symtab,cmem14>{whitespace}+ { printf("<symtab,cmem14>{whitespace}+  %s\n", yytext); }
 
 <symtab,cmem14>{newline} {}
 

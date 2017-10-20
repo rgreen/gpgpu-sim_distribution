@@ -1,5 +1,5 @@
 LEX			= flex
-LEXFLAGS	= -B 
+LEXFLAGS	= -B -d
 YACC		= bison
 YFLAGS		= -t -d --report=all --verbose
 CCFLAGS		= -ggdb -fPIC -Wall -Wno-unused-function -Wno-sign-compare 

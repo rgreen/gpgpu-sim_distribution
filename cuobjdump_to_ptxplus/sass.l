@@ -144,6 +144,7 @@ ISETP	yylval.string_value = strdup(yytext); return ISETP;
 LG2	yylval.string_value = strdup(yytext); return LG2;
 LLD	yylval.string_value = strdup(yytext); return LLD;
 LOP\.AND	yylval.string_value = strdup(yytext); return AND;
+LOP32I\.AND	yylval.string_value = strdup(yytext); return AND;
 LOP\.OR	yylval.string_value = strdup(yytext); return OR;
 LOP\.PASS_B	yylval.string_value = strdup(yytext); return NOT;
 LOP\.XOR	yylval.string_value = strdup(yytext); return XOR;
