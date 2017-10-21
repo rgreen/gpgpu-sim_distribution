@@ -345,9 +345,9 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTNODEP		{ /*g_instList->getListEnd().addBaseModifier(".nodep"); */}
 		| DOTANY		{ g_instList->getListEnd().addBaseModifier(".any"); }
 		| DOTALL		{ g_instList->getListEnd().addBaseModifier(".all"); }
-		| DOTALL		{ g_instList->getListEnd().addBaseModifier(".all"); }
 		| DOTGE			{ g_instList->getListEnd().addBaseModifier(".ge"); }
 		| DOTLE			{ g_instList->getListEnd().addBaseModifier(".le"); }
+		| DOTGT			{ g_instList->getListEnd().addBaseModifier(".gt"); }
 		| DOTLT			{ g_instList->getListEnd().addBaseModifier(".lt"); }
 		| DOTEQ			{ g_instList->getListEnd().addBaseModifier(".eq"); }
 		| DOTMRG		{ g_instList->getListEnd().addBaseModifier(".mrg"); }
