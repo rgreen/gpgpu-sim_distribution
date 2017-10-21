@@ -53,7 +53,7 @@ int delay_set = 0;
 %token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET DSET G2R
 %token <string_value> GLD GST I2F I2I IADD IADD32 IADD32I IMAD ISCADD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
-%token <string_value> ISET ISETP LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
+%token <string_value> ISET ISETP LEA LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET RRO RSQ SIN SHL SHR SSY XOR XORS
 %token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX A2R FMAX FMIN TEX TEX32 C2R EXIT
 %token <string_value> GRED PBK BRK R2C GATOM VOTE BFE
@@ -61,7 +61,7 @@ int delay_set = 0;
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
 %token <string_value> DOTTRUNC DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL
-%token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 DOTU64 DOTV128
+%token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 EXTEND DOTU64 DOTV128
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
 %token <string_value> DOTCC DOTX DOTRED DOTPOPC DOTAND DOTMRG DOTPSL DOTCBCC
@@ -220,7 +220,7 @@ simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | 
 					| IADD | IADD32 | IADD32I | IMAD | ISCADD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL | XMAD
 					| IMUL24 | IMUL24H | IMULS24 | IMUL32 | IMUL32S24 | IMUL32I | IMUL32I24 | IMUL32IS24
 					| IMUL32U24
-					| ISET | ISETP | LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
+					| ISET | ISETP | LEA| LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
 					| NOT | NOTS | OR | ORS | R2A | R2G | R2GU16U8 | RCP | RCP32 | RET | RRO 
 					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS 
 					| LDS | SASS_ST | EXIT | BAR | IMIN | IMAX | A2R | FMAX | FMIN 
@@ -367,6 +367,7 @@ opTypes		: DOTF16	//{ debug_print($1); g_instList->getListEnd().addTypeModifier(
 		| DOTU16	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTU32	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTU24	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
+		| EXTEND	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTU64	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTV128	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
 		| DOTHI		//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
