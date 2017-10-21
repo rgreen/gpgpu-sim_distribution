@@ -48,6 +48,7 @@ alpha		[a-zA-Z]
 numeric		[0-9]
 hexalpha	[A-Fa-f]
 alphanum	({alpha}|{numeric})
+regnum		([Z]|{numeric})
 hexdigit	({numeric}|{hexalpha})
 whitespace	[ \t]
 newline		[\n]
@@ -86,6 +87,7 @@ BRA	yylval.string_value = strdup(yytext); return BRA;
 BRA.U	yylval.string_value = strdup(yytext); return BRA;
 BRX	yylval.string_value = strdup(yytext); return BRX;
 CAL	yylval.string_value = strdup(yytext); return CAL;
+JCAL	yylval.string_value = strdup(yytext); return CAL;
 COS	yylval.string_value = strdup(yytext); return COS;
 DADD	yylval.string_value = strdup(yytext); return DADD;
 DMIN	yylval.string_value = strdup(yytext); return DMIN;
@@ -273,7 +275,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 	/*geometries*/
 
 	/*register operands*/
-[\-]?R{numeric}+	yylval.string_value = strdup(yytext); return REGISTER;
+[\-]?R{regnum}+	yylval.string_value = strdup(yytext); return REGISTER;
 [\-]?R{numeric}+L	yylval.string_value = strdup(yytext); return REGISTERLO;
 [\-]?R{numeric}+[\.]?H[1]?    yylval.string_value = strdup(yytext); return REGISTERHI;
 A{numeric}+	yylval.string_value = strdup(yytext); return OFFSETREGISTER;

@@ -49,7 +49,7 @@ int delay_set = 0;
 }
 
 %token <string_value> BAR
-%token <string_value> ADA AND ANDS BRA BRX CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD
+%token <string_value> ADA AND ANDS BRA BRX JCAL CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD
 %token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET DSET G2R
 %token <string_value> GLD GST LDC I2F I2I IADD IADD32 IADD32I IMAD ISCADD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
@@ -322,6 +322,7 @@ branchInstructions	: BRA {debug_print($1); instEntry->setBase($1); g_instList->a
 				  tempLabel[11] = '\0';
 				  g_instList->getListEnd().addOperand(tempLabel);
 				  g_instList->addCubojdumpLabel(tempLabel);}
+			| JCAL {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
 
 			;
 
