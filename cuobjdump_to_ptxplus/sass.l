@@ -107,10 +107,10 @@ FMUL32I	yylval.string_value = strdup(yytext); return FMUL32I;
 FSET	yylval.string_value = strdup(yytext); return FSET;
 DSET	yylval.string_value = strdup(yytext); return DSET;
 G2R	yylval.string_value = strdup(yytext); return G2R;
-GLD	yylval.string_value = strdup(yytext); return GLD;
 LDG	yylval.string_value = strdup(yytext); return GLD;
 GST	yylval.string_value = strdup(yytext); return GST;
 STG	yylval.string_value = strdup(yytext); return GST;
+LDC	yylval.string_value = strdup(yytext); return LDC;
 I2F	yylval.string_value = strdup(yytext); return I2F;
 I2I	yylval.string_value = strdup(yytext); return I2I;
 S2R	yylval.string_value = strdup(yytext); return S2R;
@@ -166,6 +166,7 @@ R2G.U16.U8	yylval.string_value = strdup(yytext); return R2GU16U8;
 RCP	yylval.string_value = strdup(yytext); return RCP;
 RCP32	yylval.string_value = strdup(yytext); return RCP32;
 RET	yylval.string_value = strdup(yytext); return RET;
+PRET	yylval.string_value = strdup(yytext); return PRET;
 RRO	yylval.string_value = strdup(yytext); return RRO;
 RSQ	yylval.string_value = strdup(yytext); return RSQ;
 SIN	yylval.string_value = strdup(yytext); return SIN;
@@ -328,7 +329,7 @@ PT
 [\-]?"global14 [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 
 [\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"["{hexliteral}"]"".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
-[\-]?"c ["{hexliteral}"] [R"{numeric}+\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
+[\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"[R"{numeric}+\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c ["{hexliteral}"] [A"{numeric}+\+{hexliteral}\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c ["{hexliteral}"] [A"{numeric}+\+\+\+{hexliteral}\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 
