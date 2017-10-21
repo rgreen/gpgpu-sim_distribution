@@ -351,6 +351,7 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTGT			{ g_instList->getListEnd().addBaseModifier(".gt"); }
 		| DOTLT			{ g_instList->getListEnd().addBaseModifier(".lt"); }
 		| DOTEQ			{ g_instList->getListEnd().addBaseModifier(".eq"); }
+		| DOTNE			{ g_instList->getListEnd().addBaseModifier(".ne"); }
 		| DOTMRG		{ g_instList->getListEnd().addBaseModifier(".mrg"); }
 		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
 		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }

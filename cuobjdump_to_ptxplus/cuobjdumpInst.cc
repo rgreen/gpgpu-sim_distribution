@@ -326,6 +326,8 @@ void cuobjdumpInst::printCuobjdumpTypeModifiers()
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
 		else if(*typemod == ".U.128")
 			output(".v128"); //TODO: might have to change to .ss64 in the future.
+		else if(*typemod == ".64")
+			output(".64");
 		else if(*typemod == ".HI")
 			output(".hi");
 		else
@@ -413,6 +415,16 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			//".ir" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
+		else if( *basemod == ".eq")
+		{
+			//".eq" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".ne")
+		{
+			//".ne" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
 		else if( *basemod == ".ge")
 		{
 			//".ge" is an unknown base modifier, TODO: find out what it is
@@ -426,6 +438,11 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 		else if( *basemod == ".lt")
 		{
 			//".lt" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".gt")
+		{
+			//".gt" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
 		else if( *basemod == ".and")
@@ -895,6 +912,12 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+	else if(m_base == "JCAL")
+	{
+		printCuobjdumpPredicate();
+		output("jcall");
+		output(";");
+	}
 	else if(m_base == "COS")
 	{
 		printCuobjdumpPredicate();
@@ -1219,6 +1242,16 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		//output("mov");
 		output("ld.global");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpTypeModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "LDC")
+	{
+		printCuobjdumpPredicate();
+		//output("mov");
+		output("ld.const");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
@@ -1738,6 +1771,21 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpBaseModifiers();
 		output(";");
 	}
+	else if(m_base == "PRET")
+	{
+		printCuobjdumpPredicate();
+		output("nop");
+		printCuobjdumpBaseModifiers();
+		output(";");
+	}
+	else if(m_base == "LEA")
+	{
+		printCuobjdumpPredicate();
+		output("lea");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
 	else if(m_base == "LLD")
 	{
 		printCuobjdumpPredicate();
@@ -1754,7 +1802,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "LOP.AND" || m_base == "LOP.S.AND")
+	else if(m_base == "LOP.AND" || m_base == "LOP.S.AND" || m_base == "LOP32I.AND")
 	{
 		printCuobjdumpPredicate();
 		output("and");
@@ -2020,6 +2068,11 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
 		output(";");
+	}
+	else if(m_base == "SYNC")
+	{
+		printCuobjdumpPredicate();
+		output("bar.sync 0x00000000;");
 	}
 	else if(m_base == "LD")
 	{
