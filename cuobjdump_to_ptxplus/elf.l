@@ -59,6 +59,12 @@ hexdigit	[[:digit:]abcdef]
 	return C1BEGIN;
 }
 
+<cmem,cmem14,INITIAL>\.nv\.constant2\.{notnewline}*{newline}	{
+	BEGIN(cmem);
+	yylval.string_value = strdup(yytext);
+	return C1BEGIN;
+}
+
 <cmem,cmem14,INITIAL>\.nv\.local{notnewline}*{newline}	{
 	BEGIN(INITIAL);
 	yylval.string_value = strdup(yytext); 

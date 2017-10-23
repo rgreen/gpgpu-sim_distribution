@@ -553,7 +553,7 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 	}
 
 	// Make it lower case
-	if(mod.substr(0,9)!= "constant1" && mod.substr(0,9) != "varglobal")
+	if(mod.substr(0,9)!= "constant1" && mod.substr(0,9)!= "constant2" && mod.substr(0,9) != "varglobal")
 	for(unsigned i=0; i<mod.length(); i++)
 	{
 		mod[i] = tolower(mod[i]);
@@ -676,6 +676,9 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			//output("[");
 			//localFlag = 1;
 		} else if(mod.substr(0,9) == "constant1") {
+			output(modsub.substr(0, modsub.find_first_of("[]")+1).c_str());
+			const_sharedFlag=1;
+		} else if(mod.substr(0,9) == "constant2") {
 			output(modsub.substr(0, modsub.find_first_of("[]")+1).c_str());
 			const_sharedFlag=1;
 		} else if(mod.substr(0,9)=="constant0"){

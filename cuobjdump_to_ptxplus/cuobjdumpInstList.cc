@@ -284,7 +284,8 @@ void cuobjdumpInstList::printMemory()
 		char line[1024];
 
 		// Global or entry specific
-		sprintf(line, ".const %s constant1%s[%d] = {", i->type, i->kernel, (int)i->m_constMemory.size());
+		// TODO: trick to use constant2 instead of constant1
+		sprintf(line, ".const %s constant2%s[%d] = {", i->type, i->kernel, (int)i->m_constMemory.size());
 
 		output(line);
 
@@ -413,6 +414,11 @@ void cuobjdumpInstList::addCuobjdumpMemoryOperand(std::string mem, int memType) 
 		}
 		else if(mem.substr(0, 6) == "c[0x0]"){
 			mem = "constant0" + mem.substr(6, mem.length());
+		}
+		else if(mem.substr(0, 6) == "c[0x2]"){
+			std::string out;
+			out = "constant2" + m_entryList.back().m_entryName + mem.substr(6);
+			mem = out.c_str();
 		}
 		else if(mem.substr(0, 5) == "c [0x"){
 			std::string out;
