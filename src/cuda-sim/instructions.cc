@@ -1619,6 +1619,11 @@ void call_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    thread->set_npc(target_func);
 }
 
+void jcall_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+	//TODO:need to implement
+}
+
 //Ptxplus version of call instruction. Jumps to a label not a different Kernel.
 void callp_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 {
@@ -2553,6 +2558,11 @@ void lg2_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    }
 
    thread->set_operand_value(dst,d, i_type, thread, pI);
+}
+
+void lea_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+	//TODO:need to implement
 }
 
 void mad24_impl( const ptx_instruction *pI, ptx_thread_info *thread )
