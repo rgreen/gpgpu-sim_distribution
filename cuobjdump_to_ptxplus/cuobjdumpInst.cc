@@ -326,10 +326,10 @@ void cuobjdumpInst::printCuobjdumpTypeModifiers()
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
 		else if(*typemod == ".U.128")
 			output(".v128"); //TODO: might have to change to .ss64 in the future.
-		else if(*typemod == ".E");
-			//output(".e");
-		else if(*typemod == ".64")
+		else if(*typemod == ".E.64" || *typemod == ".64")
 			output(".u64");
+		else if(*typemod == ".E")
+			output(".u32");
 		else if(*typemod == ".HI")
 			output(".hi");
 		else
@@ -1786,7 +1786,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if(m_base == "LEA")
 	{
 		printCuobjdumpPredicate();
-		output("lea");
+		output("lea.u32");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpOperands();
 		output(";");
