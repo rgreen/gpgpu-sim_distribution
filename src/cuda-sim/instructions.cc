@@ -1622,6 +1622,11 @@ void call_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 void jcall_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 {
 	//TODO:need to implement
+	//TODO: only valid at ptxplus mode
+	// Assume jcall is just malloc, vprintf could be tricky.
+	printf("Execution error: jcall not implemented\n");
+	fflush(stdout);
+	assert(0);
 }
 
 //Ptxplus version of call instruction. Jumps to a label not a different Kernel.
@@ -2563,6 +2568,9 @@ void lg2_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 void lea_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 {
 	//TODO:need to implement
+	printf("Execution error: lea not implemented\n");
+	fflush(stdout);
+	assert(0);
 }
 
 void mad24_impl( const ptx_instruction *pI, ptx_thread_info *thread )
