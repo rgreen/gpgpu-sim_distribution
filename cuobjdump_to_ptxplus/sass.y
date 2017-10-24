@@ -204,7 +204,7 @@ assemblyInstruction	: baseInstruction modifierList operandList	{ }
 					/*| baseInstruction				{ }*/
 					;
 
-predIdentifier	: AT NEWPREDREGISTER { debug_print($2); debug_print(" "); instEntry->setPredicate($2); instEntry->addPredicateModifier(".EQ");}
+predIdentifier	: AT NEWPREDREGISTER { debug_print($2); debug_print(" "); instEntry->setPredicate($2); instEntry->addPredicateModifier(".EQU");}
 		| AT EXCLAM NEWPREDREGISTER { debug_print("!"); debug_print($3); debug_print(" "); instEntry->setPredicate($3); instEntry->addPredicateModifier(".NE");}
 
 baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);}
