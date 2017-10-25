@@ -1624,9 +1624,17 @@ void jcall_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 	//TODO:need to implement
 	//TODO: only valid at ptxplus mode
 	// Assume jcall is just malloc, vprintf could be tricky.
-	printf("Execution error: jcall not implemented\n");
-	fflush(stdout);
-	assert(0);
+	const operand_info &dst = pI->dst();
+	const operand_info &src = pI->src1();
+	unsigned type = U32_TYPE;
+
+	ptx_reg_t src_data = thread->get_operand_value(src, src, type, thread, 1);
+	void * buffer = thread->get_gpu()->gpu_malloc((size_t)src_data.u64);
+	ptx_reg_t buffer_addr = static_cast<int>(reinterpret_cast<uintptr_t>(buffer));
+	thread->set_operand_value(dst, buffer_addr, type, thread, pI);
+
+	ptx_reg_t dst_data = thread->get_operand_value(dst, dst, type, thread, 1);
+
 }
 
 //Ptxplus version of call instruction. Jumps to a label not a different Kernel.

@@ -920,7 +920,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if(m_base == "JCAL")
 	{
 		printCuobjdumpPredicate();
-		output("jcall");
+		output("jcall $r4, $r4");
 		output(";");
 	}
 	else if(m_base == "COS")
