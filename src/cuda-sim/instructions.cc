@@ -458,6 +458,9 @@ void ptx_thread_info::set_operand_value( const operand_info &dst, const ptx_reg_
    size_t size;
    int t;
 
+   // special case for RZ
+   if (dst.is_builtin()) return;
+
    type_info_key::type_decode(type,size,t);
 
    /*complete this section for other cases*/
