@@ -2578,10 +2578,39 @@ void lg2_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
 void lea_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 {
-	//TODO:need to implement
-	printf("Execution error: lea not implemented\n");
-	fflush(stdout);
-	assert(0);
+	// Just for 32-bit addressing
+	ptx_reg_t src1_data, src2_data, src3_data, data;
+	int carry = 0;
+	int overflow = 0;
+	const operand_info &dst  = pI->dst();
+	const operand_info &src1 = pI->src1();
+	const operand_info &src2 = pI->src2();
+
+	unsigned i_type = pI->get_type();
+	unsigned num_operands = pI->get_num_operands();
+	switch(num_operands) {
+		case 3: // two src, simply add. TODO: with carry
+			src1_data = thread->get_operand_value(src1, dst, i_type, thread, 1);
+			src2_data = thread->get_operand_value(src2, dst, i_type, thread, 1);
+			data.u64 = (src1_data.u64 & 0xFFFFFFFF) + (src2_data.u64 & 0xFFFFFFFF);
+			carry = (data.u64 & 0x100000000)>>32;
+			break;
+		case 4:
+			src1_data = thread->get_operand_value(src1, dst, i_type, thread, 1);
+			src2_data = thread->get_operand_value(src2, dst, i_type, thread, 1);
+			src3_data = thread->get_operand_value(pI->src3(), dst, i_type, thread, 1);
+			data.u64 = ((src1_data.u64 & 0xFFFFFFFF) << src3_data.u32)  + (src2_data.u64 & 0xFFFFFFFF);
+			carry = (data.u64 & 0x100000000)>>32;
+			break;
+		case 5:
+			//currently do nothing
+			break;
+		default:
+			printf("Execution error: lea with %d not implemented\n", num_operands);
+			fflush(stdout);
+			assert(0);
+	}
+	thread->set_operand_value(dst, data, i_type, thread, pI, overflow, carry  );
 }
 
 void mad24_impl( const ptx_instruction *pI, ptx_thread_info *thread )
