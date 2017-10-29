@@ -116,12 +116,14 @@ c14content	:	c14content c14line
 c14line	:	NUMBER IDENTIFIER IDENTIFIER {
 				g_instList->updateGlobalMemoryID($1, $2);
 			};
-relsection	:	RELBEGIN rellines
+relsection	:	RELBEGIN { g_instList->addKernelName($1); } rellines
 		;
 
 rellines	:	relline
 		|	rellines relline
 		;
 
-relline	:	NUMBER IDENTIFIER IDENTIFIER {};
+relline	:	NUMBER IDENTIFIER IDENTIFIER {
+				g_instList->addRelocateTable($1, $2, $3);
+	};
 %%

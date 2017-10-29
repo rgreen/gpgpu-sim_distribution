@@ -87,8 +87,9 @@ hexdigit	[[:digit:]abcdef]
 	return STBEGIN;
 }
 
-\.section" "\.rel\.text{notnewline}*{newline}	{
+\.section" "\.rel\.text\.{notnewline}*{newline}	{
 	BEGIN(reltext);
+	yylval.string_value = strdup(yytext);
 	return RELBEGIN;
 }
 

@@ -619,6 +619,25 @@ int cuobjdumpInstList::getglobalVarShndx(){
 	return m_globalVarShndx;
 }
 
+void cuobjdumpInstList::addKernelName(const char* name){
+	std::string kernel="xxxxxxxxxxxxxxreltable";
+	char ckernel[512];
+	strcpy(ckernel, kernel.c_str());
+	addEntryConstMemory2(ckernel);
+	setConstMemoryType2(".u32");
+}
+
+static unsigned address = 0xda00010;
+void cuobjdumpInstList::addRelocateTable(const char* index, const char* name, const char* type){
+	if (strcmp(name, "malloc") == 0) {
+		char addr[16];
+		snprintf(addr, 16, "0x%08x", address);
+		addConstMemoryValue2(addr);
+		addConstMemoryValue2("0x00000000");
+		address += 0x100;
+	}
+}
+
 void cuobjdumpInstList::addGlobalMemoryID(const char* bytes, const char* name){
 	globalMemory globalMemID;
 	//globalMemID.offset = atoi(index)/4;
