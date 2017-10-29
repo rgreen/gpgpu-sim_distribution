@@ -44,6 +44,7 @@ void elf_error(const char*);
 %x cmem
 %x symtab
 %x cmem14
+%x reltext
 
 whitespace	[ \t]
 newline		[\n]
@@ -86,6 +87,11 @@ hexdigit	[[:digit:]abcdef]
 	return STBEGIN;
 }
 
+\.section" "\.rel\.text{notnewline}*{newline}	{
+	BEGIN(reltext);
+	return RELBEGIN;
+}
+
 \.section{notnewline}*{newline}	{
 	//These are the lines before the symtab
 }
@@ -107,6 +113,16 @@ hexdigit	[[:digit:]abcdef]
 	//printf("CMEM VAL: %s \n", yytext);
 	yylval.string_value = strdup(yytext); 
 	return CMEMVAL;
+}
+
+<reltext>{hexdigit}+ {
+	yylval.string_value = strdup(yytext);
+	return NUMBER;
+}
+
+<reltext>{ident}+ {
+	yylval.string_value = strdup(yytext);
+	return IDENTIFIER;
 }
 
 <symtab>{whitespace}*[[:alpha:]]+{whitespace}+[[:alpha:]]+{whitespace}+[[:alpha:]]+{whitespace}+[[:alpha:]]+{whitespace}+[[:alpha:]]+{whitespace}+[[:alpha:]]+{whitespace}+[[:alpha:]]+{whitespace}+{newline} {

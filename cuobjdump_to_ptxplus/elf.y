@@ -43,7 +43,7 @@ bool lastcmem = false;// false = constrant0, true = constant1
 %union {
 	char* string_value;
 }
-%token <string_value> C1BEGIN C14BEGIN CMEMVAL SPACE2 C0BEGIN STBEGIN STHEADER
+%token <string_value> C1BEGIN C14BEGIN CMEMVAL SPACE2 C0BEGIN STBEGIN STHEADER RELBEGIN
 %token <string_value> NUMBER HEXNUMBER IDENTIFIER LOCALMEM
 
 %%
@@ -75,6 +75,7 @@ stline	:	NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER IDENTIFIER {
 program	:	program cmemsection
 		|	program localmemsection
 		|	program cmem14section
+		|	program relsection
 		|	{
 				g_instList->setKernelCount(cmemcount-1);
 			};
@@ -115,4 +116,12 @@ c14content	:	c14content c14line
 c14line	:	NUMBER IDENTIFIER IDENTIFIER {
 				g_instList->updateGlobalMemoryID($1, $2);
 			};
+relsection	:	RELBEGIN rellines
+		;
+
+rellines	:	relline
+		|	rellines relline
+		;
+
+relline	:	NUMBER IDENTIFIER IDENTIFIER {};
 %%
