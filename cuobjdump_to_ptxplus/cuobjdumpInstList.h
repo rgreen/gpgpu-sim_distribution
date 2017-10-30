@@ -162,6 +162,7 @@ public:
 	void setLocalMemoryMap(const char* kernelname, int index);
 	void setglobalVarShndx(const char* shndx);
 	int getglobalVarShndx();
+	void handleOffset();
 	void addKernelName(const char* name);
 	void addRelocateTable(const char* index, const char* name, const char* type);
 	void addGlobalMemoryID(const char* bytes, const char* name);

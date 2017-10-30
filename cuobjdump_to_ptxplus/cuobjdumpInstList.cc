@@ -619,6 +619,26 @@ int cuobjdumpInstList::getglobalVarShndx(){
 	return m_globalVarShndx;
 }
 
+void cuobjdumpInstList::handleOffset(){
+	constMemory2 constMem2 = m_constMemoryList2.back();
+	std::list<std::string>::iterator mems = constMem2.m_constMemory.begin();
+	std::list<std::string> offset;
+	unsigned addr = 0x8;
+	mems++;
+	mems++;
+	while (mems != constMem2.m_constMemory.end()) {
+		mems++;
+		mems++;
+		char off[16];
+		snprintf(off, 16, "0x%08x", addr);
+		offset.push_back(std::string(off));
+		addr += 0x08;
+	}
+	addEntryConstMemory2("xxxxxxxxxxxxxxoffsettable");
+	setConstMemoryType2(".u32");
+	m_constMemoryList2.back().m_constMemory = offset;
+}
+
 void cuobjdumpInstList::addKernelName(const char* name){
 	std::string kernel="xxxxxxxxxxxxxxreltable"; // padding for kernel name cut
 	char ckernel[512];

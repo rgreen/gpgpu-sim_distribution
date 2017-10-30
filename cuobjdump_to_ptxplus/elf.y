@@ -116,7 +116,10 @@ c14content	:	c14content c14line
 c14line	:	NUMBER IDENTIFIER IDENTIFIER {
 				g_instList->updateGlobalMemoryID($1, $2);
 			};
-relsection	:	RELBEGIN { g_instList->addKernelName($1); } rellines
+relsection	:	RELBEGIN {
+				g_instList->handleOffset();
+				g_instList->addKernelName($1);
+			} rellines
 		;
 
 rellines	:	relline
