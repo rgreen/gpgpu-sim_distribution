@@ -2990,6 +2990,92 @@ void mov_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    }
 }
 
+// SASS MOV32I implementations
+void movi_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+   const operand_info &src1 = pI->src1();
+   unsigned i_type = pI->get_type();
+   ptx_reg_t data = thread->get_operand_value(src1, src1, i_type, thread, 1);
+   if (data.u32 != 0) {
+      const operand_info &dst  = pI->dst();
+
+      if( (src1.is_vector() || dst.is_vector()) && (i_type != BB64_TYPE) && (i_type != BB128_TYPE) && (i_type != FF64_TYPE) && (i_type != V128_TYPE) ) {
+         // pack or unpack operation
+         unsigned nbits_to_move;
+         ptx_reg_t tmp_bits;
+
+         switch( pI->get_type() ) {
+         case B16_TYPE: nbits_to_move = 16; break;
+         case B32_TYPE: nbits_to_move = 32; break;
+         case B64_TYPE: nbits_to_move = 64; break;
+         default: printf("Execution error: mov pack/unpack with unsupported type qualifier\n"); assert(0); break;
+         }
+
+         if( src1.is_vector() ) {
+            unsigned nelem = src1.get_vect_nelem();
+            ptx_reg_t v[4];
+            thread->get_vector_operand_values(src1, v, nelem );
+
+            unsigned bits_per_src_elem = nbits_to_move / nelem;
+            for( unsigned i=0; i < nelem; i++ ) {
+               switch(bits_per_src_elem) {
+               case 8:   tmp_bits.u64 |= ((unsigned long long)(v[i].u8)  << (8*i));  break;
+               case 16:  tmp_bits.u64 |= ((unsigned long long)(v[i].u16) << (16*i)); break;
+               case 32:  tmp_bits.u64 |= ((unsigned long long)(v[i].u32) << (32*i)); break;
+               default: printf("Execution error: mov pack/unpack with unsupported source/dst size ratio (src)\n"); assert(0); break;
+               }
+            }
+         } else {
+            data = thread->get_operand_value(src1, dst, i_type, thread, 1);
+
+            switch( pI->get_type() ) {
+            case B16_TYPE: tmp_bits.u16 = data.u16; break;
+            case B32_TYPE: tmp_bits.u32 = data.u32; break;
+            case B64_TYPE: tmp_bits.u64 = data.u64; break;
+            default: assert(0); break;
+            }
+         }
+
+         if( dst.is_vector() ) {
+            unsigned nelem = dst.get_vect_nelem();
+            ptx_reg_t v[4];
+            unsigned bits_per_dst_elem = nbits_to_move / nelem;
+            for( unsigned i=0; i < nelem; i++ ) {
+               switch(bits_per_dst_elem) {
+               case 8:  v[i].u8  = (tmp_bits.u64 >> (8*i)) & ((unsigned long long) 0xFF); break;
+               case 16: v[i].u16 = (tmp_bits.u64 >> (16*i)) & ((unsigned long long) 0xFFFF); break;
+               case 32: v[i].u32 = (tmp_bits.u64 >> (32*i)) & ((unsigned long long) 0xFFFFFFFF); break;
+               default:
+                  printf("Execution error: mov pack/unpack with unsupported source/dst size ratio (dst)\n");
+                  assert(0);
+                  break;
+               }
+            }
+            thread->set_vector_operand_values(dst,v[0],v[1],v[2],v[3]);
+         } else {
+            thread->set_operand_value(dst,tmp_bits, i_type, thread, pI);
+         }
+      } else if (i_type == PRED_TYPE and src1.is_literal() == true) {
+         // in ptx, literal input translate to predicate as 0 = false and 1 = true
+         // we have adopted the opposite to simplify implementation of zero flags in ptxplus
+         data = thread->get_operand_value(src1, dst, i_type, thread, 1);
+
+         ptx_reg_t finaldata;
+         finaldata.pred = (data.u32 == 0)? 1 : 0;  // setting zero-flag in predicate
+         thread->set_operand_value(dst, finaldata, i_type, thread, pI);
+      } else {
+
+         data = thread->get_operand_value(src1, dst, i_type, thread, 1);
+
+        thread->set_operand_value(dst, data, i_type, thread, pI);
+
+      }
+   } else {
+      printf("GPGPU-Sim PTX: Execution error - mov32i instruction with 0 not implemented\n");
+      assert(0);
+   }
+}
+
 void mul24_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 {
    ptx_reg_t src1_data, src2_data, data;

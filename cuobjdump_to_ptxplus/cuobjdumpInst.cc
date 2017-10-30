@@ -1756,7 +1756,20 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "MOV32" || m_base == "MOV32I")
+	else if(m_base == "MOV32I")
+	{
+		printCuobjdumpPredicate();
+		output("movi");
+		printCuobjdumpBaseModifiers();
+
+		if(m_typeModifiers->size() == 0)
+			output(int_default_mod()); //TODO: setting default type modifier but I'm not sure if this is right.
+		else
+			printCuobjdumpTypeModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if(m_base == "MOV32" )
 	{
 		printCuobjdumpPredicate();
 		output("mov.half");

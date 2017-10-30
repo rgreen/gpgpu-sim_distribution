@@ -95,6 +95,7 @@ max     TC; ptx_lval.int_value = MAX_OP; return OPCODE;
 membar  TC; ptx_lval.int_value = MEMBAR_OP; return OPCODE;
 min     TC; ptx_lval.int_value = MIN_OP; return OPCODE;
 mov     TC; ptx_lval.int_value = MOV_OP; return OPCODE;
+movi     TC; ptx_lval.int_value = MOVI_OP; return OPCODE;
 mul24   TC; ptx_lval.int_value = MUL24_OP; return OPCODE;
 mul     TC; ptx_lval.int_value = MUL_OP; return OPCODE;
 neg     TC; ptx_lval.int_value = NEG_OP; return OPCODE;
