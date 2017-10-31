@@ -696,6 +696,10 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			modsub = modsub.substr(0, modsub.length()-4);
 			has_h1 = true;
 		}
+		for(unsigned i=0; i<modsub.length(); i++)
+		{
+			modsub[i] = tolower(modsub[i]);
+		}
 		//Here we handle whatever was inside the []
 		int plusequalFlag = 0;
 		if(modsub.find("+++") !=  std::string::npos) {
