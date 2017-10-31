@@ -676,6 +676,11 @@ void ptx_instruction::set_opcode_and_latency()
        op = CALL_OPS;
        break;
    }
+   case BRXP_OP:
+   {
+       op = CALL_OPS;
+       break;
+   }
    case RET_OP: case RETP_OP:  op = RET_OPS;break;
    case ADD_OP: case ADDP_OP: case ADDC_OP: case SUB_OP: case SUBC_OP:
 	   //ADD,SUB latency

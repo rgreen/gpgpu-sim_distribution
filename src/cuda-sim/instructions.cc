@@ -1500,10 +1500,22 @@ void brx_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
 void brxp_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 {
+   static unsigned call_uid_next = 1;
+
    const operand_info &target  = pI->dst();
    ptx_reg_t target_pc = thread->get_operand_value(target, target, U32_TYPE, thread, 1);
 
+   const symbol *return_var_src = NULL;
+   const symbol *return_var_dst = NULL;
+
+   gpgpu_sim *gpu = thread->get_gpu();
+   unsigned callee_pc=0, callee_rpc=0;
+   if( gpu->simd_model() == POST_DOMINATOR ) {
+      thread->get_core()->get_pdom_stack_top_info(thread->get_hw_wid(),&callee_pc,&callee_rpc);
+      assert( callee_pc == thread->get_pc() );
+   }
    target_pc.u64 += thread->get_func_start_PC();
+   thread->callstack_push_plus(callee_pc + pI->inst_size(), callee_rpc, return_var_src, return_var_dst, call_uid_next++);
    thread->m_branch_taken = true;
    thread->set_npc(target_pc);
 }
