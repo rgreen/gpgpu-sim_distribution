@@ -354,6 +354,7 @@ public:
    unsigned get_builtin( int builtin_id, unsigned dim_mod ); 
 
    void set_done();
+   unsigned get_func_start_PC();
    bool is_done() { return m_thread_done;}
    unsigned donecycle() const { return m_cycle_done; }
 

@@ -901,7 +901,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if(m_base == "BRX")
 	{
 		printCuobjdumpPredicate();
-		output("brx");
+		output("brxp");
 		printCuobjdumpBaseModifiers();
 
 		if(m_typeModifiers->size() == 0)

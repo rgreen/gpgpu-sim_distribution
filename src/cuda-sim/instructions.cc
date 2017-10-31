@@ -1498,6 +1498,16 @@ void brx_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    thread->set_npc(target_pc);
 }
 
+void brxp_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+   const operand_info &target  = pI->dst();
+   ptx_reg_t target_pc = thread->get_operand_value(target, target, U32_TYPE, thread, 1);
+
+   target_pc.u64 += thread->get_func_start_PC();
+   thread->m_branch_taken = true;
+   thread->set_npc(target_pc);
+}
+
 void break_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 {
    const operand_info &target  = thread->pop_breakaddr();

@@ -66,6 +66,7 @@ bfi     TC; ptx_lval.int_value = BFI_OP; return OPCODE;
 bfind   TC; ptx_lval.int_value = BFIND_OP; return OPCODE;
 bra     TC; ptx_lval.int_value = BRA_OP; return OPCODE;
 brx     TC; ptx_lval.int_value = BRX_OP; return OPCODE;
+brxp     TC; ptx_lval.int_value = BRXP_OP; return OPCODE;
 brev    TC; ptx_lval.int_value = BREV_OP; return OPCODE;
 brkpt   TC; ptx_lval.int_value = BRKPT_OP; return OPCODE;
 call	TC; BEGIN(NOT_OPCODE); ptx_lval.int_value = CALL_OP; return OPCODE; // blocking opcode token in case the callee has the same name as an opcode

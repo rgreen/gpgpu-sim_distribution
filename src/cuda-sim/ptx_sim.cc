@@ -208,6 +208,11 @@ void ptx_thread_info::set_done()
    m_cycle_done = gpu_sim_cycle; 
 }
 
+unsigned ptx_thread_info::get_func_start_PC()
+{
+   return m_func_info->get_start_PC();
+}
+
 unsigned ptx_thread_info::get_builtin( int builtin_id, unsigned dim_mod ) 
 {
    assert( m_valid );
