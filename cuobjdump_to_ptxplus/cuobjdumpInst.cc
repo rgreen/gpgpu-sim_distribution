@@ -1259,8 +1259,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if (m_base == "LDC")
 	{
 		printCuobjdumpPredicate();
-		//output("mov");
-		output("ld.const");
+		output("mov");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
