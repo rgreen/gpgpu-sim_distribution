@@ -2514,33 +2514,43 @@ void ld_exec( const ptx_instruction *pI, ptx_thread_info *thread )
    memory_space *mem = NULL;
    addr_t addr = src1_data.u32;
 
-   decode_space(space,thread,src1,mem,addr);
-
-   size_t size;
-   int t;
-   data.u64=0;
-   type_info_key::type_decode(type,size,t);
-   if (!vector_spec) {
-      mem->read(addr,size/8,&data.s64);
-      if( type == S16_TYPE || type == S32_TYPE ) 
-         sign_extend(data,size,dst);
-      thread->set_operand_value(dst,data, type, thread, pI);
+   if ((addr & 0xfffff000) == 0x0da00000) {
+      ptx_reg_t finalResult, address;
+      symbol * sym = thread->getSymbol("constant2offsettable");
+      unsigned bias = (addr & 0x00000f00) >> 6;
+      address = sym->get_address() + bias;
+      memory_space *mem = thread->get_global_memory();
+      mem->read(address, 4, &finalResult.u128);
+      thread->set_operand_value(dst, finalResult.u32, type, thread, pI);
    } else {
-      ptx_reg_t data1, data2, data3, data4;
-      mem->read(addr,size/8,&data1.s64);
-      mem->read(addr+size/8,size/8,&data2.s64);
-      if (vector_spec != V2_TYPE) { //either V3 or V4
-         mem->read(addr+2*size/8,size/8,&data3.s64);
-         if (vector_spec != V3_TYPE) { //v4
-            mem->read(addr+3*size/8,size/8,&data4.s64);
-            thread->set_vector_operand_values(dst,data1,data2,data3,data4);
-         } else //v3
-            thread->set_vector_operand_values(dst,data1,data2,data3,data3);
-      } else //v2
-         thread->set_vector_operand_values(dst,data1,data2,data2,data2);
+      decode_space(space,thread,src1,mem,addr);
+
+      size_t size;
+      int t;
+      data.u64=0;
+      type_info_key::type_decode(type,size,t);
+      if (!vector_spec) {
+         mem->read(addr,size/8,&data.s64);
+         if( type == S16_TYPE || type == S32_TYPE )
+            sign_extend(data,size,dst);
+         thread->set_operand_value(dst,data, type, thread, pI);
+      } else {
+         ptx_reg_t data1, data2, data3, data4;
+         mem->read(addr,size/8,&data1.s64);
+         mem->read(addr+size/8,size/8,&data2.s64);
+         if (vector_spec != V2_TYPE) { //either V3 or V4
+            mem->read(addr+2*size/8,size/8,&data3.s64);
+            if (vector_spec != V3_TYPE) { //v4
+               mem->read(addr+3*size/8,size/8,&data4.s64);
+               thread->set_vector_operand_values(dst,data1,data2,data3,data4);
+            } else //v3
+               thread->set_vector_operand_values(dst,data1,data2,data3,data3);
+         } else //v2
+            thread->set_vector_operand_values(dst,data1,data2,data2,data2);
+      }
+      thread->m_last_effective_address = addr;
+      thread->m_last_memory_space = space;
    }
-   thread->m_last_effective_address = addr;
-   thread->m_last_memory_space = space; 
 }
 
 void ld_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
