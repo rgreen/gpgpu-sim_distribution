@@ -2991,13 +2991,14 @@ void mov_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 }
 
 // SASS MOV32I implementations
+static unsigned offset = 0;
 void movi_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 {
+   const operand_info &dst  = pI->dst();
    const operand_info &src1 = pI->src1();
    unsigned i_type = pI->get_type();
    ptx_reg_t data = thread->get_operand_value(src1, src1, i_type, thread, 1);
    if (data.u32 != 0) {
-      const operand_info &dst  = pI->dst();
 
       if( (src1.is_vector() || dst.is_vector()) && (i_type != BB64_TYPE) && (i_type != BB128_TYPE) && (i_type != FF64_TYPE) && (i_type != V128_TYPE) ) {
          // pack or unpack operation
@@ -3071,8 +3072,14 @@ void movi_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
       }
    } else {
-      printf("GPGPU-Sim PTX: Execution error - mov32i instruction with 0 not implemented\n");
-      assert(0);
+      ptx_reg_t finalResult, addr;
+      finalResult.u64=0;
+      symbol * sym = thread->getSymbol("constant2reltable");
+      addr.u32 = sym->get_address() + offset;
+      offset += 0x4;
+      memory_space *mem = thread->get_global_memory();
+      mem->read(addr, 4, &finalResult.u128);
+      thread->set_operand_value(dst, finalResult.u32, i_type, thread, pI);
    }
 }
 

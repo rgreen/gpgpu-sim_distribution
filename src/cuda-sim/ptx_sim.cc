@@ -306,6 +306,12 @@ void ptx_thread_info::set_info( function_info *func )
   m_PC = func->get_start_PC();
 }
 
+symbol *ptx_thread_info::getSymbol(const char* ident)
+{
+   symbol *sym = m_symbol_table->lookup(ident);
+   return sym;
+}
+
 void ptx_thread_info::cpy_tid_to_reg( dim3 tid )
 {
    //copies %tid.x, %tid.y and %tid.z into $r0

@@ -345,6 +345,7 @@ public:
       m_valid = true;
    }
    void set_tid( dim3 tid ) { m_tid = tid; }
+   symbol * getSymbol(const char* ident);
    void cpy_tid_to_reg( dim3 tid );
    void set_ctaid( dim3 ctaid ) { m_ctaid = ctaid; }
    void set_ntid( dim3 tid ) { m_ntid = tid; }
