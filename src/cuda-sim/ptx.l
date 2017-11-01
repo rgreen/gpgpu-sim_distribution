@@ -344,6 +344,8 @@ breakaddr  TC; ptx_lval.int_value = BREAKADDR_OP; return OPCODE;
 \.bfly	TC; return BFLY_OPTION;
 \.idx	TC; return IDX_OPTION;
 
+\.chi	TC; return CHI_OPTION;
+\.clo	TC; return CLO_OPTION;
 \.mrg	TC; return MRG_OPTION;
 \.psl	TC; return PSL_OPTION;
 \.cbcc	TC; return CBCC_OPTION;

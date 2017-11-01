@@ -2703,28 +2703,48 @@ void xmad_def( const ptx_instruction *pI, ptx_thread_info *thread )
    const operand_info &src1 = pI->src1();
    const operand_info &src2 = pI->src2();
    const operand_info &src3 = pI->src3();
-   ptx_reg_t d, t;
+   ptx_reg_t d, t, t1, t2, t3;
 
    unsigned i_type = pI->get_type();
    ptx_reg_t a = thread->get_operand_value(src1, dst, i_type, thread, 1);
    ptx_reg_t b = thread->get_operand_value(src2, dst, i_type, thread, 1);
    ptx_reg_t c = thread->get_operand_value(src3, dst, i_type, thread, 1);
 
+   if(src1.get_operand_lohi() == 2) {
+	t1.u32 = a.u32>>16;
+   } else {
+	t1.u32 = a.u16;
+   }
+   if(src2.get_operand_lohi() == 2) {
+	t2.u32 = b.u32>>16;
+   } else {
+	t2.u32 = b.u16;
+   }
+   if(pI->is_chi()) {
+	t3.u32 = c.u32>>16;
+   } else if (pI->is_clo()){
+	t3.u32 = c.u16;
+   } else {
+	t3.u32 = c.u32;
+   }
+
    switch ( i_type ) {
    case U16_TYPE:
        if (pI->is_mrg()) {
-	   assert(src2.get_operand_lohi() == 2);
-	   t.u32 = a.u16 * (b.u32>>16);
-	   d.u64 = t.u32 + c.u16;
-	   d.u64 = (d.u64 & 0x0000ffff) | (b.u32<<16);
-       } else if (pI->is_cbcc()) {
+	   t.u32 = t1.u16 * t2.u16;
+	   d.u64 = t.u32 + t3.u16;
+	   d.u64 = d.u16 + (b.u32<<16);
+       } else if (pI->is_cbcc() && pI->is_psl()) {
 	   assert((src1.get_operand_lohi() == 2) && (src2.get_operand_lohi() == 2));
 	   t.u32 = (a.u32>>16) * (b.u32>>16);
 	   t.u32 = (t.u32<<16) + (b.u16<<16);
 	   d.u32 = t.u32 + c.u16;
+       } else if (pI->is_psl()) { // Only PSL
+	   t.u32 = t1.u16 * t2.u16;
+	   d.u32 = (t.u32 << 16) + t3.u32;
        } else {
-	   t.u32 = a.u16 * b.u16;
-	   d.u64 = t.u32 + c.u16;
+	   t.u32 = t1.u16 * t2.u16;
+	   d.u64 = t.u32 + t3.u32;
        }
        break;
    default:

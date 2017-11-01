@@ -452,6 +452,16 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			//".and" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
+		else if( *basemod == ".chi")
+		{
+			//".chi" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if( *basemod == ".clo")
+		{
+			//".clo" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
 		else if( *basemod == ".mrg")
 		{
 			//".mrg" is an unknown base modifier, TODO: find out what it is

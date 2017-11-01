@@ -121,6 +121,7 @@ STS	yylval.string_value = strdup(yytext); return STS;
 LD	yylval.string_value = strdup(yytext); return SASS_LD;
 ST	yylval.string_value = strdup(yytext); return SASS_ST;
 IADD	yylval.string_value = strdup(yytext); return IADD;
+IADD3	yylval.string_value = strdup(yytext); return IADD3;
 IADD\.CARRY{numeric}	yylval.string_value = strdup(yytext); return IADDCARRY;
 IADD32	yylval.string_value = strdup(yytext); return IADD32;
 IADD32I	yylval.string_value = strdup(yytext); return IADD32I;
@@ -247,6 +248,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
 \.AND
+\.RS	yylval.string_value = strdup(yytext); return DOTRS;
 \.CHI	yylval.string_value = strdup(yytext); return DOTCHI;
 \.CLO	yylval.string_value = strdup(yytext); return DOTCLO;
 \.MRG	yylval.string_value = strdup(yytext); return DOTMRG;

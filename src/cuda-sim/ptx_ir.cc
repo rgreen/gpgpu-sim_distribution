@@ -1200,6 +1200,12 @@ ptx_instruction::ptx_instruction( int opcode,
       case ABS_OPTION:
          m_abs = true;
          break;
+      case CHI_OPTION:
+         m_chi = true;
+         break;
+      case CLO_OPTION:
+         m_clo = true;
+         break;
       case MRG_OPTION:
          m_mrg = true;
          break;
