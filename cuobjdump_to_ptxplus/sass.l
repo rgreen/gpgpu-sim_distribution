@@ -247,6 +247,8 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
 \.AND
+\.CHI	yylval.string_value = strdup(yytext); return DOTCHI;
+\.CLO	yylval.string_value = strdup(yytext); return DOTCLO;
 \.MRG	yylval.string_value = strdup(yytext); return DOTMRG;
 \.PSL	yylval.string_value = strdup(yytext); return DOTPSL;
 \.CBCC	yylval.string_value = strdup(yytext); return DOTCBCC;

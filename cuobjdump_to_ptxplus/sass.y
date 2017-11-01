@@ -64,7 +64,7 @@ int delay_set = 0;
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 EXTEND EXTEND64 DOT64 DOTU64 DOTV128
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
-%token <string_value> DOTCC DOTX DOTRED DOTPOPC DOTAND DOTMRG DOTPSL DOTCBCC
+%token <string_value> DOTCC DOTX DOTRED DOTPOPC DOTAND DOTCHI DOTCLO DOTMRG DOTPSL DOTCBCC
 %token <string_value> REGISTER REGISTERLO REGISTERHI OFFSETREGISTER
 %token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
@@ -352,6 +352,8 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTLT			{ g_instList->getListEnd().addBaseModifier(".lt"); }
 		| DOTEQ			{ g_instList->getListEnd().addBaseModifier(".eq"); }
 		| DOTNE			{ g_instList->getListEnd().addBaseModifier(".ne"); }
+		| DOTCHI		{ g_instList->getListEnd().addBaseModifier(".chi"); }
+		| DOTCLO		{ g_instList->getListEnd().addBaseModifier(".clo"); }
 		| DOTMRG		{ g_instList->getListEnd().addBaseModifier(".mrg"); }
 		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
 		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }
