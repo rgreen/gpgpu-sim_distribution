@@ -998,6 +998,7 @@ public:
    bool is_abs() const { return m_abs;}
    bool is_neg() const { return m_neg;}
    bool is_to() const { return m_to_option; }
+   bool is_rs() const { return m_rs;}
    bool is_chi() const { return m_chi;}
    bool is_clo() const { return m_clo;}
    bool is_mrg() const { return m_mrg;}
@@ -1066,6 +1067,7 @@ private:
    bool                m_lo;
    bool                m_exit;
    bool                m_abs;
+   bool                m_rs;
    bool                m_chi;
    bool                m_clo;
    bool                m_mrg;

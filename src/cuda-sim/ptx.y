@@ -200,6 +200,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token	DOWN_OPTION;
 %token	BFLY_OPTION;
 %token	IDX_OPTION;
+%token	RS_OPTION;
 %token	CHI_OPTION;
 %token	CLO_OPTION;
 %token	MRG_OPTION;
@@ -468,6 +469,7 @@ option: type_spec
 	| FULL_OPTION { add_option(FULL_OPTION); }
 	| EXIT_OPTION { add_option(EXIT_OPTION); }
 	| ABS_OPTION { add_option(ABS_OPTION); }
+	| RS_OPTION { add_option(RS_OPTION); }
 	| CHI_OPTION { add_option(CHI_OPTION); }
 	| CLO_OPTION { add_option(CLO_OPTION); }
 	| MRG_OPTION { add_option(MRG_OPTION); }

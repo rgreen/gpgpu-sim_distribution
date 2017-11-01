@@ -452,6 +452,11 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			//".and" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
+		else if( *basemod == ".rs")
+		{
+			//".rs" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
 		else if( *basemod == ".chi")
 		{
 			//".chi" is an unknown base modifier, TODO: find out what it is
@@ -1363,6 +1368,20 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("add");
+		printCuobjdumpBaseModifiers();
+
+		if(m_typeModifiers->size() == 0)
+			output(int_default_mod()); //TODO: setting default type modifier but I'm not sure if this is right.
+		else
+			printCuobjdumpTypeModifiers();
+
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if(m_base == "IADD3")
+	{
+		printCuobjdumpPredicate();
+		output("iadd3");
 		printCuobjdumpBaseModifiers();
 
 		if(m_typeModifiers->size() == 0)

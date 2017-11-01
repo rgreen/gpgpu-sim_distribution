@@ -881,6 +881,25 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
 void addc_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 
+void iadd3_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+   ptx_reg_t src1_data, src2_data, src3_data, data;
+   const operand_info &dst  = pI->dst();  //get operand info of sources and destination
+   const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
+   const operand_info &src2 = pI->src2();
+   const operand_info &src3 = pI->src3();
+
+   unsigned i_type = pI->get_type();
+   src1_data = thread->get_operand_value(src1, dst, i_type, thread, 1);
+   src2_data = thread->get_operand_value(src2, dst, i_type, thread, 1);
+   src3_data = thread->get_operand_value(src3, dst, i_type, thread, 1);
+   if (pI->is_rs()) {
+	   data.u32 = (src1_data.u32 + src2_data.u32) >> 16 + src3_data.u32;
+   } else {
+	   data.u32 = src1_data.u32 + src2_data.u32 + src3_data.u32;
+   }
+}
+
 void and_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 { 
    ptx_reg_t src1_data, src2_data, data;
