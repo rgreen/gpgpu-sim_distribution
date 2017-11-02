@@ -116,6 +116,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token  LO_OPTION
 %token  LS_OPTION
 %token  HI_OPTION
+%token  H1_OPTION
 %token  HS_OPTION
 %token  EQU_OPTION
 %token  NEU_OPTION
@@ -200,6 +201,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token	DOWN_OPTION;
 %token	BFLY_OPTION;
 %token	IDX_OPTION;
+%token	RS_OPTION;
+%token	CHI_OPTION;
+%token	CLO_OPTION;
 %token	MRG_OPTION;
 %token	PSL_OPTION;
 %token	CBCC_OPTION;
@@ -466,6 +470,9 @@ option: type_spec
 	| FULL_OPTION { add_option(FULL_OPTION); }
 	| EXIT_OPTION { add_option(EXIT_OPTION); }
 	| ABS_OPTION { add_option(ABS_OPTION); }
+	| RS_OPTION { add_option(RS_OPTION); }
+	| CHI_OPTION { add_option(CHI_OPTION); }
+	| CLO_OPTION { add_option(CLO_OPTION); }
 	| MRG_OPTION { add_option(MRG_OPTION); }
 	| PSL_OPTION { add_option(PSL_OPTION); }
 	| CBCC_OPTION { add_option(CBCC_OPTION); }
@@ -544,6 +551,7 @@ operand: IDENTIFIER  { add_scalar_operand( $1 ); }
 	| MINUS IDENTIFIER  { add_scalar_operand( $2 ); change_operand_neg(); }
 	| memory_operand
 	| memory_operand HI_OPTION { change_operand_lohi(2);}
+	| memory_operand H1_OPTION { change_operand_h1(1);}
 	| literal_operand
 	| builtin_operand
 	| vector_operand
@@ -553,6 +561,7 @@ operand: IDENTIFIER  { add_scalar_operand( $1 ); }
 	| IDENTIFIER LO_OPTION { add_scalar_operand( $1 ); change_operand_lohi(1);}
 	| MINUS IDENTIFIER LO_OPTION { add_scalar_operand( $2 ); change_operand_lohi(1); change_operand_neg();}
 	| IDENTIFIER HI_OPTION { add_scalar_operand( $1 ); change_operand_lohi(2);}
+	| IDENTIFIER H1_OPTION { add_scalar_operand( $1 ); change_operand_h1(1);}
 	| MINUS IDENTIFIER HI_OPTION { add_scalar_operand( $2 ); change_operand_lohi(2); change_operand_neg();}
 	| IDENTIFIER PIPE IDENTIFIER { add_2vector_operand($1,$3); change_double_operand_type(-1);}
 	| IDENTIFIER PIPE IDENTIFIER LO_OPTION { add_2vector_operand($1,$3); change_double_operand_type(-1); change_operand_lohi(1);}
@@ -576,6 +585,7 @@ tex_operand: LEFT_SQUARE_BRACKET IDENTIFIER COMMA { add_scalar_operand($2); }
 builtin_operand: SPECIAL_REGISTER DIMENSION_MODIFIER { add_builtin_operand($1,$2); }
         | SPECIAL_REGISTER { add_builtin_operand($1,-1); }
         | SPECIAL_REGISTER DIMENSION_MODIFIER HI_OPTION { add_builtin_operand($1,$2); change_operand_lohi(2); }
+        | SPECIAL_REGISTER DIMENSION_MODIFIER H1_OPTION { add_builtin_operand($1,$2); change_operand_h1(1); }
 	;
 
 memory_operand : LEFT_SQUARE_BRACKET address_expression RIGHT_SQUARE_BRACKET { add_memory_operand(); }
@@ -603,6 +613,7 @@ literal_operand : INT_OPERAND { add_literal_int($1); }
 address_expression: IDENTIFIER { add_address_operand($1,0); }
 	| IDENTIFIER LO_OPTION { add_address_operand($1,0); change_operand_lohi(1);}
 	| IDENTIFIER HI_OPTION { add_address_operand($1,0); change_operand_lohi(2); }
+	| IDENTIFIER H1_OPTION { add_address_operand($1,0); change_operand_lohi(1); }
 	| IDENTIFIER PLUS INT_OPERAND { add_address_operand($1,$3); }
 	| INT_OPERAND { add_address_operand2($1); }
 	;

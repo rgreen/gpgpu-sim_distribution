@@ -56,6 +56,7 @@ int ptx_error( const char *s );
 abs	TC; ptx_lval.int_value = ABS_OP; return OPCODE;
 add	TC; ptx_lval.int_value = ADD_OP; return OPCODE;
 addp	TC; ptx_lval.int_value = ADDP_OP; return OPCODE;
+iadd3	TC; ptx_lval.int_value = IADD3_OP; return OPCODE;
 addc    TC; ptx_lval.int_value = ADDC_OP; return OPCODE;
 and	TC; ptx_lval.int_value = AND_OP; return OPCODE;
 andn	TC; ptx_lval.int_value = ANDN_OP; return OPCODE;
@@ -286,7 +287,7 @@ iscadd	TC; ptx_lval.int_value = ISCADD_OP; return OPCODE;
 \.lo    TC; return LO_OPTION;
 \.ls    TC; return LS_OPTION;
 \.hi    TC; return HI_OPTION;
-\.h1    TC; return HI_OPTION;
+\.h1    TC; return H1_OPTION;
 \.hs    TC; return HS_OPTION;
 
 
@@ -344,6 +345,9 @@ iscadd	TC; ptx_lval.int_value = ISCADD_OP; return OPCODE;
 \.bfly	TC; return BFLY_OPTION;
 \.idx	TC; return IDX_OPTION;
 
+\.rs	TC; return RS_OPTION;
+\.chi	TC; return CHI_OPTION;
+\.clo	TC; return CLO_OPTION;
 \.mrg	TC; return MRG_OPTION;
 \.psl	TC; return PSL_OPTION;
 \.cbcc	TC; return CBCC_OPTION;

@@ -787,6 +787,19 @@ void change_operand_lohi( int lohi )
 
 }
 
+void change_operand_h1( int h1 )
+{
+   /*0 = N/A, read entire operand
+    *1 = h1, need to operate on high bits
+    */
+
+   PTX_PARSE_DPRINTF("change_operand_h1");
+   assert( !g_operands.empty() );
+
+   g_operands.back().set_operand_h1(h1);
+
+}
+
 void set_immediate_operand_type ()
 {
      PTX_PARSE_DPRINTF("set_immediate_operand_type");

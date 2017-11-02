@@ -881,6 +881,28 @@ void add_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
 void addc_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 
+void iadd3_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+   ptx_reg_t src1_data, src2_data, src3_data, data;
+   int overflow = 0;
+   int carry = 0;
+   const operand_info &dst  = pI->dst();  //get operand info of sources and destination
+   const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
+   const operand_info &src2 = pI->src2();
+   const operand_info &src3 = pI->src3();
+
+   unsigned i_type = pI->get_type();
+   src1_data = thread->get_operand_value(src1, dst, i_type, thread, 1);
+   src2_data = thread->get_operand_value(src2, dst, i_type, thread, 1);
+   src3_data = thread->get_operand_value(src3, dst, i_type, thread, 1);
+   if (pI->is_rs()) {
+	   data.u32 = (src1_data.u32 + src2_data.u32) >> 16 + src3_data.u32;
+   } else {
+	   data.u32 = src1_data.u32 + src2_data.u32 + src3_data.u32;
+   }
+   thread->set_operand_value(dst, data, i_type, thread, pI, overflow, carry  );
+}
+
 void and_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 { 
    ptx_reg_t src1_data, src2_data, data;
@@ -2703,28 +2725,47 @@ void xmad_def( const ptx_instruction *pI, ptx_thread_info *thread )
    const operand_info &src1 = pI->src1();
    const operand_info &src2 = pI->src2();
    const operand_info &src3 = pI->src3();
-   ptx_reg_t d, t;
+   ptx_reg_t d, t, t1, t2, t3;
 
    unsigned i_type = pI->get_type();
    ptx_reg_t a = thread->get_operand_value(src1, dst, i_type, thread, 1);
    ptx_reg_t b = thread->get_operand_value(src2, dst, i_type, thread, 1);
    ptx_reg_t c = thread->get_operand_value(src3, dst, i_type, thread, 1);
 
+   if(src1.get_operand_h1() == 1) {
+	t1.u32 = a.u32>>16;
+   } else {
+	t1.u32 = a.u16;
+   }
+   if(src2.get_operand_h1() == 1) {
+	t2.u32 = b.u32>>16;
+   } else {
+	t2.u32 = b.u16;
+   }
+   if(pI->is_chi()) {
+	t3.u32 = c.u32>>16;
+   } else if (pI->is_clo()){
+	t3.u32 = c.u16;
+   } else {
+	t3.u32 = c.u32;
+   }
+
    switch ( i_type ) {
    case U16_TYPE:
        if (pI->is_mrg()) {
-	   assert(src2.get_operand_lohi() == 2);
-	   t.u32 = a.u16 * (b.u32>>16);
-	   d.u64 = t.u32 + c.u16;
-	   d.u64 = (d.u64 & 0x0000ffff) | (b.u32<<16);
-       } else if (pI->is_cbcc()) {
-	   assert((src1.get_operand_lohi() == 2) && (src2.get_operand_lohi() == 2));
+	   t.u32 = t1.u16 * t2.u16;
+	   d.u64 = t.u32 + t3.u16;
+	   d.u64 = d.u16 + (b.u32<<16);
+       } else if (pI->is_cbcc() && pI->is_psl()) {
 	   t.u32 = (a.u32>>16) * (b.u32>>16);
 	   t.u32 = (t.u32<<16) + (b.u16<<16);
 	   d.u32 = t.u32 + c.u16;
+       } else if (pI->is_psl()) { // Only PSL
+	   t.u32 = t1.u16 * t2.u16;
+	   d.u32 = (t.u32 << 16) + t3.u32;
        } else {
-	   t.u32 = a.u16 * b.u16;
-	   d.u64 = t.u32 + c.u16;
+	   t.u32 = t1.u16 * t2.u16;
+	   d.u64 = t.u32 + t3.u32;
        }
        break;
    default:
