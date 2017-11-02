@@ -884,6 +884,8 @@ void addc_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_
 void iadd3_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 {
    ptx_reg_t src1_data, src2_data, src3_data, data;
+   int overflow = 0;
+   int carry = 0;
    const operand_info &dst  = pI->dst();  //get operand info of sources and destination
    const operand_info &src1 = pI->src1(); //use them to determine that they are of type 'register'
    const operand_info &src2 = pI->src2();
@@ -898,6 +900,7 @@ void iadd3_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    } else {
 	   data.u32 = src1_data.u32 + src2_data.u32 + src3_data.u32;
    }
+   thread->set_operand_value(dst, data, i_type, thread, pI, overflow, carry  );
 }
 
 void and_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
@@ -2729,12 +2732,12 @@ void xmad_def( const ptx_instruction *pI, ptx_thread_info *thread )
    ptx_reg_t b = thread->get_operand_value(src2, dst, i_type, thread, 1);
    ptx_reg_t c = thread->get_operand_value(src3, dst, i_type, thread, 1);
 
-   if(src1.get_operand_lohi() == 2) {
+   if(src1.get_operand_h1() == 1) {
 	t1.u32 = a.u32>>16;
    } else {
 	t1.u32 = a.u16;
    }
-   if(src2.get_operand_lohi() == 2) {
+   if(src2.get_operand_h1() == 1) {
 	t2.u32 = b.u32>>16;
    } else {
 	t2.u32 = b.u16;
@@ -2754,7 +2757,6 @@ void xmad_def( const ptx_instruction *pI, ptx_thread_info *thread )
 	   d.u64 = t.u32 + t3.u16;
 	   d.u64 = d.u16 + (b.u32<<16);
        } else if (pI->is_cbcc() && pI->is_psl()) {
-	   assert((src1.get_operand_lohi() == 2) && (src2.get_operand_lohi() == 2));
 	   t.u32 = (a.u32>>16) * (b.u32>>16);
 	   t.u32 = (t.u32<<16) + (b.u16<<16);
 	   d.u32 = t.u32 + c.u16;

@@ -367,6 +367,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -382,6 +383,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -423,6 +425,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -446,6 +449,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -465,6 +469,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -484,6 +489,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -503,6 +509,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -522,6 +529,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -541,6 +549,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -560,6 +569,7 @@ public:
       m_is_non_arch_reg = false;
       m_addr_space = undefined_space;
       m_operand_lohi = 0;
+      m_operand_h1 = 0;
       m_double_operand_type = 0;
       m_operand_neg = false;
       m_const_mem_offset = 0;
@@ -586,6 +596,7 @@ public:
        m_immediate_address=false;
        m_addr_space=undefined_space;
        m_operand_lohi=0;
+       m_operand_h1 = 0;
        m_double_operand_type=0;
        m_operand_neg=false;
        m_const_mem_offset=(unsigned)-1;
@@ -762,7 +773,9 @@ public:
    void set_addr_space(enum _memory_space_t set_value) { m_addr_space = set_value; }
    enum _memory_space_t get_addr_space() const { return m_addr_space; }
    void set_operand_lohi(int set_value) { m_operand_lohi = set_value; }
+   void set_operand_h1(int set_value) { m_operand_h1 = set_value; }
    int get_operand_lohi() const { return m_operand_lohi; }
+   int get_operand_h1() const { return m_operand_h1; }
    void set_double_operand_type(int set_value) {  m_double_operand_type = set_value; }
    int get_double_operand_type() const { return  m_double_operand_type; }
    void set_operand_neg() { m_operand_neg = true; }
@@ -779,6 +792,7 @@ private:
    bool m_immediate_address;
    enum _memory_space_t m_addr_space;
    int m_operand_lohi;
+   int m_operand_h1;
    int m_double_operand_type;
    bool m_operand_neg;
    addr_t m_const_mem_offset;

@@ -89,6 +89,7 @@ void target_header3(char* a, char* b, char* c);
 void add_double_operand( const char *d1, const char *d2 );
 void change_memory_addr_space( const char *identifier );
 void change_operand_lohi( int lohi );
+void change_operand_h1( int h1 );
 void change_double_operand_type( int addr_type );
 void change_operand_neg( );
 void set_immediate_operand_type( );

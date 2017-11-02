@@ -92,6 +92,7 @@ void add_neg_pred_operand( const char *a ) {PTX_PARSE_DPRINTF(" ");}
 void add_address_operand( const char *a, int b ) {PTX_PARSE_DPRINTF("%s", a);}
 void add_address_operand2( int b ) {PTX_PARSE_DPRINTF(" ");}
 void change_operand_lohi( int a ) {PTX_PARSE_DPRINTF(" ");}
+void change_operand_h1( int a ) {PTX_PARSE_DPRINTF(" ");}
 void change_double_operand_type( int a ) {PTX_PARSE_DPRINTF(" ");}
 void change_operand_neg( ) {PTX_PARSE_DPRINTF(" ");}
 void add_double_operand( const char *a, const char *b ) {PTX_PARSE_DPRINTF(" ");}

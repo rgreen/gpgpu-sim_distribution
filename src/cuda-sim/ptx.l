@@ -287,7 +287,7 @@ breakaddr  TC; ptx_lval.int_value = BREAKADDR_OP; return OPCODE;
 \.lo    TC; return LO_OPTION;
 \.ls    TC; return LS_OPTION;
 \.hi    TC; return HI_OPTION;
-\.h1    TC; return HI_OPTION;
+\.h1    TC; return H1_OPTION;
 \.hs    TC; return HS_OPTION;
 
 
