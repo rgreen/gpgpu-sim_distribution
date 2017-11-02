@@ -4213,6 +4213,7 @@ void sub_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    const operand_info &src1 = pI->src1();
    const operand_info &src2 = pI->src2();
 
+
    unsigned i_type = pI->get_type();
    ptx_reg_t src1_data = thread->get_operand_value(src1, dst, i_type, thread, 1);
    ptx_reg_t src2_data = thread->get_operand_value(src2, dst, i_type, thread, 1);
@@ -4751,6 +4752,26 @@ void xor_impl( const ptx_instruction *pI, ptx_thread_info *thread )
       data.u64 = src1_data.u64 ^ src2_data.u64;
 
    thread->set_operand_value(dst,data, i_type, thread, pI);
+}
+// Add ISCADD implementation
+void iscadd_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
+{ 
+   ptx_reg_t src1_data, src2_data, src3_data, data;
+   
+   const operand_info &dst = pI->dst();
+   const operand_info &src1 = pI->src1();
+   const operand_info &src2 = pI->src2();
+   const operand_info &src3 = pI->src3();
+   
+   unsigned i_type = pI->get_type();
+
+   src1_data = thread->get_operand_value(src1,dst,i_type,thread,1);
+   src2_data = thread->get_operand_value(src2,dst,i_type,thread,1);
+   src3_data = thread->get_operand_value(src3,dst,i_type,thread,1);
+
+   data.u32 = ( src1_data.u32 * src3_data.u32 ) + src2_data.u32 ;
+
+   thread->set_operand_value(dst, data, i_type, thread, pI);
 }
 
 void inst_not_implemented( const ptx_instruction * pI ) 
