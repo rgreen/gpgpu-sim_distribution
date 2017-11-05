@@ -324,7 +324,7 @@ void cuobjdumpInst::printCuobjdumpTypeModifiers()
 			output(".u32");
 		else if(*typemod == ".U64")
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
-		else if(*typemod == ".U.128")
+		else if(*typemod == ".U.128" || *typemod == ".128")
 			output(".v128"); //TODO: might have to change to .ss64 in the future.
 		else if(*typemod == ".E.64" || *typemod == ".64")
 			output(".u64");
