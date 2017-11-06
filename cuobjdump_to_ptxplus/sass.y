@@ -70,7 +70,7 @@ int delay_set = 0;
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
 %token <string_value> SMEMLOCATION ABSSMEMLOCATION GMEMLOCATION CMEMLOCATION LMEMLOCATION
 %token <string_value> IDENTIFIER
-%token <string_value> HEXLITERAL
+%token <string_value> HEXLITERAL FLOAT NEGFLOAT
 %token <string_value> LEFTBRACKET RIGHTBRACKET AT QUOTE FLAGHEADER
 %token <string_value> PIPE TILDE EXCLAM
 %token <string_value> NEWLINE SEMICOLON /*COMMA*/
@@ -436,6 +436,19 @@ memorylocation	: SMEMLOCATION	{ debug_print($1); g_instList->addCuobjdumpMemoryO
 
 immediateValue	: IDENTIFIER { debug_print($1); g_instList->getListEnd().addOperand($1);}
 		| HEXLITERAL { debug_print($1); g_instList->getListEnd().addOperand($1);}
+		| FLOAT { debug_print($1); g_instList->getListEnd().addOperand($1);}
+		| NEGFLOAT { debug_print($1);
+				char* tempInput = $1;
+				char* nopInput = new char[64];
+				nopInput[0] = '-';
+				int i = 0;
+				while(tempInput[i]!= 'N') {
+					nopInput[i+1] = tempInput[i];
+					i++;
+				}
+				nopInput[i] = '\0';
+				debug_print(nopInput);
+				g_instList->getListEnd().addOperand(nopInput);}
 		;
 
 extraModifier	: EQ	{ debug_print($1); g_instList->getListEnd().addBaseModifier($1);} 

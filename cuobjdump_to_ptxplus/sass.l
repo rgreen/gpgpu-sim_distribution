@@ -353,6 +353,8 @@ PT
 	
 {identifier}	yylval.string_value = strdup(yytext); return IDENTIFIER;
 [\-]?{hexliteral}	yylval.string_value = strdup(yytext); return HEXLITERAL; //change to int later?
+[\-]?{fltliteral}	yylval.string_value = strdup(yytext); return FLOAT; //change to int later?
+[\-]?{fltliteral}.NEG	yylval.string_value = strdup(yytext); return NEGFLOAT; //change to int later?
 
 	/*label ends*/
 "/*"	yylval.string_value = strdup(yytext); return LABELSTART;
