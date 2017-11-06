@@ -1423,6 +1423,43 @@ void bar_impl( const ptx_instruction *pIin, ptx_thread_info *thread )
    thread->m_last_dram_callback.instruction = pIin;
 }
 
+void bfep_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+	unsigned i_type = pI->get_type();
+
+	
+	const operand_info &dst = pI->dst();
+	const operand_info &src1 = pI->src1();
+	const operand_info &src2 = pI->src2();
+
+	ptx_reg_t a = thread->get_operand_value(src1, dst, i_type, thread, 1);
+	ptx_reg_t b = thread->get_operand_value(src2, dst, i_type, thread, 1);
+
+	unsigned position, size;
+	position = b.u32 & 0xFF;
+	size = (b.u32 >> 8) & 0xFF;
+
+	unsigned temp;
+	temp = a.u32;
+	if (size == 0)
+		temp = 0;
+	else if (position + size < 32)
+	{
+		temp = temp << (32 - (position + size ));
+
+		temp = temp >> (32 - size);
+	}
+	else
+	{
+		if (position > 32)
+			position = 32;
+		
+		temp = temp >> size;
+	}
+	
+	thread->set_operand_value(dst, temp, i_type, thread, pI);
+}
+
 void bfe_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 {
 	unsigned i_type = pI->get_type();
@@ -1496,6 +1533,7 @@ void bfe_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 		abort();
 		return;
 	}
+
     thread->set_operand_value(dst,d, i_type, thread, pI);
 }
 

@@ -195,6 +195,7 @@ PBK	yylval.string_value = strdup(yytext); return PBK;
 BRK	yylval.string_value = strdup(yytext); return BRK;
 VOTE	yylval.string_value = strdup(yytext); return VOTE;
 BFE	yylval.string_value = strdup(yytext); return BFE;
+DEPBAR	yylval.string_value = strdup(yytext); return NOP;
 
 	/*instruction modifiers*/
 EQ	yylval.string_value = strdup(yytext); return EQ;
@@ -271,6 +272,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.U24	yylval.string_value = strdup(yytext); return DOTU24;
 \.U64	yylval.string_value = strdup(yytext); return DOTU64;
 \.E\.64	yylval.string_value = strdup(yytext); return EXTEND64;
+\.E\.U8	yylval.string_value = strdup(yytext); return EXTEND8;
 \.E	yylval.string_value = strdup(yytext); return EXTEND;
 \.64	yylval.string_value = strdup(yytext); return DOT64;
 \.HI	yylval.string_value = strdup(yytext); return DOTHI;
