@@ -165,6 +165,7 @@ MOV32	yylval.string_value = strdup(yytext); return MOV32;
 MOV32I	yylval.string_value = strdup(yytext); return MOV32;
 MVC	yylval.string_value = strdup(yytext); return MVC;
 MVI	yylval.string_value = strdup(yytext); return MVI;
+MUFU\.RSQ	yylval.string_value = strdup(yytext); return RSQ;
 NOP	yylval.string_value = strdup(yytext); return NOP;
 R2A	yylval.string_value = strdup(yytext); return R2A;
 R2G	yylval.string_value = strdup(yytext); return R2G;
@@ -335,6 +336,7 @@ PT
 
 [\-]?"[R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"[R"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
+[\-]?"[R"{numeric}+\+\-{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
