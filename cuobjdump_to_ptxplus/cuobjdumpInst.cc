@@ -219,6 +219,16 @@ void cuobjdumpInst::addOperand(const char* addOp)
 	m_operands->push_back(addOp);
 }
 
+void cuobjdumpInst::changeOperand(const char* addOp)
+{
+	for (	std::list<std::string>::iterator operand = m_operands->begin();
+			operand != m_operands->end(); operand++) {
+		if((*operand).compare("NUM") == 0 || (*operand).compare("NEGNUM") == 0) {
+			*operand = addOp;
+		}
+	}
+}
+
 void cuobjdumpInst::setPredicate(const char* setPredicateValue)
 {
 	m_predicate->push_back(setPredicateValue);

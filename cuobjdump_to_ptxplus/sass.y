@@ -37,6 +37,8 @@ extern cuobjdumpInstList *g_instList;
 
 cuobjdumpInst *instEntry;
 int delay_set = 0;
+int hex_set = 0;
+int neg_set = 0;
 %}
 
 
@@ -50,7 +52,7 @@ int delay_set = 0;
 
 %token <string_value> BAR
 %token <string_value> ADA AND ANDS BRA BRX JCAL CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD
-%token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET DSET G2R
+%token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET FSETP DSET G2R
 %token <string_value> GLD GST LDC I2F I2I IADD IADD3 IADD32 IADD32I IMAD ISCADD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
 %token <string_value> ISET ISETP LEA LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
@@ -149,8 +151,33 @@ statementend	: instructionHex assemblyInstruction
 		| /*blank*/ {instEntry->setBase("NOP"); g_instList->add(instEntry); debug_print("NOP");}
 		;
 
-instructionHex	: INSTHEX
-				;
+instructionHex	: INSTHEX {if (hex_set == 1) {
+					hex_set = 0;
+					char* tempInput = $1;
+					char* hex = new char[11];
+					hex[10] = '\0';
+					hex[9] = '0';
+					hex[8] = '0';
+					hex[7] = '0';
+					hex[6] = tempInput[15];
+					hex[5] = tempInput[14];
+					hex[4] = tempInput[13];
+					hex[3] = tempInput[12];
+					if (tempInput[11]>='a') {
+						hex[2] = tempInput[11]-'a'+2+'0';
+					} else if (tempInput[11]>='8'){
+						hex[2] = tempInput[11]-'8'+'0';
+					} else {
+						hex[2] = tempInput[11];
+					}
+					hex[2] = neg_set == 1?(hex[2]-'0'+'a'-2):hex[2];
+					hex[1] = 'x';
+					hex[0] = '0';
+					debug_print(hex);
+					g_instList->getListEnd().changeOperand(hex);
+				}
+				neg_set = 0;
+		};
 
 instructionLabel	: LABELSTART LABEL LABELEND	{ char* tempInput = $2;
 							  if (delay_set) {
@@ -216,7 +243,7 @@ baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); 
 
 simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | FFMA | DMUL | EX2 | F2F
 					| F2I | FADD | FADD32 | FADD32I | FMAD | FMAD32I | FMUL 
-					| FMUL32 | FMUL32I | FSET | DSET | G2R | GLD | GST | LDC | I2F | I2I 
+					| FMUL32 | FMUL32I | FSET | FSETP | DSET | G2R | GLD | GST | LDC | I2F | I2I
 					| IADD | IADD32 | IADD32I | IADD3 | IMAD | ISCADD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL | XMAD
 					| IMUL24 | IMUL24H | IMULS24 | IMUL32 | IMUL32S24 | IMUL32I | IMUL32I24 | IMUL32IS24
 					| IMUL32U24
@@ -436,19 +463,8 @@ memorylocation	: SMEMLOCATION	{ debug_print($1); g_instList->addCuobjdumpMemoryO
 
 immediateValue	: IDENTIFIER { debug_print($1); g_instList->getListEnd().addOperand($1);}
 		| HEXLITERAL { debug_print($1); g_instList->getListEnd().addOperand($1);}
-		| FLOAT { debug_print($1); g_instList->getListEnd().addOperand($1);}
-		| NEGFLOAT { debug_print($1);
-				char* tempInput = $1;
-				char* nopInput = new char[64];
-				nopInput[0] = '-';
-				int i = 0;
-				while(tempInput[i]!= 'N') {
-					nopInput[i+1] = tempInput[i];
-					i++;
-				}
-				nopInput[i] = '\0';
-				debug_print(nopInput);
-				g_instList->getListEnd().addOperand(nopInput);}
+		| FLOAT { debug_print($1); g_instList->getListEnd().addOperand("NUM"); hex_set = 1;}
+		| NEGFLOAT { debug_print($1); g_instList->getListEnd().addOperand("NEGNUM"); hex_set = 1; neg_set = 1;}
 		;
 
 extraModifier	: EQ	{ debug_print($1); g_instList->getListEnd().addBaseModifier($1);} 

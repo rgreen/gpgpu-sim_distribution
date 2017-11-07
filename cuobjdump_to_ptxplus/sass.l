@@ -53,7 +53,6 @@ hexdigit	({numeric}|{hexalpha})
 whitespace	[ \t]
 newline		[\n]
 anycharbutnewline [^\n]
-anychar		({newline}|{anycharbutnewline})
 pipe		\|
 
 identifier	({alpha}({alphanum}|["_$"])*)|([_$%]({alphanum}|["_$"])+)
@@ -62,6 +61,7 @@ octliteral	0[0-7]+U?
 binliteral	0[bB][01]+U?
 decliteral	([1-9][0-9]*U?)|0U?
 fltliteral	[0-9]+\.[0-9]+
+numliteral	(([\-]?{fltliteral}(e[\-]?{numeric}*)?)|[1-9]+[0-9]*)
 
 %%
 	/*Translation rules*/
@@ -108,6 +108,7 @@ FMUL	yylval.string_value = strdup(yytext); return FMUL;
 FMUL32	yylval.string_value = strdup(yytext); return FMUL32;
 FMUL32I	yylval.string_value = strdup(yytext); return FMUL32I;
 FSET	yylval.string_value = strdup(yytext); return FSET;
+FSETP	yylval.string_value = strdup(yytext); return FSETP;
 DSET	yylval.string_value = strdup(yytext); return DSET;
 G2R	yylval.string_value = strdup(yytext); return G2R;
 LDG	yylval.string_value = strdup(yytext); return GLD;
@@ -353,8 +354,8 @@ PT
 	
 {identifier}	yylval.string_value = strdup(yytext); return IDENTIFIER;
 [\-]?{hexliteral}	yylval.string_value = strdup(yytext); return HEXLITERAL; //change to int later?
-[\-]?{fltliteral}	yylval.string_value = strdup(yytext); return FLOAT; //change to int later?
-[\-]?{fltliteral}.NEG	yylval.string_value = strdup(yytext); return NEGFLOAT; //change to int later?
+{numliteral}	yylval.string_value = strdup(yytext); return FLOAT; //change to int later?
+{numliteral}.NEG	yylval.string_value = strdup(yytext); return NEGFLOAT; //change to int later?
 
 	/*label ends*/
 "/*"	yylval.string_value = strdup(yytext); return LABELSTART;

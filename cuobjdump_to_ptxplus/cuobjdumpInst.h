@@ -67,6 +67,7 @@ public:
 	void addBaseModifier(const char* addBaseMod);
 	void addTypeModifier(const char* addTypeMod);
 	void addOperand(const char* addOp);
+	void changeOperand(const char* addOp);
 
 	bool checkCubojdumpLabel(std::list<std::string> labelList, std::string label);
 
