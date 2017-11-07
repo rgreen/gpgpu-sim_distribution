@@ -199,6 +199,7 @@ DEPBAR	yylval.string_value = strdup(yytext); return DEPBAR;
 SHF	yylval.string_value = strdup(yytext); return SHF;
 FSETP	yylval.string_value = strdup(yytext); return FSETP;
 PSETP	yylval.string_value = strdup(yytext); return PSETP;
+VABSDIFF\.ACC yylval.string_value = strdup(yytext); return VABSDIFF;
 
 	/*instruction modifiers*/
 EQ	yylval.string_value = strdup(yytext); return EQ;

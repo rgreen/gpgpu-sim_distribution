@@ -1312,6 +1312,16 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+	else if (m_base == "VABSDIFF.ACC")
+	{
+		printCuobjdumpPredicate();
+		output("vabsdiff.acc");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpTypeModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	
+	}
 	else if(m_base == "GST")
 	{
 		printCuobjdumpPredicate();
