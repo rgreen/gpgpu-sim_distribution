@@ -52,7 +52,7 @@ int neg_set = 0;
 
 %token <string_value> BAR DEPBAR
 %token <string_value> ADA AND ANDS BRA BRX JCAL CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD
-%token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET FSETP DSET G2R
+%token <string_value> FADD32 FADD32I FCMP FMAD FMAD32I FMUL FMUL32 FMUL32I FSET FSETP DSET G2R
 %token <string_value> GLD GST LDC I2F I2I IADD IADD3 IADD32 IADD32I IMAD ISCADD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
 %token <string_value> ISET ISETP LEA LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
@@ -64,8 +64,8 @@ int neg_set = 0;
 %token <string_value> DOTTRUNC DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL DOTL 
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 EXTEND EXTEND8 EXTEND64 DOT64 DOT128 DOTU64 DOTV128
 %token <string_value> DOTHI DOTNOINC
-%token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
-%token <string_value> DOTCC DOTX DOTRED DOTPOPC DOTAND DOTCHI DOTCLO DOTRS DOTMRG DOTPSL DOTCBCC
+%token <string_value> DOTEQ DOTEQU DOTFTZ DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
+%token <string_value> CC DOTCC DOTX DOTRED DOTPOPC DOTAND DOTCHI DOTCLO DOTRS DOTMRG DOTPSL DOTCBCC
 %token <string_value> REGISTER REGISTERLO REGISTERHI OFFSETREGISTER
 %token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER PSETP
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
@@ -242,7 +242,7 @@ baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); 
 		;
 
 simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | FFMA | DMUL | EX2 | F2F
-					| F2I | FADD | FADD32 | FADD32I | FMAD | FMAD32I | FMUL 
+					| F2I | FADD | FADD32 | FADD32I | FCMP | FMAD | FMAD32I | FMUL
 					| FMUL32 | FMUL32I | FSET | FSETP | DSET | G2R | GLD | GST | LDC | I2F | I2I
 					| IADD | IADD32 | IADD32I | IADD3 | IMAD | ISCADD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL | XMAD
 					| IMUL24 | IMUL24H | IMULS24 | IMUL32 | IMUL32S24 | IMUL32I | IMUL32I24 | IMUL32IS24
@@ -295,6 +295,24 @@ branchInstructions	: BRA {debug_print($1); instEntry->setBase($1); g_instList->a
 				  g_instList->getListEnd().addOperand(tempLabel);
 				  g_instList->addCubojdumpLabel(tempLabel);}
 			| BRA {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
+				{ debug_print($3);
+				  char* tempInput = $3;
+				  char* tempLabel = new char[12];
+				  tempLabel[0] = 'l';
+				  tempLabel[1] = '0';
+				  tempLabel[2] = 'x';
+				  for(int i=0; i<(10-strlen(tempInput)); i++)
+				  {
+					tempLabel[3+i] = '0';
+				  }
+				  for(int i=(13-strlen(tempInput)); i<11; i++)
+				  {
+					tempLabel[i] = tempInput[i-(11-strlen(tempInput))];
+				  }
+				  tempLabel[11] = '\0';
+				  g_instList->getListEnd().addOperand(tempLabel);
+				  g_instList->addCubojdumpLabel(tempLabel);}
+			| BRA CC DOTNEU {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
 				{ debug_print($3);
 				  char* tempInput = $3;
 				  char* tempLabel = new char[12];
@@ -365,6 +383,7 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTTRUNC		{ g_instList->getListEnd().addBaseModifier(".rz"); }
 		| DOTCEIL		{ g_instList->getListEnd().addBaseModifier(".rp"); }
 		| DOTFLOOR		{ g_instList->getListEnd().addBaseModifier(".rm"); }
+		| DOTFTZ		{ g_instList->getListEnd().addBaseModifier(".ftz"); }
 		| DOTX			{ g_instList->getListEnd().addBaseModifier(".x"); }
 		| DOTRED		{ g_instList->getListEnd().addBaseModifier(".red"); }
 		| DOTPOPC		{ g_instList->getListEnd().addBaseModifier(".popc"); }

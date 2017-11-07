@@ -102,6 +102,7 @@ F2I	yylval.string_value = strdup(yytext); return F2I;
 FADD	yylval.string_value = strdup(yytext); return FADD;
 FADD32	yylval.string_value = strdup(yytext); return FADD32;
 FADD32I	yylval.string_value = strdup(yytext); return FADD32I;
+FCMP	yylval.string_value = strdup(yytext); return FCMP;
 FMAD	yylval.string_value = strdup(yytext); return FMAD;
 FMAD32I	yylval.string_value = strdup(yytext); return FMAD32I;
 FMUL	yylval.string_value = strdup(yytext); return FMUL;
@@ -239,6 +240,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.EQ	yylval.string_value = strdup(yytext); return DOTEQ;
 \.EQU	yylval.string_value = strdup(yytext); return DOTEQU;
 \.FALSE	yylval.string_value = strdup(yytext); return DOTFALSE;
+\.FTZ	yylval.string_value = strdup(yytext); return DOTFTZ;
 \.GE	yylval.string_value = strdup(yytext); return DOTGE;
 \.GEU	yylval.string_value = strdup(yytext); return DOTGEU;
 \.GT	yylval.string_value = strdup(yytext); return DOTGT;
@@ -265,6 +267,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.PSL	yylval.string_value = strdup(yytext); return DOTPSL;
 \.CBCC	yylval.string_value = strdup(yytext); return DOTCBCC;
 \.reuse	yylval.string_value = strdup(yytext); /* ignore reuse identifier */
+CC	yylval.string_value = strdup(yytext); return CC;
 
 	/*operand types*/
 \.F16	yylval.string_value = strdup(yytext); return DOTF16;
