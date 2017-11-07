@@ -225,7 +225,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.ANY	yylval.string_value = strdup(yytext); return DOTANY;
 \.ALL	yylval.string_value = strdup(yytext); return DOTALL;
 \.MAD	yylval.string_value = strdup(yytext); /*unknown*/
-
+\.RP	yylval.string_value = strdup(yytext); return DOTCEIL;
 
 
 	/* comparison operators */

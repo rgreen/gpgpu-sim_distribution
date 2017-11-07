@@ -1469,7 +1469,19 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+	else if(m_base == "BFE")
+	{
+		printCuobjdumpBaseModifiers();
+		output("bfe");
+		printCuobjdumpBaseModifiers();
 
+		if(m_typeModifiers->size()==0)
+			output(".u32");
+		else
+			printCuobjdumpTypeModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
 	else if(m_base == "ISCADD")
 	{
 		printCuobjdumpPredicate();
