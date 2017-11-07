@@ -57,10 +57,10 @@ int neg_set = 0;
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
 %token <string_value> ISET ISETP LEA LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET PRET RRO RSQ SIN SHL SHR SSY XOR XORS
-%token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX IMNMX A2R FMAX FMIN TEX TEX32 C2R EXIT
+%token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX IMNMX A2R FMAX FMIN TEX TEX32 C2R EXIT VABSDIFF
+%token <string_value> GRED PBK BRK R2C GATOM VOTE BFE SHF
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
-%token <string_value> GRED PBK BRK R2C GATOM VOTE BFE SHF
 %token <string_value> DOTTRUNC DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL DOTL 
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 EXTEND EXTEND8 EXTEND64 DOT64 DOT128 DOTU64 DOTV128
 %token <string_value> DOTHI DOTNOINC
@@ -85,6 +85,7 @@ int neg_set = 0;
 %token <string_value> INFOIDENTIFIER DOT
 %token <string_value> INSTHEX
 %token <string_value> OSQBRACKET CSQBRACKET
+
 	/* set types for rules */
 %type<string_value> simpleInstructions
 %type<string_value> predicateModifier
@@ -250,7 +251,7 @@ simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | 
 					| NOT | NOTS | OR | ORS | R2A | R2G | R2GU16U8 | RCP | RCP32 | RET | PRET | RRO 
 					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS 
 					| LDS | SASS_ST | EXIT | BAR | DEPBAR | IMIN | IMAX | IMNMX |  A2R | FMAX | FMIN 
-					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | FSETP | PSETP
+					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | FSETP | PSETP | VABSDIFF
 					;
 
 pbkInstruction	:	PBK {
