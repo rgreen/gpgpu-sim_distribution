@@ -166,6 +166,7 @@ MOV32I	yylval.string_value = strdup(yytext); return MOV32;
 MVC	yylval.string_value = strdup(yytext); return MVC;
 MVI	yylval.string_value = strdup(yytext); return MVI;
 MUFU\.RSQ	yylval.string_value = strdup(yytext); return RSQ;
+MUFU\.EXT	yylval.string_value = strdup(yytext); return EX2;
 NOP	yylval.string_value = strdup(yytext); return NOP;
 R2A	yylval.string_value = strdup(yytext); return R2A;
 R2G	yylval.string_value = strdup(yytext); return R2G;
