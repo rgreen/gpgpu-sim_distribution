@@ -50,7 +50,7 @@ int neg_set = 0;
   void * ptr_value;
 }
 
-%token <string_value> BAR
+%token <string_value> BAR DEPBAR
 %token <string_value> ADA AND ANDS BRA BRX JCAL CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD
 %token <string_value> FADD32 FADD32I FMAD FMAD32I FMUL FMUL32 FMUL32I FSET FSETP DSET G2R
 %token <string_value> GLD GST LDC I2F I2I IADD IADD3 IADD32 IADD32I IMAD ISCADD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
@@ -63,16 +63,19 @@ int neg_set = 0;
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
 %token <string_value> DOTTRUNC DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL
-<<<<<<< HEAD
+%token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX A2R FMAX FMIN TEX TEX32 C2R EXIT
+%token <string_value> GRED PBK BRK R2C GATOM VOTE BFE SHF
+
+%token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
+%token <string_value> DOTBEXT DOTS DOTSFU
+%token <string_value> DOTTRUNC DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL DOTL 
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 EXTEND EXTEND8 EXTEND64 DOT64 DOTU64 DOTV128
-=======
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 EXTEND EXTEND64 DOT64 DOT128 DOTU64 DOTV128
->>>>>>> 18d6c5c12b4da3a67f01b895bcb4bda99397c1ce
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
 %token <string_value> DOTCC DOTX DOTRED DOTPOPC DOTAND DOTCHI DOTCLO DOTRS DOTMRG DOTPSL DOTCBCC
 %token <string_value> REGISTER REGISTERLO REGISTERHI OFFSETREGISTER
-%token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER
+%token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER FSETP PSETP
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
 %token <string_value> SMEMLOCATION ABSSMEMLOCATION GMEMLOCATION CMEMLOCATION LMEMLOCATION
 %token <string_value> IDENTIFIER
@@ -256,6 +259,9 @@ simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | 
 					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS 
 					| LDS | SASS_ST | EXIT | BAR | IMIN | IMAX | IMNMX | A2R | FMAX | FMIN 
 					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE
+					
+					| LDS | SASS_ST | EXIT | BAR | DEPBAR | IMIN | IMAX | A2R | FMAX | FMIN 
+					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | FSETP | PSETP
 					;
 
 pbkInstruction	:	PBK {
@@ -389,6 +395,8 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTMRG		{ g_instList->getListEnd().addBaseModifier(".mrg"); }
 		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
 		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }
+		| DOTL			{ g_instList->getListEnd().addBaseModifier(".l"); }
+		
 		;
 
 opTypes		: DOTF16	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}

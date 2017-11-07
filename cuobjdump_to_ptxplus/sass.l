@@ -199,7 +199,10 @@ PBK	yylval.string_value = strdup(yytext); return PBK;
 BRK	yylval.string_value = strdup(yytext); return BRK;
 VOTE	yylval.string_value = strdup(yytext); return VOTE;
 BFE	yylval.string_value = strdup(yytext); return BFE;
-DEPBAR	yylval.string_value = strdup(yytext); return NOP;
+DEPBAR	yylval.string_value = strdup(yytext); return DEPBAR;
+SHF	yylval.string_value = strdup(yytext); return SHF;
+FSETP	yylval.string_value = strdup(yytext); return FSETP;
+PSETP	yylval.string_value = strdup(yytext); return PSETP;
 
 	/*instruction modifiers*/
 EQ	yylval.string_value = strdup(yytext); return EQ;
@@ -228,7 +231,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.ALL	yylval.string_value = strdup(yytext); return DOTALL;
 \.MAD	yylval.string_value = strdup(yytext); /*unknown*/
 \.RP	yylval.string_value = strdup(yytext); return DOTCEIL;
-
+\.L	yylval.string_value = strdup(yytext); return DOTL;
 
 	/* comparison operators */
 \.EQ	yylval.string_value = strdup(yytext); return DOTEQ;
@@ -398,8 +401,9 @@ PT
 "-----"[\-]+
 "....."[\.]+
 
-
+{numeric}+ yylval.string_value = strdup(yytext);
 	/*reached end of file*/
+
 <<EOF>>	return 0;
 
 	/*None of the rules matched. Throw error*/

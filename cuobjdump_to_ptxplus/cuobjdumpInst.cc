@@ -1171,6 +1171,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+
 	else if(m_base == "FSET")
 	{
 		printCuobjdumpPredicate();
@@ -1184,6 +1185,37 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		else
 			printCuobjdumpTypeModifiers();
 
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if(m_base == "FSETP")
+	{
+		printCuobjdumpPredicate();
+		output("fsetp");
+		printCuobjdumpBaseModifiers();
+
+		if(m_typeModifiers->size() == 0)
+		{
+			output(".f32.f32");
+		}
+		else
+			printCuobjdumpTypeModifiers();
+
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "PSETP")
+	{
+		printCuobjdumpPredicate();
+		output("psetp");
+		printCuobjdumpBaseModifiers();
+
+		if(m_typeModifiers->size() == 0)
+		{
+			output(".u32");
+		}
+		else
+			printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -1469,9 +1501,25 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+
+	else if(m_base == "SHF")
+	{
+		printCuobjdumpPredicate();
+		output("shf");
+		printCuobjdumpBaseModifiers();
+
+		if(m_typeModifiers->size()==0)
+			output(".u32");
+		else
+			printCuobjdumpTypeModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
 	else if(m_base == "BFE")
 	{
-		printCuobjdumpBaseModifiers();
+
+		
+		printCuobjdumpPredicate();
 		output("bfep");
 		printCuobjdumpBaseModifiers();
 
@@ -1484,6 +1532,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	}
 	else if(m_base == "ISCADD")
 	{
+
 		printCuobjdumpPredicate();
 		output("iscadd");
 		printCuobjdumpBaseModifiers();
@@ -2168,6 +2217,11 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("bar.sync 0;");
+	}
+	else if(m_base == "DEPBAR")
+	{
+		printCuobjdumpPredicate();
+		output("nop;");
 	}
 	else if(m_base == "LDS")
 	{
