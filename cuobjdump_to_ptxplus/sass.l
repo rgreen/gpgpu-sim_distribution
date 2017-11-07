@@ -53,7 +53,6 @@ hexdigit	({numeric}|{hexalpha})
 whitespace	[ \t]
 newline		[\n]
 anycharbutnewline [^\n]
-anychar		({newline}|{anycharbutnewline})
 pipe		\|
 
 identifier	({alpha}({alphanum}|["_$"])*)|([_$%]({alphanum}|["_$"])+)
@@ -62,6 +61,7 @@ octliteral	0[0-7]+U?
 binliteral	0[bB][01]+U?
 decliteral	([1-9][0-9]*U?)|0U?
 fltliteral	[0-9]+\.[0-9]+
+numliteral	(([\-]?{fltliteral}(e[\-]?{numeric}*)?)|[1-9]+[0-9]*)
 
 %%
 	/*Translation rules*/
@@ -108,6 +108,7 @@ FMUL	yylval.string_value = strdup(yytext); return FMUL;
 FMUL32	yylval.string_value = strdup(yytext); return FMUL32;
 FMUL32I	yylval.string_value = strdup(yytext); return FMUL32I;
 FSET	yylval.string_value = strdup(yytext); return FSET;
+FSETP	yylval.string_value = strdup(yytext); return FSETP;
 DSET	yylval.string_value = strdup(yytext); return DSET;
 G2R	yylval.string_value = strdup(yytext); return G2R;
 LDG	yylval.string_value = strdup(yytext); return GLD;
@@ -158,11 +159,13 @@ LOP\.S\.OR	yylval.string_value = strdup(yytext); return ORS;
 LOP\.S\.PASS_B	yylval.string_value = strdup(yytext); return NOTS;
 LOP\.S\.XOR	yylval.string_value = strdup(yytext); return XORS;
 LST	yylval.string_value = strdup(yytext); return LST;
+STL	yylval.string_value = strdup(yytext); return LST;
 MOV	yylval.string_value = strdup(yytext); return MOV;
 MOV32	yylval.string_value = strdup(yytext); return MOV32;
 MOV32I	yylval.string_value = strdup(yytext); return MOV32;
 MVC	yylval.string_value = strdup(yytext); return MVC;
 MVI	yylval.string_value = strdup(yytext); return MVI;
+MUFU\.RSQ	yylval.string_value = strdup(yytext); return RSQ;
 NOP	yylval.string_value = strdup(yytext); return NOP;
 R2A	yylval.string_value = strdup(yytext); return R2A;
 R2G	yylval.string_value = strdup(yytext); return R2G;
@@ -183,6 +186,7 @@ IMIN	yylval.string_value = strdup(yytext); return IMIN;
 IMAX	yylval.string_value = strdup(yytext); return IMAX;
 FMAX	yylval.string_value = strdup(yytext); return FMAX;
 FMIN	yylval.string_value = strdup(yytext); return FMIN;
+IMNMX	yylval.string_value = strdup(yytext); return IMNMX;
 C2R	yylval.string_value = strdup(yytext); return C2R;
 R2C	yylval.string_value = strdup(yytext); return R2C;
 A2R	yylval.string_value = strdup(yytext); return A2R;
@@ -275,6 +279,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.E\.U8	yylval.string_value = strdup(yytext); return EXTEND8;
 \.E	yylval.string_value = strdup(yytext); return EXTEND;
 \.64	yylval.string_value = strdup(yytext); return DOT64;
+\.128	yylval.string_value = strdup(yytext); return DOT128;
 \.HI	yylval.string_value = strdup(yytext); return DOTHI;
 \.NOINC	yylval.string_value = strdup(yytext); return DOTNOINC;
 \.U.32	yylval.string_value = strdup(yytext); return DOTU32;
@@ -333,6 +338,7 @@ PT
 
 [\-]?"[R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"[R"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
+[\-]?"[R"{numeric}+\+\-{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
@@ -352,6 +358,8 @@ PT
 	
 {identifier}	yylval.string_value = strdup(yytext); return IDENTIFIER;
 [\-]?{hexliteral}	yylval.string_value = strdup(yytext); return HEXLITERAL; //change to int later?
+{numliteral}	yylval.string_value = strdup(yytext); return FLOAT; //change to int later?
+{numliteral}.NEG	yylval.string_value = strdup(yytext); return NEGFLOAT; //change to int later?
 
 	/*label ends*/
 "/*"	yylval.string_value = strdup(yytext); return LABELSTART;

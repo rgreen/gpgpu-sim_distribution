@@ -219,6 +219,16 @@ void cuobjdumpInst::addOperand(const char* addOp)
 	m_operands->push_back(addOp);
 }
 
+void cuobjdumpInst::changeOperand(const char* addOp)
+{
+	for (	std::list<std::string>::iterator operand = m_operands->begin();
+			operand != m_operands->end(); operand++) {
+		if((*operand).compare("NUM") == 0 || (*operand).compare("NEGNUM") == 0) {
+			*operand = addOp;
+		}
+	}
+}
+
 void cuobjdumpInst::setPredicate(const char* setPredicateValue)
 {
 	m_predicate->push_back(setPredicateValue);
@@ -324,7 +334,7 @@ void cuobjdumpInst::printCuobjdumpTypeModifiers()
 			output(".u32");
 		else if(*typemod == ".U64")
 			output(".bb64"); //TODO: might have to change to .ss64 in the future.
-		else if(*typemod == ".U.128")
+		else if(*typemod == ".U.128" || *typemod == ".128")
 			output(".v128"); //TODO: might have to change to .ss64 in the future.
 		else if(*typemod == ".E.64" || *typemod == ".64")
 			output(".u64");
