@@ -113,6 +113,7 @@ FSET	yylval.string_value = strdup(yytext); return FSET;
 FSETP	yylval.string_value = strdup(yytext); return FSETP;
 DSET	yylval.string_value = strdup(yytext); return DSET;
 G2R	yylval.string_value = strdup(yytext); return G2R;
+GLD	yylval.string_value = strdup(yytext); return GLD;
 LDG	yylval.string_value = strdup(yytext); return GLD;
 GST	yylval.string_value = strdup(yytext); return GST;
 STG	yylval.string_value = strdup(yytext); return GST;
