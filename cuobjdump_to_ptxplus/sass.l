@@ -122,6 +122,7 @@ S2R	yylval.string_value = strdup(yytext); return S2R;
 STS	yylval.string_value = strdup(yytext); return STS;
 LD	yylval.string_value = strdup(yytext); return SASS_LD;
 ST	yylval.string_value = strdup(yytext); return SASS_ST;
+SEL	yylval.string_value = strdup(yytext); return SEL;
 IADD	yylval.string_value = strdup(yytext); return IADD;
 IADD3	yylval.string_value = strdup(yytext); return IADD3;
 IADD\.CARRY{numeric}	yylval.string_value = strdup(yytext); return IADDCARRY;

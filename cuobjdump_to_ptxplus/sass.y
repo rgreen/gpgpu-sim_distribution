@@ -57,7 +57,7 @@ int neg_set = 0;
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
 %token <string_value> ISET ISETP LEA LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET PRET RRO RSQ SIN SHL SHR SSY XOR XORS 
-%token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX IMNMX A2R FMAX FMIN TEX TEX32 C2R EXIT VABSDIFF
+%token <string_value> S2R SASS_LD STS SEL LDS SASS_ST IMIN IMAX IMNMX A2R FMAX FMIN TEX TEX32 C2R EXIT VABSDIFF
 %token <string_value> GRED PBK BRK R2C GATOM VOTE BFE SHF
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
@@ -249,9 +249,9 @@ simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | 
 					| IMUL32U24
 					| ISET | ISETP | LEA| LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
 					| NOT | NOTS | OR | ORS | R2A | R2G | R2GU16U8 | RCP | RCP32 | RET | PRET | RRO 
-					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS 
+					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS | SEL
 					| LDS | SASS_ST | EXIT | BAR | DEPBAR | IMIN | IMAX | IMNMX |  A2R | FMAX | FMIN 
-					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | FSETP | PSETP | VABSDIFF 
+					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | PSETP | VABSDIFF
 					;
 
 pbkInstruction	:	PBK {
@@ -448,6 +448,20 @@ operand		: registerlocation
 		;
 /* regMod will be also ignored */
 registerlocation	: REGISTER regMod	{ debug_print($1); g_instList->addCuobjdumpRegister($1);}
+			| EXCLAM NEWPREDREGISTER {debug_print("!");
+				debug_print($2);
+				char* tempInput= $2;
+				char* reg = new char[7];
+				reg[0]=tempInput[0];
+				reg[1]=tempInput[1];
+				reg[2]='.';
+				reg[3]='N';
+				reg[4]='E';
+				reg[5]='G';
+				reg[6]='\0';
+				debug_print(reg);
+				g_instList->addCuobjdumpPredReg(reg);
+			}
 			| REGISTERLO	{ debug_print($1); g_instList->addCuobjdumpRegister($1,true);}
 			| REGISTERHI	{ debug_print($1); g_instList->addCuobjdumpRegister($1,true);}
 			| SREGISTER		{ debug_print($1); g_instList->addCuobjdumpRegister($1,false);}
