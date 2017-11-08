@@ -352,10 +352,13 @@ PT
 [\-]?"global14 [A"{numeric}+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 [\-]?"global14 [A"{numeric}+\+\+\+{hexliteral}\]".U16"?	yylval.string_value = strdup(yytext); return GMEMLOCATION;
 
+
 [\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"["{hexliteral}"]"".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"[R"{numeric}+\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c ["{hexliteral}"] [A"{numeric}+\+{hexliteral}\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 [\-]?"c ["{hexliteral}"] [A"{numeric}+\+\+\+{hexliteral}\]".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
+
+[\-]?"c"[ ]?"["{hexliteral}"]"[ ]?"["{alpha}+{numeric}+\+{hexliteral}+"]"".U16"?".H1"?	yylval.string_value = strdup(yytext); return CMEMLOCATION;
 
 [\-]?"local ["{hexliteral}"]"".U16"?	yylval.string_value = strdup(yytext); return LMEMLOCATION;
 [\-]?"local [R"{numeric}+\]".U16"?	yylval.string_value = strdup(yytext); return LMEMLOCATION;
