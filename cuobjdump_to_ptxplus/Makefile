@@ -1,7 +1,7 @@
 LEX			= flex
-LEXFLAGS	= -B -d
+LEXFLAGS	= -B# -d
 YACC		= bison
-YFLAGS		= -t -d --report=all --verbose
+YFLAGS		= -d #-t --report=all --verbose
 CCFLAGS		= -ggdb -fPIC -Wall -Wno-unused-function -Wno-sign-compare 
 CXX			= g++
 CXXFLAGS	= ${CCFLAGS}

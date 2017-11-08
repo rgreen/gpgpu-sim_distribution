@@ -57,7 +57,7 @@ int neg_set = 0;
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
 %token <string_value> ISET ISETP LEA LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET PRET RRO RSQ SIN SHL SHR SSY XOR XORS 
-%token <string_value> S2R SASS_LD STS LDS SASS_ST IMIN IMAX IMNMX A2R FMAX FMIN TEX TEX32 C2R EXIT VABSDIFF
+%token <string_value> S2R SASS_LD STS SEL LDS SASS_ST IMIN IMAX IMNMX A2R FMAX FMIN TEX TEX32 C2R EXIT VABSDIFF
 %token <string_value> GRED PBK BRK R2C GATOM VOTE BFE SHF
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
@@ -105,16 +105,7 @@ functionList	: functionList function
 				| function
 				;
 				
-function	:	FUNCTIONHEADER IDENTIFIER {
-					debug_print($1);
-					debug_print($2);
-					debug_print("\n");
-					g_instList->addEntry($2);
-					instEntry = new cuobjdumpInst();
-					instEntry->setBase(".entry");
-					g_instList->add(instEntry);
-					g_instList->getListEnd().addOperand($2);} statementList NEWLINE
-		|	FUNCTIONHEADER IDENTIFIER NEWLINE headerflags {
+function	: FUNCTIONHEADER IDENTIFIER NEWLINE headerflags {
 					debug_print($1); 
 					debug_print($2);
 					debug_print("\n");
@@ -128,6 +119,7 @@ function	:	FUNCTIONHEADER IDENTIFIER {
 headerflags	:	FLAGHEADER AT QUOTE flagsname QUOTE {
 					debug_print($1);
 					debug_print("\n");}
+		|	{}
 					;
 
 flagsname	:	IDENTIFIER IDENTIFIER LEFTBRACKET IDENTIFIER RIGHTBRACKET;
@@ -249,9 +241,9 @@ simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | 
 					| IMUL32U24
 					| ISET | ISETP | LEA| LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
 					| NOT | NOTS | OR | ORS | R2A | R2G | R2GU16U8 | RCP | RCP32 | RET | PRET | RRO 
-					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS 
+					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS | SEL
 					| LDS | SASS_ST | EXIT | BAR | DEPBAR | IMIN | IMAX | IMNMX |  A2R | FMAX | FMIN 
-					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | FSETP | PSETP | VABSDIFF 
+					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | PSETP | VABSDIFF
 					;
 
 pbkInstruction	:	PBK {
@@ -394,6 +386,7 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTALL		{ g_instList->getListEnd().addBaseModifier(".all"); }
 		| DOTGE			{ g_instList->getListEnd().addBaseModifier(".ge"); }
 		| DOTLE			{ g_instList->getListEnd().addBaseModifier(".le"); }
+		| DOTLEU		{ g_instList->getListEnd().addBaseModifier(".leu"); }
 		| DOTGT			{ g_instList->getListEnd().addBaseModifier(".gt"); }
 		| DOTLT			{ g_instList->getListEnd().addBaseModifier(".lt"); }
 		| DOTEQ			{ g_instList->getListEnd().addBaseModifier(".eq"); }
@@ -448,6 +441,20 @@ operand		: registerlocation
 		;
 /* regMod will be also ignored */
 registerlocation	: REGISTER regMod	{ debug_print($1); g_instList->addCuobjdumpRegister($1);}
+			| EXCLAM NEWPREDREGISTER {debug_print("!");
+				debug_print($2);
+				char* tempInput= $2;
+				char* reg = new char[7];
+				reg[0]=tempInput[0];
+				reg[1]=tempInput[1];
+				reg[2]='.';
+				reg[3]='N';
+				reg[4]='E';
+				reg[5]='G';
+				reg[6]='\0';
+				debug_print(reg);
+				g_instList->addCuobjdumpPredReg(reg);
+			}
 			| REGISTERLO	{ debug_print($1); g_instList->addCuobjdumpRegister($1,true);}
 			| REGISTERHI	{ debug_print($1); g_instList->addCuobjdumpRegister($1,true);}
 			| SREGISTER		{ debug_print($1); g_instList->addCuobjdumpRegister($1,false);}
