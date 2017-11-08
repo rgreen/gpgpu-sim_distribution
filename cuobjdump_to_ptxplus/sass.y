@@ -105,16 +105,7 @@ functionList	: functionList function
 				| function
 				;
 				
-function	:	FUNCTIONHEADER IDENTIFIER {
-					debug_print($1);
-					debug_print($2);
-					debug_print("\n");
-					g_instList->addEntry($2);
-					instEntry = new cuobjdumpInst();
-					instEntry->setBase(".entry");
-					g_instList->add(instEntry);
-					g_instList->getListEnd().addOperand($2);} statementList NEWLINE
-		|	FUNCTIONHEADER IDENTIFIER NEWLINE headerflags {
+function	: FUNCTIONHEADER IDENTIFIER NEWLINE headerflags {
 					debug_print($1); 
 					debug_print($2);
 					debug_print("\n");
@@ -128,6 +119,7 @@ function	:	FUNCTIONHEADER IDENTIFIER {
 headerflags	:	FLAGHEADER AT QUOTE flagsname QUOTE {
 					debug_print($1);
 					debug_print("\n");}
+		|	{}
 					;
 
 flagsname	:	IDENTIFIER IDENTIFIER LEFTBRACKET IDENTIFIER RIGHTBRACKET;
