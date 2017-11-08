@@ -130,7 +130,7 @@ hexdigit	[[:digit:]abcdef]
 	return STHEADER;
 }
 
-<symtab,cmem14>{whitespace}+ { printf("<symtab,cmem14>{whitespace}+  %s\n", yytext); }
+<symtab,cmem14>{whitespace}+ {}
 
 <symtab,cmem14>{newline} {}
 

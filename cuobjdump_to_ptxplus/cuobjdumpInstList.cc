@@ -30,7 +30,7 @@
 #include <cassert>
 #include "cuobjdumpInstList.h"
 
-#define P_DEBUG 1
+#define P_DEBUG 0
 #define DPRINTF(...) \
    if(P_DEBUG) { \
       printf("(%s:%u) ", __FILE__, __LINE__); \

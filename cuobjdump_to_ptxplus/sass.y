@@ -562,5 +562,5 @@ predicateModifier	: DOTEQ	{ }
 void debug_print( const char *s )
 {
 	// uncomment to debug
-	 printf("%s",s);
+	// printf("%s",s);
 }
