@@ -42,6 +42,7 @@ void sass_error(const char*);
 %option noyywrap
 %option yylineno
 %option nounput
+%x label
 
 /*Regular expresions go here*/
 alpha		[a-zA-Z]
@@ -329,7 +330,7 @@ PT
 "code for "	yylval.string_value = strdup(yytext); return VERSIONHEADER;
 "Function : "	yylval.string_value = strdup(yytext); return FUNCTIONHEADER;
 ".headerflags"[ ]+	yylval.string_value = strdup(yytext); return FLAGHEADER;
-"/*"[ ]?{hexliteral}{whitespace}*[ ]?"*/" 	yylval.string_value = strdup(yytext); return INSTHEX;
+<INITIAL>"/*"[ ]?{hexliteral}{whitespace}*[ ]?"*/" 	yylval.string_value = strdup(yytext); return INSTHEX;
 "." yylval.string_value = strdup(yytext); return DOT;
 "\"" yylval.string_value = strdup(yytext); return QUOTE;
 "@" yylval.string_value = strdup(yytext); return AT;
@@ -367,14 +368,14 @@ PT
 	
 {identifier}	yylval.string_value = strdup(yytext); return IDENTIFIER;
 [\-]?{hexliteral}	yylval.string_value = strdup(yytext); return HEXLITERAL; //change to int later?
-{numliteral}	yylval.string_value = strdup(yytext); return FLOAT; //change to int later?
-{numliteral}.NEG	yylval.string_value = strdup(yytext); return NEGFLOAT; //change to int later?
 
 	/*label ends*/
-"/*"	yylval.string_value = strdup(yytext); return LABELSTART;
+"/*"	yylval.string_value = strdup(yytext); BEGIN(label); return LABELSTART;
 "*/"	yylval.string_value = strdup(yytext); return LABELEND;
-{hexdigit}{hexdigit}{hexdigit}{hexdigit} yylval.string_value = strdup(yytext); return LABEL;
+<label>{hexdigit}{hexdigit}{hexdigit}{hexdigit} yylval.string_value = strdup(yytext);BEGIN(INITIAL); return LABEL;
 
+{numliteral}	yylval.string_value = strdup(yytext); return FLOAT; //change to int later?
+{numliteral}.NEG	yylval.string_value = strdup(yytext); return NEGFLOAT; //change to int later?
 	/*braces*/
 
 	/*brackets*/
