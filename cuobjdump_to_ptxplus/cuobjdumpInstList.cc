@@ -284,8 +284,7 @@ void cuobjdumpInstList::printMemory()
 		char line[1024];
 
 		// Global or entry specific
-		// TODO: trick to use constant2 instead of constant1
-		sprintf(line, ".const %s constant2%s[%d] = {", i->type, i->kernel, (int)i->m_constMemory.size());
+		sprintf(line, ".const %s constant1%s[%d] = {", i->type, i->kernel, (int)i->m_constMemory.size());
 
 		output(line);
 
