@@ -284,8 +284,11 @@ void cuobjdumpInstList::printMemory()
 		char line[1024];
 
 		// Global or entry specific
-		sprintf(line, ".const %s constant1%s[%d] = {", i->type, i->kernel, (int)i->m_constMemory.size());
-
+		if (g_is_pascal) {
+			sprintf(line, ".const %s constant2%s[%d] = {", i->type, i->kernel, (int)i->m_constMemory.size());
+		} else {
+			sprintf(line, ".const %s constant1%s[%d] = {", i->type, i->kernel, (int)i->m_constMemory.size());
+		}
 		output(line);
 
 		std::list<std::string>::iterator j;
