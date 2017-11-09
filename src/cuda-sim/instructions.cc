@@ -282,15 +282,15 @@ ptx_reg_t ptx_thread_info::get_operand_value( const operand_info &op, operand_in
    } else if((op.get_addr_space() == const_space)&&(derefFlag)) {
       // const memory - ce0c1[4], ce0c1[$r0]
       // 4K parameter space
-       if((result.u32/4 >= 0x140) && (result.u32/4 <= 0x340)) {
-           mem = thread->m_shared_mem;
-           type_info_key::type_decode(opType,size,t);
-           mem->read((result.u32/4 - 0x140 + 0x10),size/8,&finalResult.u128);
-           thread->m_last_effective_address = result.u32;
-           thread->m_last_memory_space = const_space;
-           if( opType == S16_TYPE || opType == S32_TYPE )
-               sign_extend(finalResult,size,dstInfo);
-       } else {
+       //if((result.u32/4 >= 0x140) && (result.u32/4 <= 0x340)) {
+       //    mem = thread->m_shared_mem;
+       //    type_info_key::type_decode(opType,size,t);
+       //    mem->read((result.u32/4 - 0x140 + 0x10),size/8,&finalResult.u128);
+       //    thread->m_last_effective_address = result.u32;
+       //    thread->m_last_memory_space = const_space;
+       //    if( opType == S16_TYPE || opType == S32_TYPE )
+       //        sign_extend(finalResult,size,dstInfo);
+       //} else {
            mem = thread->get_global_memory();
            type_info_key::type_decode(opType,size,t);
            mem->read((result.u32 + op.get_const_mem_offset()),size/8,&finalResult.u128);
@@ -298,7 +298,7 @@ ptx_reg_t ptx_thread_info::get_operand_value( const operand_info &op, operand_in
            thread->m_last_memory_space = const_space;
            if( opType == S16_TYPE || opType == S32_TYPE )
                sign_extend(finalResult,size,dstInfo);
-       }
+       //}
    } else if((op.get_addr_space() == local_space)&&(derefFlag)) {
       // local memory - l0[4], l0[$r0]
        mem = thread->m_local_mem;
