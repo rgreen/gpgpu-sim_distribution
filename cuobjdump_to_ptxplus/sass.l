@@ -62,7 +62,7 @@ octliteral	0[0-7]+U?
 binliteral	0[bB][01]+U?
 decliteral	([1-9][0-9]*U?)|0U?
 fltliteral	[0-9]+\.[0-9]+
-numliteral	(([\-]?{fltliteral}(e[\-]?{numeric}*)?)|[1-9]+[0-9]*)
+numliteral	(([\-]?{fltliteral}(e[\-]?{numeric}*)?)|[\-]?[1-9]+[0-9]*)
 
 %%
 	/*Translation rules*/
