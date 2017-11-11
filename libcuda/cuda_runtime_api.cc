@@ -1500,6 +1500,7 @@ void printSectionList(std::list<cuobjdumpSection*> sl) {
 //! Remove unecessary sm versions from the section list
 std::list<cuobjdumpSection*> pruneSectionList(std::list<cuobjdumpSection*> cuobjdumpSectionList, CUctx_st *context) {
 	unsigned forced_max_capability = context->get_device()->get_gpgpu()->get_config().get_forced_max_capability();
+	unsigned forced_min_capability = context->get_device()->get_gpgpu()->get_config().get_forced_min_capability();
 
 	//For ptxplus, force the max capability to 19 if it's higher or unspecified(0)
 	if (context->get_device()->get_gpgpu()->get_config().convert_to_ptxplus()){
@@ -1516,6 +1517,7 @@ std::list<cuobjdumpSection*> pruneSectionList(std::list<cuobjdumpSection*> cuobj
 	//and set it in cuobjdumpSectionMap. Do this only for ptx sections
 	std::map<std::string, unsigned> cuobjdumpSectionMap;
 	int min_ptx_capability_found=0;
+	int max_ptx_capability_found=0;
 	for (	std::list<cuobjdumpSection*>::iterator iter = cuobjdumpSectionList.begin();
 			iter != cuobjdumpSectionList.end();
 			iter++){
@@ -1523,6 +1525,8 @@ std::list<cuobjdumpSection*> pruneSectionList(std::list<cuobjdumpSection*> cuobj
 		if(dynamic_cast<cuobjdumpPTXSection*>(*iter) != NULL){
 			if(capability<min_ptx_capability_found || min_ptx_capability_found==0)
 				min_ptx_capability_found=capability;
+			if(capability>max_ptx_capability_found)
+				max_ptx_capability_found=capability;
 			if (capability <= forced_max_capability ||	forced_max_capability==0) {
 				if((cuobjdumpSectionMap.find((*iter)->getIdentifier())==cuobjdumpSectionMap.end())
 						|| (cuobjdumpSectionMap[(*iter)->getIdentifier()] < capability))
@@ -1547,6 +1551,12 @@ std::list<cuobjdumpSection*> pruneSectionList(std::list<cuobjdumpSection*> cuobj
 		printf("Error: No PTX sections found with sm capability that is lower than current forced maximum capability \n minimum ptx capability found = %u, maximum forced ptx capability = %u \n User might want to change either the forced maximum capability from gpgpusim configuration or update the compilation to generate the required PTX version\n",min_ptx_capability_found,forced_max_capability);
 		abort();
 	}
+    
+    if (max_ptx_capability_found < forced_min_capability) {
+        printf("Error: No PTX sections found meet the minimum SM capability specified in the config. min_specified=%u,min_found=%u", forced_min_capability, max_ptx_capability_found);
+        abort();
+    }
+
 	return prunedList;
 }
 
