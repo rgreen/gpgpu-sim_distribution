@@ -72,6 +72,10 @@ void gpgpu_functional_sim_config::reg_options(class OptionParser * opp)
                  &m_ptx_force_max_capability,
                  "Force maximum compute capability",
                  "0");
+    option_parser_register(opp, "-gpgpu_ptx_force_min_capability", OPT_UINT32,
+                 &m_ptx_force_min_capability,
+                 "Force minimum compute capability",
+                 "0");
    option_parser_register(opp, "-gpgpu_ptx_inst_debug_to_file", OPT_BOOL, 
                 &g_ptx_inst_debug_to_file, 
                 "Dump executed instructions' debug information to file", 

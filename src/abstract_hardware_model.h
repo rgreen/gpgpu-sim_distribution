@@ -473,6 +473,7 @@ public:
     void ptx_set_tex_cache_linesize(unsigned linesize);
 
     unsigned get_forced_max_capability() const { return m_ptx_force_max_capability; }
+    unsigned get_forced_min_capability() const { return m_ptx_force_min_capability; }
     bool convert_to_ptxplus() const { return m_ptx_convert_to_ptxplus; }
     bool use_cuobjdump() const { return m_ptx_use_cuobjdump; }
     bool experimental_lib_support() const { return m_experimental_lib_support; }
@@ -488,6 +489,7 @@ private:
     int m_ptx_use_cuobjdump;
     int m_experimental_lib_support;
     unsigned m_ptx_force_max_capability;
+    unsigned m_ptx_force_min_capability;
 
     int   g_ptx_inst_debug_to_file;
     char* g_ptx_inst_debug_file;
