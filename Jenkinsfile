@@ -53,6 +53,11 @@ pipeline {
                     source `pwd`/setup_environment &&\
                     ./gpgpu-sim_simulations/util/job_launching/run_simulations.py -B sdk-4.2 -C GTX480,PASCALTITANX -N regress-$$ && \
                     ./gpgpu-sim_simulations/util/job_launching/monitor_func_test.py -v -N regress-$$'
+                }, "sm6-apps": {
+                    sh 'source /home/tgrogers-raid/a/common/gpgpu-sim-setup/8.0_env_setup.sh &&\
+                    source `pwd`/setup_environment &&\
+                    ./gpgpu-sim_simulations/util/job_launching/run_simulations.py -B rodinia_2.0-ft:bfs-rodinia-2.0-ft,sdk-4.2:vectorAdd -C P100-HBM-SM6,TITANX-P102-SM6 -N regress-$$ && \
+                    ./gpgpu-sim_simulations/util/job_launching/monitor_func_test.py -v -N regress-$$'
                 }
             }
         }
