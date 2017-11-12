@@ -4851,7 +4851,7 @@ void iscadd_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    src2_data = thread->get_operand_value(src2,dst,i_type,thread,1);
    src3_data = thread->get_operand_value(src3,dst,i_type,thread,1);
 
-   data.u32 = ( src1_data.u32 * src3_data.u32 ) + src2_data.u32 ;
+   data.u32 = ( src1_data.u32 * (1 << (src3_data.u32)) ) + src2_data.u32 ;
 
    thread->set_operand_value(dst, data, i_type, thread, pI);
 }
