@@ -73,7 +73,7 @@ int neg_set = 0;
 %token <string_value> IDENTIFIER
 %token <string_value> HEXLITERAL FLOAT NEGFLOAT
 %token <string_value> LEFTBRACKET RIGHTBRACKET AT QUOTE FLAGHEADER
-%token <string_value> PIPE TILDE EXCLAM
+%token <string_value> MINUS PIPE TILDE EXCLAM
 %token <string_value> NEWLINE SEMICOLON /*COMMA*/
 %token <string_value> LABEL LABELSTART LABELEND
 %token <string_value> PTXHEADER ELFHEADER
@@ -430,6 +430,8 @@ operandList	: operandList { debug_print(" "); } /*COMMA*/ operand	{}
 
 operand		: registerlocation
 		| PIPE registerlocation PIPE	{ g_instList->getListEnd().addBaseModifier(".abs"); }
+		| MINUS PIPE registerlocation PIPE	{ g_instList->getListEnd().addBaseModifier(".abs");
+			g_instList->getListEnd().addBaseModifier(".mus"); }
 		| TILDE registerlocation
 		| LEFTBRACKET instructionPredicate RIGHTBRACKET
 		| memorylocation opTypes { debug_print($2); g_instList->getListEnd().addTypeModifier($2);}

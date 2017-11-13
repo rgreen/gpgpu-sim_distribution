@@ -206,8 +206,7 @@ BRK	yylval.string_value = strdup(yytext); return BRK;
 VOTE	yylval.string_value = strdup(yytext); return VOTE;
 BFE	yylval.string_value = strdup(yytext); return BFE;
 DEPBAR	yylval.string_value = strdup(yytext); return DEPBAR;
-SHF	yylval.string_value = strdup(yytext); return SHF;
-FSETP	yylval.string_value = strdup(yytext); return FSETP;
+SHF\.L	yylval.string_value = strdup(yytext); return SHL;
 PSETP	yylval.string_value = strdup(yytext); return PSETP;
 VABSDIFF\.ACC yylval.string_value = strdup(yytext); return VABSDIFF;
 
@@ -238,7 +237,6 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.ALL	yylval.string_value = strdup(yytext); return DOTALL;
 \.MAD	yylval.string_value = strdup(yytext); /*unknown*/
 \.RP	yylval.string_value = strdup(yytext); return DOTCEIL;
-\.L	yylval.string_value = strdup(yytext); return DOTL;
 
 	/* comparison operators */
 \.EQ	yylval.string_value = strdup(yytext); return DOTEQ;
@@ -396,6 +394,7 @@ PT
 
 	/* pipe*/
 "|"	yylval.string_value = strdup(yytext); return PIPE;
+"-"	yylval.string_value = strdup(yytext); return MINUS;
 "~"	yylval.string_value = strdup(yytext); return TILDE;
 "!"	yylval.string_value = strdup(yytext); return EXCLAM;
 

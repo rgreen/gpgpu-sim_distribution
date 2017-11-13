@@ -2140,7 +2140,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "SHL")
+	else if(m_base == "SHL" || m_base == "SHF.L")
 	{
 		printCuobjdumpPredicate();
 		output("shl");

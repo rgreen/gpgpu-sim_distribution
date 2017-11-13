@@ -4017,8 +4017,14 @@ void shl_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    const operand_info &src2 = pI->src2();
 
    unsigned i_type = pI->get_type();
-   a = thread->get_operand_value(src1, dst, i_type, thread, 1);
-   b = thread->get_operand_value(src2, dst, i_type, thread, 1);
+   if(pI->get_num_operands()>3) {
+      const operand_info &src3 = pI->src3();
+      a = thread->get_operand_value(src2, dst, i_type, thread, 1);
+      b = thread->get_operand_value(src3, dst, i_type, thread, 1);
+   } else {
+      a = thread->get_operand_value(src1, dst, i_type, thread, 1);
+      b = thread->get_operand_value(src2, dst, i_type, thread, 1);
+   }
 
    switch ( i_type ) {
    case B16_TYPE:
