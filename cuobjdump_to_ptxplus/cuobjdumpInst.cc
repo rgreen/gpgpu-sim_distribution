@@ -1895,6 +1895,22 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+	else if(m_base == "MUFU.EX2")
+	{
+		printCuobjdumpPredicate();
+		output("ex2");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if(m_base == "MUFU.RCP")
+	{
+		printCuobjdumpPredicate();
+		output("rcp");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
 	else if(m_base == "NOP")
 	{
 		printCuobjdumpPredicate();
@@ -2112,7 +2128,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("retp;");
 	}
-	else if(m_base == "RRO")
+	else if(m_base == "RRO.EX2")
 	{
 		output("nop; //");
 		printCuobjdumpPredicate();
@@ -2150,6 +2166,15 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 			output(int_default_mod()); //TODO: setting default type modifier but I'm not sure if this is right.
 		else
 			printCuobjdumpTypeModifiers();
+
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if(m_base == "SEL")
+	{
+		printCuobjdumpPredicate();
+		output("selp");
+		printCuobjdumpBaseModifiers();
 
 		printCuobjdumpOperands();
 		output(";");
