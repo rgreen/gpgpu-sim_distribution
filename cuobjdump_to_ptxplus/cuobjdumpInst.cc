@@ -2142,6 +2142,20 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
+	else if(m_base == "RRO")
+	{
+		output("nop; //");
+		printCuobjdumpPredicate();
+		printCuobjdumpBaseModifiers();
+
+		if(m_typeModifiers->size() == 0)
+			output(".f32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		else
+			printCuobjdumpTypeModifiers();
+
+		printCuobjdumpOperands();
+		output(";");
+	}
 	else if(m_base == "RSQ")
 	{
 		printCuobjdumpPredicate();
