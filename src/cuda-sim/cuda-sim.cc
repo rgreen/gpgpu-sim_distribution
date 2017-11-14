@@ -1209,6 +1209,32 @@ void function_info::param_to_shared( memory_space *shared_mem, symbol_table *sym
    }
 }
 
+void function_info::param_to_const( memory_space *global_mem, symbol_table *symtab )
+{
+   // TODO: call this only for PTXPlus with Pascal models
+   extern gpgpu_sim* g_the_gpu;
+   if (not g_the_gpu->get_config().convert_to_ptxplus()) return;
+
+   // copies parameters into simulated shared memory
+   for( std::map<unsigned,param_info>::iterator i=m_ptx_kernel_param_info.begin(); i!=m_ptx_kernel_param_info.end(); i++ ) {
+      param_info &p = i->second;
+      if (p.is_ptr_shared()) continue; // Pointer to local memory: Should we pass the allocated shared memory address to the param memory space?
+      std::string name = p.get_name();
+      int type = p.get_type();
+      param_t value = p.get_value();
+      value.type = type;
+      symbol *param = symtab->lookup(name.c_str());
+      unsigned xtype = param->type()->get_key().scalar_type();
+      assert(xtype==(unsigned)type);
+
+      int tmp;
+      size_t size;
+      type_info_key::type_decode(xtype,size,tmp);
+
+      unsigned offset = p.get_offset();
+      global_mem->write((0x140+offset)*4+0x100,size/8,value.pdata,NULL,NULL);
+   }
+}
 
 void function_info::list_param( FILE *fout ) const
 {
@@ -1605,7 +1631,11 @@ unsigned ptx_sim_init_thread( kernel_info_t &kernel,
       thd->m_shared_mem = shared_mem;
       function_info *finfo = thd->func_info();
       symbol_table *st = finfo->get_symtab();
-      thd->func_info()->param_to_shared(thd->m_shared_mem,st);
+      if (gpu->get_config().convert_to_ptxplus() && (gpu->get_config().get_forced_max_capability()>=60)) {
+	      thd->func_info()->param_to_const(gpu->get_global_memory(),st);
+      } else {
+	      thd->func_info()->param_to_shared(thd->m_shared_mem,st);
+      }
       thd->m_cta_info = cta_info;
       cta_info->add_thread(thd);
       thd->m_local_mem = local_mem;
