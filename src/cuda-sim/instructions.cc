@@ -3503,6 +3503,9 @@ void orn_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    thread->set_operand_value(dst,data, i_type, thread, pI);
 }
 
+void lop3_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
+void fchk_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
+void icmp_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void pmevent_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void popc_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 { 

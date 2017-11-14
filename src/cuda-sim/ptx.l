@@ -156,6 +156,10 @@ nop     TC; ptx_lval.int_value = NOP_OP; return OPCODE;
 break  TC; ptx_lval.int_value = BREAK_OP; return OPCODE;
 breakaddr  TC; ptx_lval.int_value = BREAKADDR_OP; return OPCODE;
 iscadd	TC; ptx_lval.int_value = ISCADD_OP; return OPCODE;
+lop3\.lut	TC; ptx_lval.int_value = LOP3_OP; return OPCODE;
+fchk\.divide	TC; ptx_lval.int_value = FCHK_OP; return OPCODE;
+icmp	TC; ptx_lval.int_value = ICMP_OP; return OPCODE;
+
 <INITIAL,NOT_OPCODE,IN_INST,IN_FUNC_DECL>{
 
 \.align TC; return ALIGN_DIRECTIVE;
@@ -218,7 +222,7 @@ iscadd	TC; ptx_lval.int_value = ISCADD_OP; return OPCODE;
 "%tid"  TC; ptx_lval.int_value = TID_REG; return SPECIAL_REGISTER;
 "%warpid"  TC; ptx_lval.int_value = WARPID_REG; return SPECIAL_REGISTER;
 "WARP_SZ"  TC; ptx_lval.int_value = WARPSZ_REG; return SPECIAL_REGISTER;
-"$rz"  TC; ptx_lval.int_value = RZ_REG; return SPECIAL_REGISTER;
+[\-]?"$rz"  TC; ptx_lval.int_value = RZ_REG; return SPECIAL_REGISTER;
 
 [a-zA-Z_][a-zA-Z0-9_$]*  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;
 [$%][a-zA-Z0-9_$]+  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;
@@ -304,6 +308,8 @@ iscadd	TC; ptx_lval.int_value = ISCADD_OP; return OPCODE;
 \.rp	TC; return RP_OPTION;
 
 \.ftz	TC; return FTZ_OPTION;
+
+\.nz	TC; return NZ_OPTION;
 
 \.neg	TC; return NEG_OPTION;
 

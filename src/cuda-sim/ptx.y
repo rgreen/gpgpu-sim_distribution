@@ -159,6 +159,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token GEOM_MODIFIER_3D
 %token SAT_OPTION
 %token FTZ_OPTION
+%token NZ_OPTION
 %token NEG_OPTION
 %token SYNC_OPTION
 %token RED_OPTION
@@ -466,7 +467,8 @@ option: type_spec
 	| GEOM_MODIFIER_3D { add_option(GEOM_MODIFIER_3D); }
 	| SAT_OPTION { add_option(SAT_OPTION); }
  	| FTZ_OPTION { add_option(FTZ_OPTION); } 
- 	| NEG_OPTION { add_option(NEG_OPTION); } 
+ 	| NZ_OPTION { add_option(NZ_OPTION); } 
+	| NEG_OPTION { add_option(NEG_OPTION); } 
 	| APPROX_OPTION { add_option(APPROX_OPTION); }
 	| FULL_OPTION { add_option(FULL_OPTION); }
 	| EXIT_OPTION { add_option(EXIT_OPTION); }
