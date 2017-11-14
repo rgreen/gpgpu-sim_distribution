@@ -870,8 +870,6 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		output(mod.c_str());
 	} else if(mod.substr(0,9) == "varglobal") { //global variable
 		output(mod.substr(9).c_str());
-	} else if (mod.substr(0,4) == "+inf") { // immediate infinity
-		output(mod.substr(4).c_str());
 	} else {//variable name
 		printf("Unrecognized Operand: %s\n", mod.c_str());
 		assert(0);
