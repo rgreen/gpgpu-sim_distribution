@@ -205,6 +205,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token	CHI_OPTION;
 %token	CLO_OPTION;
 %token	MRG_OPTION;
+%token	MUS_OPTION;
 %token	PSL_OPTION;
 %token	CBCC_OPTION;
 %token	E_OPTION;
@@ -474,6 +475,7 @@ option: type_spec
 	| CHI_OPTION { add_option(CHI_OPTION); }
 	| CLO_OPTION { add_option(CLO_OPTION); }
 	| MRG_OPTION { add_option(MRG_OPTION); }
+	| MUS_OPTION { add_option(MUS_OPTION); }
 	| PSL_OPTION { add_option(PSL_OPTION); }
 	| CBCC_OPTION { add_option(CBCC_OPTION); }
 	| E_OPTION { add_option(E_OPTION); }
@@ -549,6 +551,7 @@ operand_list: operand
 operand: IDENTIFIER  { add_scalar_operand( $1 ); }
 	| EXCLAMATION IDENTIFIER { add_neg_pred_operand( $2 ); }
 	| MINUS IDENTIFIER  { add_scalar_operand( $2 ); change_operand_neg(); }
+	| IDENTIFIER NEG_OPTION  { add_scalar_operand( $1 ); change_operand_neg(); }
 	| memory_operand
 	| memory_operand HI_OPTION { change_operand_lohi(2);}
 	| memory_operand H1_OPTION { change_operand_h1(1);}

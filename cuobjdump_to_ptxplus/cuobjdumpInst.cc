@@ -492,6 +492,14 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			//".cbcc" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
+		else if( *basemod == ".ftz")
+		{
+			output(*basemod);
+		}
+		else if( *basemod == ".mus")
+		{
+			output(*basemod);
+		}
 		else if((*basemod == "IADD") ||
 				(*basemod == "IMIN") ||
 				(*basemod == "IMAX"))
@@ -654,6 +662,9 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 	} else if((mod[0] == 'c' || mod[0] == 'p') && mod.length() == 2) { //predicate register (conditional code)
 		output("$p");
 		output(mod.substr(1,1).c_str());
+	} else if(mod[0] == 'p' && mod.length() == 6) { //predicate register (conditional code)
+		output("$p");
+		output(mod.substr(1,6).c_str());
 	} else if(mod[0]=='a') {//offset register
 		output("$ofs");
 		mod = mod.substr(1);
@@ -1180,7 +1191,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 
 		if(m_typeModifiers->size() == 0)
 		{
-			output(".f32.f32");
+			output(".f32");
 		}
 		else
 			printCuobjdumpTypeModifiers();
@@ -1196,7 +1207,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 
 		if(m_typeModifiers->size() == 0)
 		{
-			output(".f32.f32");
+			output(".f32");
 		}
 		else
 			printCuobjdumpTypeModifiers();
@@ -1899,7 +1910,10 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("ex2");
-		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".f32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		else
+			printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -1907,7 +1921,10 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("rcp");
-		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".f32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		else
+			printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -2188,7 +2205,12 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("selp");
-		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+		{
+			output(".f32");
+		}
+		else
+			printCuobjdumpBaseModifiers();
 
 		printCuobjdumpOperands();
 		output(";");
