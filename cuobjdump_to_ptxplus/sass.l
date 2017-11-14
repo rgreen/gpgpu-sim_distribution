@@ -62,7 +62,7 @@ octliteral	0[0-7]+U?
 binliteral	0[bB][01]+U?
 decliteral	([1-9][0-9]*U?)|0U?
 fltliteral	[0-9]+\.[0-9]+
-numliteral	(([\-]?{fltliteral}(e[\-]?[\+]?{numeric}*)?)|[\-]?[1-9]+[0-9]*)
+numliteral	(([\-]?{fltliteral}(e[\-]?[\+]?{numeric}*)?)|[\-]?[1-9]+[0-9]*)|([\+]?"INF")
 
 %%
 	/*Translation rules*/
@@ -380,7 +380,6 @@ PT
 	
 {identifier}	yylval.string_value = strdup(yytext); return IDENTIFIER;
 [\-]?{hexliteral}	yylval.string_value = strdup(yytext); return HEXLITERAL; //change to int later?
-[\+]?"INF "	yylval.string_value = strdup(yytext); return INF; 
 
 	/*label ends*/
 "/*"	yylval.string_value = strdup(yytext); BEGIN(label); return LABELSTART;
