@@ -507,6 +507,31 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			}
 			output(modstr.c_str());
 		}
+		else if ( *basemod == ".ftz")
+		{
+			//".ftz" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".or")
+		{
+			//".or" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".neu")
+		{
+			//".neu" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".gtu")
+		{
+			//".gtu" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".nz")
+		{
+			//".nz" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
 		else
 		{
 			printf("Unknown Base Mod: ");
@@ -834,6 +859,8 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 		output(mod.c_str());
 	} else if(mod.substr(0,9) == "varglobal") { //global variable
 		output(mod.substr(9).c_str());
+	} else if (mod.substr(0,4) == "+inf") { // immediate infinity
+		output(mod.substr(4).c_str());
 	} else {//variable name
 		printf("Unrecognized Operand: %s\n", mod.c_str());
 		assert(0);
@@ -1540,7 +1567,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "ISCADD")
+	else if(m_base == "ISCADD" || m_base == "ISCADD32I")
 	{
 
 		printCuobjdumpPredicate();
@@ -1947,7 +1974,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "LOP.OR" || m_base == "LOP.S.OR")
+	else if(m_base == "LOP.OR" || m_base == "LOP.S.OR" || m_base == "LOP32I.OR")
 	{
 		printCuobjdumpPredicate();
 		output("or");
@@ -2398,6 +2425,46 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("fma.rz.f32");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "MUFU.RCP")
+	{
+		printCuobjdumpPredicate();
+		output("rcp");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "SEL")
+	{
+		printCuobjdumpPredicate();
+		output("sel");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "LOP3.LUT")
+	{
+		printCuobjdumpPredicate();
+		output("lop3.lut");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "FCHK.DIVIDE")
+	{
+		printCuobjdumpPredicate();
+		output("fchk.divide");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "ICMP")
+	{
+		printCuobjdumpPredicate();
+		output("icmp");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpOperands();
 		output(";");
