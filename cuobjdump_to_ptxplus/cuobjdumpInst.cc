@@ -1191,7 +1191,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 
 		if(m_typeModifiers->size() == 0)
 		{
-			output(".f32");
+			output(".f32.f32");
 		}
 		else
 			printCuobjdumpTypeModifiers();
