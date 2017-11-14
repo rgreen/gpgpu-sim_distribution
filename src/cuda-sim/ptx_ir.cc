@@ -1212,6 +1212,9 @@ ptx_instruction::ptx_instruction( int opcode,
       case MRG_OPTION:
          m_mrg = true;
          break;
+      case MUS_OPTION:
+         m_neg = true;
+         break;
       case PSL_OPTION:
          m_psl = true;
          break;

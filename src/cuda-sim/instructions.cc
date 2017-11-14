@@ -741,6 +741,22 @@ void abs_impl( const ptx_instruction *pI, ptx_thread_info *thread )
       break;
    }
 
+   if (pI->is_neg()) {
+      switch ( i_type ) {
+      case S16_TYPE: d.s16 = -d.s16; break;
+      case S32_TYPE: d.s32 = -d.s32; break;
+      case S64_TYPE: d.s64 = -d.s64; break;
+      case U16_TYPE: d.s16 = -d.u16; break;
+      case U32_TYPE: d.s32 = -d.u32; break;
+      case U64_TYPE: d.s64 = -d.u64; break;
+      case F32_TYPE: d.f32 = -d.f32; break;
+      case F64_TYPE: case FF64_TYPE: d.f64 = -d.f64; break;
+      default:
+         printf("Execution error: type mismatch with instruction\n");
+         assert(0);
+         break;
+      }
+   }
    thread->set_operand_value(dst,d, i_type, thread, pI);
 }
 
@@ -3884,6 +3900,18 @@ void setp_impl( const ptx_instruction *pI, ptx_thread_info *thread )
    data.pred = (t==0); //inverting predicate since ptxplus uses "1" for a set zero flag
 
    thread->set_operand_value(dst,data, PRED_TYPE, thread, pI);
+}
+
+void fsetp_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
+{
+   //TODO: need to implement
+   assert(0);
+}
+
+void psetp_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
+{
+   //TODO: need to implement
+   assert(0);
 }
 
 void set_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 

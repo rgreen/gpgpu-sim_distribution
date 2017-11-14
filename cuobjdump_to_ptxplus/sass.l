@@ -183,6 +183,7 @@ RCP	yylval.string_value = strdup(yytext); return RCP;
 RCP32	yylval.string_value = strdup(yytext); return RCP32;
 RET	yylval.string_value = strdup(yytext); return RET;
 PRET	yylval.string_value = strdup(yytext); return PRET;
+RRO\.EX2	yylval.string_value = strdup(yytext); return RRO;
 RRO	yylval.string_value = strdup(yytext); return RRO;
 RSQ	yylval.string_value = strdup(yytext); return RSQ;
 SIN	yylval.string_value = strdup(yytext); return SIN;
