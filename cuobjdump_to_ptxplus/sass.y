@@ -71,7 +71,7 @@ int neg_set = 0;
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
 %token <string_value> SMEMLOCATION ABSSMEMLOCATION GMEMLOCATION CMEMLOCATION LMEMLOCATION
 %token <string_value> IDENTIFIER
-%token <string_value> HEXLITERAL FLOAT NEGFLOAT SCILITERAL INF
+%token <string_value> HEXLITERAL FLOAT NEGFLOAT
 %token <string_value> LEFTBRACKET RIGHTBRACKET AT QUOTE FLAGHEADER
 %token <string_value> MINUS PIPE TILDE EXCLAM
 %token <string_value> NEWLINE SEMICOLON /*COMMA*/
@@ -500,8 +500,6 @@ memorylocation	: SMEMLOCATION	{ debug_print($1); g_instList->addCuobjdumpMemoryO
 
 immediateValue	: IDENTIFIER { debug_print($1); g_instList->getListEnd().addOperand($1);}
 		| HEXLITERAL { debug_print($1); g_instList->getListEnd().addOperand($1);}
-		| SCILITERAL { debug_print($1); g_instList->getListEnd().addOperand($1);}
-		| INF { debug_print($1); g_instList->getListEnd().addOperand($1);}
 		| FLOAT { debug_print($1); g_instList->getListEnd().addOperand("NUM"); hex_set = 1;}
 		| NEGFLOAT { debug_print($1); g_instList->getListEnd().addOperand("NEGNUM"); hex_set = 1; neg_set = 1;}
 		
