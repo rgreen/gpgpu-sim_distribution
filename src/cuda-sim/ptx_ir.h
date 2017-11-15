@@ -1267,6 +1267,7 @@ public:
 
    void finalize( memory_space *param_mem );
    void param_to_shared( memory_space *shared_mem, symbol_table *symtab ); 
+   void param_to_const( memory_space *global_mem, symbol_table *symtab );
    void list_param( FILE *fout ) const;
 
    const struct gpgpu_ptx_sim_info* get_kernel_info () const
