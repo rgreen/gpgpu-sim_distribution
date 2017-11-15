@@ -259,6 +259,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.CARRY	yylval.string_value = strdup(yytext); return DOTCARRY;
 \.CARRY{numeric}	yylval.string_value = strdup(yytext); /*unknown*/
 \.CC	yylval.string_value = strdup(yytext); return DOTCC;
+\.CG	yylval.string_value = strdup(yytext); /* ignore CG identifier */
 \.X		yylval.string_value = strdup(yytext); return DOTX;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
