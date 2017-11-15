@@ -1337,6 +1337,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("vabsdiff.acc");
+		output(".u32");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
@@ -1813,9 +1814,9 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if(m_base == "ISETP")
 	{
 		printCuobjdumpPredicate();
-		output("set");
+		output("setp");
 		printCuobjdumpBaseModifiers();
-		output(".u32.u32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
 
 		printCuobjdumpOperands();
 		output(";");

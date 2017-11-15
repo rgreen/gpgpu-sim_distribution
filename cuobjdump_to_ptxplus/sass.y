@@ -305,8 +305,8 @@ branchInstructions	: BRA {debug_print($1); instEntry->setBase($1); g_instList->a
 				  g_instList->getListEnd().addOperand(tempLabel);
 				  g_instList->addCubojdumpLabel(tempLabel);}
 			| BRA CC predicateModifier {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
-				{ debug_print($3);
-				  char* tempInput = $3;
+				{ debug_print($5);
+				  char* tempInput = $5;
 				  char* tempLabel = new char[12];
 				  tempLabel[0] = 'l';
 				  tempLabel[1] = '0';
