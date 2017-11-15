@@ -701,7 +701,7 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			//Shared memory
 			output("s[");
 			const_sharedFlag=1;
-		} else if(mod.find("local") !=  std::string::npos) {
+		} else if(mod.substr(0,5) == "local") {
 			if((base=="LST")||
 				(base=="LLD"))
 			output("[");
