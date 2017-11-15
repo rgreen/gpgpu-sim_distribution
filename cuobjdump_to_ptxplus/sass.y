@@ -304,7 +304,7 @@ branchInstructions	: BRA {debug_print($1); instEntry->setBase($1); g_instList->a
 				  tempLabel[11] = '\0';
 				  g_instList->getListEnd().addOperand(tempLabel);
 				  g_instList->addCubojdumpLabel(tempLabel);}
-			| BRA CC DOTNEU {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
+			| BRA CC predicateModifier {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
 				{ debug_print($3);
 				  char* tempInput = $3;
 				  char* tempLabel = new char[12];
