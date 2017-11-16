@@ -243,7 +243,7 @@ FCHK\.DIVIDE yylval.string_value = strdup(yytext); return FCHK;
 \.ALL	yylval.string_value = strdup(yytext); return DOTALL;
 \.MAD	yylval.string_value = strdup(yytext); /*unknown*/
 \.RP	yylval.string_value = strdup(yytext); return DOTCEIL;
-\.RM	yylval.string_value = strdup(yytext); return DOTRM;
+\.RM	yylval.string_value = strdup(yytext); return DOTFLOOR;
 \.NZ	yylval.string_value = strdup(yytext); return DOTNZ;
 \.RZ	yylval.string_value = strdup(yytext); return DOTRZ;
 	/* comparison operators */

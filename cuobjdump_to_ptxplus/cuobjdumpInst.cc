@@ -1583,6 +1583,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		output("iscadd");
 		printCuobjdumpBaseModifiers();
 
+
 		if(m_typeModifiers->size() == 0)
 			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		else
@@ -2144,6 +2145,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		output("rcp");
 		printCuobjdumpBaseModifiers();
 
+
 		if(m_typeModifiers->size() == 0)
 			output(".f32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		else
@@ -2493,6 +2495,8 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("rcp");
 		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".f32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -2509,6 +2513,8 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("lop3.lut");
 		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -2517,6 +2523,8 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("fchk.divide");
 		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		printCuobjdumpOperands();
 		output(";");
 	}
@@ -2525,6 +2533,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("icmp");
 		printCuobjdumpBaseModifiers();
+			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		printCuobjdumpOperands();
 		output(";");
 	}
