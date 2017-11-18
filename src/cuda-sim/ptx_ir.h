@@ -1018,6 +1018,7 @@ public:
    bool is_mrg() const { return m_mrg;}
    bool is_psl() const { return m_psl;}
    bool is_cbcc() const { return m_cbcc;}
+   bool is_cc() const { return m_cc;}
    unsigned cache_option() const { return m_cache_option; }
    unsigned rounding_mode() const { return m_rounding_mode;}
    unsigned saturation_mode() const { return m_saturation_mode;}
@@ -1087,6 +1088,7 @@ private:
    bool                m_mrg;
    bool                m_psl;
    bool                m_cbcc;
+   bool                m_cc;
    bool                m_neg;
    bool                m_uni; //if branch instruction, this evaluates to true for uniform branches (ie jumps)
    bool                m_to_option;

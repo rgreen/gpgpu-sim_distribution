@@ -304,7 +304,9 @@ branchInstructions	: BRA {debug_print($1); instEntry->setBase($1); g_instList->a
 				  tempLabel[11] = '\0';
 				  g_instList->getListEnd().addOperand(tempLabel);
 				  g_instList->addCubojdumpLabel(tempLabel);}
-			| BRA CC predicateModifier {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
+			| BRA CC predicateModifier {
+				debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);
+				} HEXLITERAL
 				{ debug_print($5);
 				  char* tempInput = $5;
 				  char* tempLabel = new char[12];
@@ -321,7 +323,9 @@ branchInstructions	: BRA {debug_print($1); instEntry->setBase($1); g_instList->a
 				  }
 				  tempLabel[11] = '\0';
 				  g_instList->getListEnd().addOperand(tempLabel);
-				  g_instList->addCubojdumpLabel(tempLabel);}
+				  g_instList->addCubojdumpLabel(tempLabel);
+				  debug_print($2); g_instList->getListEnd().addOperand($2);
+				  debug_print($3); g_instList->getListEnd().addBaseModifier($3);}
 			| CAL {debug_print($1); instEntry->setBase($1); g_instList->add(instEntry);} HEXLITERAL
 				{ debug_print($3);
 				  char* tempInput = $3;
@@ -467,7 +471,7 @@ registerlocation	: REGISTER regMod	{ debug_print($1); g_instList->addCuobjdumpRe
 			/*| REGISTER PREDREGISTER3 { debug_print($1); debug_print(" "); debug_print($2); g_instList->addCuobjdumpRegister($1); debug_print("WEIRD CASE\n");}*/
 			;
 
-regMod		: DOTCC
+regMod		: DOTCC {debug_print($1); g_instList->getListEnd().addBaseModifier(".ccp");}
 			|
 			;
 

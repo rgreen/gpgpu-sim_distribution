@@ -4757,7 +4757,6 @@ void tex_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
 void txq_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void trap_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
-void vabsdiff_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void vadd_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void vmad_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void vmax_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
@@ -4766,6 +4765,33 @@ void vset_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_
 void vshl_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void vshr_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void vsub_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
+
+void vabsdiff_impl( const ptx_instruction *pI, ptx_thread_info *thread )
+{
+	ptx_reg_t a, b, c, d;
+	const operand_info &dst  = pI->dst();
+	const operand_info &src1 = pI->src1();
+	const operand_info &src2 = pI->src2();
+	const operand_info &src3 = pI->src3();
+
+	unsigned i_type = pI->get_type();
+	a = thread->get_operand_value(src1, dst, i_type, thread, 1);
+	b = thread->get_operand_value(src2, dst, i_type, thread, 1);
+	c = thread->get_operand_value(src3, dst, i_type, thread, 1);
+	d.u64 = my_abs(a.u8-b.u8)+c.u32;
+	unsigned carry = (d.u64 & 0x100000000)>>32;
+
+	thread->set_operand_value(dst,d, i_type, thread, pI);
+	if (pI->is_cc()) {
+              char* regNum1 = new char[4];
+              memset(regNum1, '\0', sizeof(regNum1));
+              regNum1[0]='$';
+              regNum1[1]='c';
+              regNum1[2]='c';
+              const symbol *c1 = thread->getSymbol(regNum1);
+	      thread->set_reg(c1, carry);
+	}
+}
 
 void vote_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 {

@@ -370,9 +370,13 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			output(".geu");
 		else if( *basemod == "GT")
 			output(".gt");
+		else if( *basemod == ".GT")
+			output(".gt");
 		else if( *basemod == "GTU")
 			output(".gtu");
 		else if( *basemod == "LE")
+			output(".le");
+		else if( *basemod == ".LE")
 			output(".le");
 		else if( *basemod == "LEU")
 			output(".leu");
@@ -497,6 +501,10 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			output(*basemod);
 		}
 		else if( *basemod == ".mus")
+		{
+			output(*basemod);
+		}
+		else if( *basemod == ".ccp")
 		{
 			output(*basemod);
 		}
@@ -659,6 +667,8 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			output("$");
 			printCuobjdumpOperandlohi(mod);
 		}
+	} else if(mod == "cc") {
+		output("$cc");
 	} else if((mod[0] == 'c' || mod[0] == 'p') && mod.length() == 2) { //predicate register (conditional code)
 		output("$p");
 		output(mod.substr(1,1).c_str());

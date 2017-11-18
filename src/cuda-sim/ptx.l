@@ -264,6 +264,7 @@ iscadd	TC; ptx_lval.int_value = ISCADD_OP; return OPCODE;
 
 \.half  TC; return HALF_OPTION; /* ptxplus */
 \.cc	TC; return EXTP_OPTION; /* extended precision option */
+\.ccp	TC; return CCP_OPTION; /* need to write CC reg for ptxplus */
 
 \.equ	TC; return EQU_OPTION;
 \.neu	TC; return NEU_OPTION;

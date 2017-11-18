@@ -1221,6 +1221,9 @@ ptx_instruction::ptx_instruction( int opcode,
       case CBCC_OPTION:
          m_cbcc = true;
          break;
+      case CCP_OPTION:
+         m_cc = true;
+         break;
       case E_OPTION:
 	 // .E is for extended 64-bit pointers
          break;
