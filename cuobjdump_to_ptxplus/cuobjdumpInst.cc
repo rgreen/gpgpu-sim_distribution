@@ -2265,7 +2265,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if(m_base == "SYNC")
 	{
 		printCuobjdumpPredicate();
-		output("bar.sync 0x00000000;");
+		output("nop;");
 	}
 	else if(m_base == "LD")
 	{

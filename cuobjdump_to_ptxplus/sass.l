@@ -83,7 +83,7 @@ numliteral	(([\-]?{fltliteral}(e[\-]?{numeric}*)?)|[\-]?[1-9]+[0-9]*)
 	/*base instructions*/
 "BAR.ARV.WAIT b0, 0xfff"	yylval.string_value = strdup(yytext); return BAR;
 "BAR.SYNC 0x0"	yylval.string_value = strdup(yytext); return BAR;
-"SYNC"	yylval.string_value = strdup(yytext); return BAR;
+"SYNC"	yylval.string_value = strdup(yytext); return NOP;
 ADA	yylval.string_value = strdup(yytext); return ADA;
 BRA	yylval.string_value = strdup(yytext); return BRA;
 BRA.U	yylval.string_value = strdup(yytext); return BRA;
