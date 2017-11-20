@@ -2804,7 +2804,7 @@ void xmad_def( const ptx_instruction *pI, ptx_thread_info *thread )
        } else if (pI->is_cbcc() && pI->is_psl()) {
 	   t.u32 = (a.u32>>16) * (b.u32>>16);
 	   t.u32 = (t.u32<<16) + (b.u16<<16);
-	   d.u32 = t.u32 + c.u16;
+	   d.u32 = t.u32 + c.u32;
        } else if (pI->is_psl()) { // Only PSL
 	   t.u32 = t1.u16 * t2.u16;
 	   d.u32 = (t.u32 << 16) + t3.u32;
