@@ -210,6 +210,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token	MUS_OPTION;
 %token	PSL_OPTION;
 %token	CBCC_OPTION;
+%token	AND_OPTION;
+%token	OR_OPTION;
 %token	E_OPTION;
 
 %type <int_value> function_decl_header
@@ -479,6 +481,8 @@ option: type_spec
 	| CLO_OPTION { add_option(CLO_OPTION); }
 	| MRG_OPTION { add_option(MRG_OPTION); }
 	| MUS_OPTION { add_option(MUS_OPTION); }
+	| AND_OPTION { add_option(AND_OPTION); }
+	| OR_OPTION { add_option(OR_OPTION); }
 	| PSL_OPTION { add_option(PSL_OPTION); }
 	| CBCC_OPTION { add_option(CBCC_OPTION); }
 	| E_OPTION { add_option(E_OPTION); }

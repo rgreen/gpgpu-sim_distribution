@@ -3907,50 +3907,101 @@ void psetp_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
 void set_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 { 
-   ptx_reg_t a, b;
+   assert( pI->get_num_operands() < 6 );
+   if ( pI->get_num_operands() == 3 )
+   {
+      ptx_reg_t a, b;
 
-   int t=0;
-   const operand_info &dst  = pI->dst();
-   const operand_info &src1 = pI->src1();
-   const operand_info &src2 = pI->src2();
+      int t=0;
+      const operand_info &dst  = pI->dst();
+      const operand_info &src1 = pI->src1();
+      const operand_info &src2 = pI->src2();
 
-   assert( pI->get_num_operands() < 4 ); // or need to deal with "c" operand / boolOp
+      assert( pI->get_num_operands() < 4 ); // or need to deal with "c" operand / boolOp
 
-   unsigned src_type = pI->get_type2();
-   unsigned cmpop = pI->get_cmpop();
+      unsigned src_type = pI->get_type2();
+      unsigned cmpop = pI->get_cmpop();
 
-   a = thread->get_operand_value(src1, dst, src_type, thread, 1);
-   b = thread->get_operand_value(src2, dst, src_type, thread, 1);
+      a = thread->get_operand_value(src1, dst, src_type, thread, 1);
+      b = thread->get_operand_value(src2, dst, src_type, thread, 1);
 
-   // Take abs of first operand if needed
-   if(pI->is_abs()) {
-      switch ( src_type ) {
-      case S16_TYPE: a.s16 = my_abs(a.s16); break;
-      case S32_TYPE: a.s32 = my_abs(a.s32); break;
-      case S64_TYPE: a.s64 = my_abs(a.s64); break;
-      case U16_TYPE: a.u16 = a.u16; break;
-      case U32_TYPE: a.u32 = my_abs(a.u32); break;
-      case U64_TYPE: a.u64 = my_abs(a.u64); break;
-      case F32_TYPE: a.f32 = my_abs(a.f32); break;
-      case F64_TYPE: case FF64_TYPE: a.f64 = my_abs(a.f64); break;
-      default:
-         printf("Execution error: type mismatch with instruction\n");
-         assert(0);
-         break;
+      // Take abs of first operand if needed
+      if(pI->is_abs()) {
+         switch ( src_type ) {
+         case S16_TYPE: a.s16 = my_abs(a.s16); break;
+         case S32_TYPE: a.s32 = my_abs(a.s32); break;
+         case S64_TYPE: a.s64 = my_abs(a.s64); break;
+         case U16_TYPE: a.u16 = a.u16; break;
+         case U32_TYPE: a.u32 = my_abs(a.u32); break;
+         case U64_TYPE: a.u64 = my_abs(a.u64); break;
+         case F32_TYPE: a.f32 = my_abs(a.f32); break;
+         case F64_TYPE: case FF64_TYPE: a.f64 = my_abs(a.f64); break;
+         default:
+            printf("Execution error: type mismatch with instruction\n");
+            assert(0);
+            break;
+         }
       }
+
+      t = CmpOp(src_type,a,b,cmpop);
+
+      ptx_reg_t data;
+
+      if ( isFloat(pI->get_type()) ) {
+         data.f32 = (t!=0)?1.0f:0.0f;
+      } else {
+         data.u32 = (t!=0)?0xFFFFFFFF:0;
+      }
+
+      thread->set_operand_value(dst, data, pI->get_type(), thread, pI);
    }
+   else if( pI->get_num_operands() == 5 )
+   {
+      ptx_reg_t a, b, c;
+      int t=0;
+      int t1=0;
 
-   t = CmpOp(src_type,a,b,cmpop);
+      const operand_info &dst = pI->dst();
+      const operand_info &dst1= pI->dst1();
+      const operand_info &src2= pI->src2();
+      const operand_info &src3= pI->src3();
+      const operand_info &src4= pI->src4();
+      
+      unsigned src_type = pI->get_type2();
+      unsigned cmpop = pI->get_cmpop();
 
-   ptx_reg_t data;
-   if ( isFloat(pI->get_type()) ) {
-      data.f32 = (t!=0)?1.0f:0.0f;
-   } else {
-      data.u32 = (t!=0)?0xFFFFFFFF:0;
+      a = thread->get_operand_value(src2, dst, src_type, thread, 1);
+      b = thread->get_operand_value(src3, dst, src_type, thread, 1);
+      c = thread->get_operand_value(src4, dst, src_type, thread, 1);
+     
+      t = CmpOp(src_type, a, b, cmpop);
+      t1 = !t;
+      ptx_reg_t data, data1;
+
+      if (pI->is_and())
+      {
+         t = t && c.u32;
+	 t1= t1 && c.u32;
+      }
+      else if (pI->is_or())
+      {
+         t = t || c.u32;
+	 t1= t1 || c.u32;
+      }
+      else
+         assert(0);
+      
+      if ( isFloat(pI->get_type()) ) {
+         data.f32 = (t!=0)?1.0f:0.0f;
+         data1.f32 = (t1!=0)?1.0f:0.0f;
+      } else {
+         data.u32 = (t!=0)?0xFFFFFFFF:0;
+         data1.u32 = (t1!=0)?0xFFFFFFFF:0;
+      }
+
+      thread->set_operand_value(dst, data, pI->get_type(), thread, pI);
+      thread->set_operand_value(dst1, data1, pI->get_type(), thread, pI); 	
    }
-
-   thread->set_operand_value(dst, data, pI->get_type(), thread, pI);
-
 }
 
 void shfl_impl( const ptx_instruction *pI, core_t *core, warp_inst_t inst )

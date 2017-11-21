@@ -486,6 +486,14 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			//".mrg" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
+		else if( *basemod == ".andp")
+		{
+			output(*basemod);
+		}
+		else if( *basemod == ".orp")
+		{
+			output(*basemod);
+		}
 		else if( *basemod == ".psl")
 		{
 			//".psl" is an unknown base modifier, TODO: find out what it is

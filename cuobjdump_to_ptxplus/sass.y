@@ -402,8 +402,8 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
 		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }
 		| DOTL			{ g_instList->getListEnd().addBaseModifier(".l"); }
-		| DOTOR			{ g_instList->getListEnd().addBaseModifier(".or"); }
-		| DOTAND		{ g_instList->getListEnd().addBaseModifier(".and"); }
+		| DOTOR			{ g_instList->getListEnd().addBaseModifier(".orp"); }
+		| DOTAND		{ g_instList->getListEnd().addBaseModifier(".andp"); }
 		| DOTRM			{ g_instList->getListEnd().addBaseModifier(".rm"); }
 		| DOTNEU		{ g_instList->getListEnd().addBaseModifier(".neu"); }
 		| DOTGTU		{ g_instList->getListEnd().addBaseModifier(".gtu"); }	
