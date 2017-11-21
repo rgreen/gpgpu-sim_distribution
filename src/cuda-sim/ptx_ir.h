@@ -1038,6 +1038,8 @@ public:
    bool is_mrg() const { return m_mrg;}
    bool is_and() const { return m_and;}
    bool is_or() const { return m_or;}
+   bool is_aa() const { return m_aa;}
+   bool is_oa() const { return m_oa;}
    bool is_psl() const { return m_psl;}
    bool is_cbcc() const { return m_cbcc;}
    bool is_cc() const { return m_cc;}
@@ -1110,6 +1112,8 @@ private:
    bool                m_mrg;
    bool                m_and;
    bool                m_or;
+   bool                m_aa;
+   bool                m_oa;
    bool                m_psl;
    bool                m_cbcc;
    bool                m_cc;

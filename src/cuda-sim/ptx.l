@@ -364,6 +364,9 @@ icmp	TC; ptx_lval.int_value = ICMP_OP; return OPCODE;
 \.cbcc	TC; return CBCC_OPTION;
 \.e	TC; return E_OPTION;
 
+\.andp\.andp	TC; return PSETPAA_OPTION;
+\.orp\.andp	TC; return PSETPOA_OPTION;
+
 \.andp	TC; return AND_OPTION;
 \.orp	TC; return OR_OPTION;
 

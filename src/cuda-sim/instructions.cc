@@ -3901,8 +3901,45 @@ void fsetp_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 
 void psetp_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
 {
-   //TODO: need to implement
-   assert(0);
+   if( pI->get_num_operands() == 5 )
+   {
+      ptx_reg_t a, b, c;
+      int t=0;
+
+      const operand_info &dst = pI->dst();
+      const operand_info &src2= pI->src2();
+      const operand_info &src3= pI->src3();
+      const operand_info &src4= pI->src4();
+      
+      unsigned src_type = pI->get_type();
+
+      a = thread->get_operand_value(src2, dst, src_type, thread, 1);
+      b = thread->get_operand_value(src3, dst, src_type, thread, 1);
+      c = thread->get_operand_value(src4, dst, src_type, thread, 1);
+     
+      ptx_reg_t data;
+
+      if (pI->is_aa())
+      {
+         t = a.u32 && b.u32 && c.u32;
+      }
+      else if (pI->is_oa())
+      {
+         t = a.u32 || b.u32 && c.u32;
+      }
+      else
+         assert(0);
+      
+      if ( isFloat(pI->get_type()) ) {
+         data.f32 = (t!=0)?1.0f:0.0f;
+      } else {
+         data.u32 = (t!=0)?0xFFFFFFFF:0;
+      }
+
+      thread->set_operand_value(dst, data, pI->get_type(), thread, pI);
+   }
+   else
+      assert(0);
 }
 
 void set_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
