@@ -3492,7 +3492,25 @@ void orn_impl( const ptx_instruction *pI, ptx_thread_info *thread )
 }
 
 void lop3_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
-void fchk_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
+
+void fchk_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
+{ 
+   /* FCHK.DIVIDE seems to be used to check the result of a division, and choosing whether to 
+      proceed in execution or use a "slow" path for divison and re-do the computation. This is
+      a result of using the "fast_math" flag for NVCC.
+      
+      The instruction only sets a predicate register, and is being hard-set to 0, as we are unable
+      to determine what the instruction does presently
+   */
+   ptx_reg_t data;
+   const operand_info &dst = pI->dst();
+   unsigned i_type = pI->get_type();
+
+   data.u32 = 0;
+   
+   thread->set_operand_value(dst, data, i_type, thread, pI);
+}
+
 void icmp_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void pmevent_impl( const ptx_instruction *pI, ptx_thread_info *thread ) { inst_not_implemented(pI); }
 void popc_impl( const ptx_instruction *pI, ptx_thread_info *thread ) 
