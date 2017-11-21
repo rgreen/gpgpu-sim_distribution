@@ -1194,6 +1194,8 @@ ptx_instruction::ptx_instruction( int opcode,
          break;
       case FTZ_OPTION:
          break;
+      case NZ_OPTION:
+         break;
       case EXIT_OPTION:
          m_exit = true;
          break;
@@ -1214,6 +1216,18 @@ ptx_instruction::ptx_instruction( int opcode,
          break;
       case MUS_OPTION:
          m_neg = true;
+         break;
+      case PSETPAA_OPTION:
+         m_aa = true;
+         break;
+      case PSETPOA_OPTION:
+         m_oa = true;
+         break;
+      case AND_OPTION:
+         m_and = true;
+         break;
+      case OR_OPTION:
+         m_or = true;
          break;
       case PSL_OPTION:
          m_psl = true;

@@ -51,9 +51,9 @@ int neg_set = 0;
 }
 
 %token <string_value> BAR DEPBAR
-%token <string_value> ADA AND ANDS BRA BRX JCAL CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD
+%token <string_value> ADA AND ANDS BRA BRX JCAL CAL COS DADD DMIN DMAX DFMA FFMA DMUL EX2 F2F F2I FADD LUT FCHK
 %token <string_value> FADD32 FADD32I FCMP FMAD FMAD32I FMUL FMUL32 FMUL32I FSET FSETP DSET G2R
-%token <string_value> GLD GST LDC I2F I2I IADD IADD3 IADD32 IADD32I IMAD ISCADD ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD
+%token <string_value> GLD GST LDC I2F I2I IADD IADD3 IADD32 IADD32I IMAD ISCADD ISCADD32I ISAD IMAD24 IMAD32I IMAD32 IADDCARRY XMAD ICMP
 %token <string_value> IMUL IMUL24 IMUL24H IMULS24 IMUL32 IMUL32S24 IMUL32U24 IMUL32I IMUL32I24 IMUL32IS24
 %token <string_value> ISET ISETP LEA LG2 LLD LST MOV MOV32 MVC MVI NOP NOT NOTS OR ORS
 %token <string_value> R2A R2G R2GU16U8 RCP RCP32 RET PRET RRO RSQ SIN SHL SHR SSY XOR XORS 
@@ -61,11 +61,11 @@ int neg_set = 0;
 %token <string_value> GRED PBK BRK R2C GATOM VOTE BFE SHF
 %token <string_value> EQ EQU GE GEU GT GTU LE LEU LT LTU NE NEU
 %token <string_value> DOTBEXT DOTS DOTSFU
-%token <string_value> DOTTRUNC DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL DOTL 
+%token <string_value> DOTTRUNC DOTNZ DOTRZ DOTCEIL DOTFLOOR DOTIR DOTUN DOTNODEP DOTSAT DOTANY DOTALL DOTL DOTOR DOTAND
 %token <string_value> DOTF16 DOTF32 DOTF64 DOTS8 DOTS16 DOTS32 DOTS64 DOTS128 DOTU8 DOTU16 DOTU32 DOTU24 EXTEND EXTEND8 EXTEND64 DOT64 DOT128 DOTU64 DOTV128
 %token <string_value> DOTHI DOTNOINC
 %token <string_value> DOTEQ DOTEQU DOTFTZ DOTFALSE DOTGE DOTGEU DOTGT DOTGTU DOTLE DOTLEU DOTLT DOTLTU DOTNE DOTNEU DOTNSF DOTSF DOTCARRY
-%token <string_value> CC DOTCC DOTX DOTRED DOTPOPC DOTAND DOTCHI DOTCLO DOTRS DOTMRG DOTPSL DOTCBCC
+%token <string_value> CC DOTCC DOTX DOTRED DOTPOPC DOTCHI DOTCLO DOTRS DOTMRG DOTPSL DOTCBCC DOTRM
 %token <string_value> REGISTER REGISTERLO REGISTERHI OFFSETREGISTER
 %token <string_value> PREDREGISTER PREDREGISTER2 PREDREGISTER3 SREGISTER NEWPREDREGISTER PSETP
 %token <string_value> VERSIONHEADER FUNCTIONHEADER
@@ -236,14 +236,14 @@ baseInstruction : simpleInstructions	{ debug_print($1); instEntry->setBase($1); 
 simpleInstructions	: ADA | AND | ANDS | BRX | COS | DADD | DMIN | DMAX | DFMA | FFMA | DMUL | EX2 | F2F
 					| F2I | FADD | FADD32 | FADD32I | FCMP | FMAD | FMAD32I | FMUL
 					| FMUL32 | FMUL32I | FSET | FSETP | DSET | G2R | GLD | GST | LDC | I2F | I2I
-					| IADD | IADD32 | IADD32I | IADD3 | IMAD | ISCADD | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL | XMAD
+					| IADD | IADD32 | IADD32I | IADD3 | IMAD | ISCADD | ISCADD32I | ISAD | IMAD24 | IMAD32I | IMAD32 | IMUL | XMAD
 					| IMUL24 | IMUL24H | IMULS24 | IMUL32 | IMUL32S24 | IMUL32I | IMUL32I24 | IMUL32IS24
-					| IMUL32U24
-					| ISET | ISETP | LEA| LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
+					| IMUL32U24 | ICMP
+					| ISET | ISETP | LEA | LG2 | LLD | LST | MOV | MOV32 | MVC | MVI | NOP
 					| NOT | NOTS | OR | ORS | R2A | R2G | R2GU16U8 | RCP | RCP32 | RET | PRET | RRO 
 					| RSQ | SHL | SHR | SIN | SSY | XOR | XORS | S2R | SASS_LD | STS | SEL
 					| LDS | SASS_ST | EXIT | BAR | DEPBAR | IMIN | IMAX | IMNMX |  A2R | FMAX | FMIN 
-					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | PSETP | VABSDIFF
+					| TEX | TEX32 | C2R | BRK | R2C | IADDCARRY | VOTE | BFE | SHF | PSETP | VABSDIFF | LUT | FCHK
 					;
 
 pbkInstruction	:	PBK {
@@ -402,7 +402,13 @@ modifier	: opTypes	{ debug_print($1); g_instList->getListEnd().addTypeModifier($
 		| DOTPSL		{ g_instList->getListEnd().addBaseModifier(".psl"); }
 		| DOTCBCC		{ g_instList->getListEnd().addBaseModifier(".cbcc"); }
 		| DOTL			{ g_instList->getListEnd().addBaseModifier(".l"); }
-		
+		| DOTOR			{ g_instList->getListEnd().addBaseModifier(".orp"); }
+		| DOTAND		{ g_instList->getListEnd().addBaseModifier(".andp"); }
+		| DOTRM			{ g_instList->getListEnd().addBaseModifier(".rm"); }
+		| DOTNEU		{ g_instList->getListEnd().addBaseModifier(".neu"); }
+		| DOTGTU		{ g_instList->getListEnd().addBaseModifier(".gtu"); }	
+		| DOTNZ			{ g_instList->getListEnd().addBaseModifier(".nz"); }	
+		| DOTRZ			{ g_instList->getListEnd().addBaseModifier(".rz"); }	
 		;
 
 opTypes		: DOTF16	//{ debug_print($1); g_instList->getListEnd().addTypeModifier($1);}
@@ -500,6 +506,7 @@ immediateValue	: IDENTIFIER { debug_print($1); g_instList->getListEnd().addOpera
 		| HEXLITERAL { debug_print($1); g_instList->getListEnd().addOperand($1);}
 		| FLOAT { debug_print($1); g_instList->getListEnd().addOperand("NUM"); hex_set = 1;}
 		| NEGFLOAT { debug_print($1); g_instList->getListEnd().addOperand("NEGNUM"); hex_set = 1; neg_set = 1;}
+		
 		;
 
 extraModifier	: EQ	{ debug_print($1); g_instList->getListEnd().addBaseModifier($1);} 

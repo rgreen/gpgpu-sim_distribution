@@ -916,12 +916,19 @@ public:
       return m_operands.end();
    }
 
+
    const operand_info &dst() const 
    { 
       assert( !m_operands.empty() );
       return m_operands[0];
    }
-
+   
+   const operand_info &dst1() const 
+   { 
+      assert( !m_operands.empty() );
+      return m_operands[1];
+   }
+   
    const operand_info &func_addr() const
    {
       assert( !m_operands.empty() );
@@ -933,10 +940,17 @@ public:
       }
    }
 
+
    operand_info &dst() 
    { 
       assert( !m_operands.empty() );
       return m_operands[0];
+   }
+   
+   operand_info &dst1() 
+   { 
+      assert( !m_operands.empty() );
+      return m_operands[1];
    }
 
    const operand_info &src1() const 
@@ -955,6 +969,12 @@ public:
    { 
       assert( m_operands.size() > 3 );
       return m_operands[3];
+   }
+
+   const operand_info &src4() const 
+   { 
+      assert( m_operands.size() > 4 );
+      return m_operands[4];
    }
 
    const operand_info &operand_lookup( unsigned n ) const
@@ -1016,6 +1036,10 @@ public:
    bool is_chi() const { return m_chi;}
    bool is_clo() const { return m_clo;}
    bool is_mrg() const { return m_mrg;}
+   bool is_and() const { return m_and;}
+   bool is_or() const { return m_or;}
+   bool is_aa() const { return m_aa;}
+   bool is_oa() const { return m_oa;}
    bool is_psl() const { return m_psl;}
    bool is_cbcc() const { return m_cbcc;}
    bool is_cc() const { return m_cc;}
@@ -1086,6 +1110,10 @@ private:
    bool                m_chi;
    bool                m_clo;
    bool                m_mrg;
+   bool                m_and;
+   bool                m_or;
+   bool                m_aa;
+   bool                m_oa;
    bool                m_psl;
    bool                m_cbcc;
    bool                m_cc;

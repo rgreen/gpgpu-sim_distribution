@@ -486,6 +486,14 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			//".mrg" is an unknown base modifier, TODO: find out what it is
 			output(*basemod);
 		}
+		else if( *basemod == ".andp")
+		{
+			output(*basemod);
+		}
+		else if( *basemod == ".orp")
+		{
+			output(*basemod);
+		}
 		else if( *basemod == ".psl")
 		{
 			//".psl" is an unknown base modifier, TODO: find out what it is
@@ -522,6 +530,31 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 				modstr[i] = tolower(modstr[i]);
 			}
 			output(modstr.c_str());
+		}
+		else if ( *basemod == ".ftz")
+		{
+			//".ftz" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".or")
+		{
+			//".or" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".neu")
+		{
+			//".neu" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".gtu")
+		{
+			//".gtu" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
+		}
+		else if ( *basemod == ".nz")
+		{
+			//".nz" is an unknown base modifier, TODO: find out what it is
+			output(*basemod);
 		}
 		else
 		{
@@ -1562,12 +1595,13 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "ISCADD")
+	else if(m_base == "ISCADD" || m_base == "ISCADD32I")
 	{
 
 		printCuobjdumpPredicate();
 		output("iscadd");
 		printCuobjdumpBaseModifiers();
+
 
 		if(m_typeModifiers->size() == 0)
 			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
@@ -1991,7 +2025,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpOperands();
 		output(";");
 	}
-	else if(m_base == "LOP.OR" || m_base == "LOP.S.OR")
+	else if(m_base == "LOP.OR" || m_base == "LOP.S.OR" || m_base == "LOP32I.OR")
 	{
 		printCuobjdumpPredicate();
 		output("or");
@@ -2129,6 +2163,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("rcp");
 		printCuobjdumpBaseModifiers();
+
 
 		if(m_typeModifiers->size() == 0)
 			output(".f32"); //TODO: setting default type modifier but I'm not sure if this is right.
@@ -2471,6 +2506,53 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 		printCuobjdumpPredicate();
 		output("fma.rz.f32");
 		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "MUFU.RCP")
+	{
+		printCuobjdumpPredicate();
+		output("rcp");
+		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".f32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "SEL")
+	{
+		printCuobjdumpPredicate();
+		output("sel");
+		printCuobjdumpBaseModifiers();
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "LOP3.LUT")
+	{
+		printCuobjdumpPredicate();
+		output("lop3.lut");
+		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "FCHK.DIVIDE")
+	{
+		printCuobjdumpPredicate();
+		output("fchk.divide");
+		printCuobjdumpBaseModifiers();
+		if(m_typeModifiers->size() == 0)
+			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
+		printCuobjdumpOperands();
+		output(";");
+	}
+	else if (m_base == "ICMP")
+	{
+		printCuobjdumpPredicate();
+		output("icmp");
+		printCuobjdumpBaseModifiers();
+			output(".u32"); //TODO: setting default type modifier but I'm not sure if this is right.
 		printCuobjdumpOperands();
 		output(";");
 	}

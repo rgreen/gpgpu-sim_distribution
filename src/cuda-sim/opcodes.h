@@ -59,7 +59,8 @@ enum special_regs {
    TID_REG,
    WARPID_REG,
    WARPSZ_REG,
-   RZ_REG
+   RZ_REG,
+   PT_REG
 };
 
 #endif

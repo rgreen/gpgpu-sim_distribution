@@ -160,6 +160,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token GEOM_MODIFIER_3D
 %token SAT_OPTION
 %token FTZ_OPTION
+%token NZ_OPTION
 %token NEG_OPTION
 %token SYNC_OPTION
 %token RED_OPTION
@@ -209,6 +210,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token	MUS_OPTION;
 %token	PSL_OPTION;
 %token	CBCC_OPTION;
+%token	AND_OPTION;
+%token	OR_OPTION;
+%token	PSETPAA_OPTION;
+%token	PSETPOA_OPTION;
 %token	E_OPTION;
 
 %type <int_value> function_decl_header
@@ -467,7 +472,8 @@ option: type_spec
 	| GEOM_MODIFIER_3D { add_option(GEOM_MODIFIER_3D); }
 	| SAT_OPTION { add_option(SAT_OPTION); }
  	| FTZ_OPTION { add_option(FTZ_OPTION); } 
- 	| NEG_OPTION { add_option(NEG_OPTION); } 
+ 	| NZ_OPTION { add_option(NZ_OPTION); } 
+	| NEG_OPTION { add_option(NEG_OPTION); } 
 	| APPROX_OPTION { add_option(APPROX_OPTION); }
 	| FULL_OPTION { add_option(FULL_OPTION); }
 	| EXIT_OPTION { add_option(EXIT_OPTION); }
@@ -477,6 +483,10 @@ option: type_spec
 	| CLO_OPTION { add_option(CLO_OPTION); }
 	| MRG_OPTION { add_option(MRG_OPTION); }
 	| MUS_OPTION { add_option(MUS_OPTION); }
+	| AND_OPTION { add_option(AND_OPTION); }
+	| OR_OPTION { add_option(OR_OPTION); }
+	| PSETPAA_OPTION { add_option(PSETPAA_OPTION); }
+	| PSETPOA_OPTION { add_option(PSETPOA_OPTION); }
 	| PSL_OPTION { add_option(PSL_OPTION); }
 	| CBCC_OPTION { add_option(CBCC_OPTION); }
 	| E_OPTION { add_option(E_OPTION); }

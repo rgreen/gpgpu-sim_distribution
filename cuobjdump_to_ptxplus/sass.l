@@ -62,7 +62,7 @@ octliteral	0[0-7]+U?
 binliteral	0[bB][01]+U?
 decliteral	([1-9][0-9]*U?)|0U?
 fltliteral	[0-9]+\.[0-9]+
-numliteral	(([\-]?{fltliteral}(e[\-]?{numeric}*)?)|[\-]?[1-9]+[0-9]*)
+numliteral	(([\-]?{fltliteral}(e[\-]?[\+]?{numeric}*)?)|[\-]?[1-9]+[0-9]*)|([\+]?"INF")
 
 %%
 	/*Translation rules*/
@@ -132,6 +132,7 @@ IADD32	yylval.string_value = strdup(yytext); return IADD32;
 IADD32I	yylval.string_value = strdup(yytext); return IADD32I;
 IMAD	yylval.string_value = strdup(yytext); return IMAD;
 ISCADD	yylval.string_value = strdup(yytext); return ISCADD;
+ISCADD32I	yylval.string_value = strdup(yytext); return ISCADD32I;
 ISAD	yylval.string_value = strdup(yytext); return ISAD;
 IMAD\.U24	yylval.string_value = strdup(yytext); return IMAD24;
 IMAD\.S24	yylval.string_value = strdup(yytext); return IMAD24;
@@ -155,6 +156,7 @@ LG2	yylval.string_value = strdup(yytext); return LG2;
 LLD	yylval.string_value = strdup(yytext); return LLD;
 LOP\.AND	yylval.string_value = strdup(yytext); return AND;
 LOP32I\.AND	yylval.string_value = strdup(yytext); return AND;
+LOP32I\.OR	yylval.string_value = strdup(yytext); return OR;
 LOP\.OR	yylval.string_value = strdup(yytext); return OR;
 LOP\.PASS_B	yylval.string_value = strdup(yytext); return NOT;
 LOP\.XOR	yylval.string_value = strdup(yytext); return XOR;
@@ -162,6 +164,7 @@ LOP\.S\.AND	yylval.string_value = strdup(yytext); return ANDS;
 LOP\.S\.OR	yylval.string_value = strdup(yytext); return ORS;
 LOP\.S\.PASS_B	yylval.string_value = strdup(yytext); return NOTS;
 LOP\.S\.XOR	yylval.string_value = strdup(yytext); return XORS;
+LOP3\.LUT	yylval.string_value = strdup(yytext); return LUT;
 LST	yylval.string_value = strdup(yytext); return LST;
 STL	yylval.string_value = strdup(yytext); return LST;
 MOV	yylval.string_value = strdup(yytext); return MOV;
@@ -210,6 +213,7 @@ DEPBAR	yylval.string_value = strdup(yytext); return DEPBAR;
 SHF\.L	yylval.string_value = strdup(yytext); return SHL;
 PSETP	yylval.string_value = strdup(yytext); return PSETP;
 VABSDIFF\.ACC yylval.string_value = strdup(yytext); return VABSDIFF;
+ICMP	yylval.string_value = strdup(yytext); return ICMP;
 
 	/*instruction modifiers*/
 EQ	yylval.string_value = strdup(yytext); return EQ;
@@ -224,6 +228,7 @@ LT	yylval.string_value = strdup(yytext); return LT;
 LTU	yylval.string_value = strdup(yytext); return LTU;
 NE	yylval.string_value = strdup(yytext); return NE;
 NEU	yylval.string_value = strdup(yytext); return NEU;
+FCHK\.DIVIDE yylval.string_value = strdup(yytext); return FCHK;
 \.BEXT	yylval.string_value = strdup(yytext); return DOTBEXT;
 \.S	yylval.string_value = strdup(yytext); return DOTS;
 \.SFU	yylval.string_value = strdup(yytext); return DOTSFU;
@@ -238,7 +243,9 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.ALL	yylval.string_value = strdup(yytext); return DOTALL;
 \.MAD	yylval.string_value = strdup(yytext); /*unknown*/
 \.RP	yylval.string_value = strdup(yytext); return DOTCEIL;
-
+\.RM	yylval.string_value = strdup(yytext); return DOTFLOOR;
+\.NZ	yylval.string_value = strdup(yytext); return DOTNZ;
+\.RZ	yylval.string_value = strdup(yytext); return DOTRZ;
 	/* comparison operators */
 \.EQ	yylval.string_value = strdup(yytext); return DOTEQ;
 \.EQU	yylval.string_value = strdup(yytext); return DOTEQU;
@@ -263,7 +270,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.X		yylval.string_value = strdup(yytext); return DOTX;
 \.RED	yylval.string_value = strdup(yytext); return DOTRED;
 \.POPC	yylval.string_value = strdup(yytext); return DOTPOPC;
-\.AND
+\.AND	yylval.string_value = strdup(yytext); return DOTAND;
 \.RS	yylval.string_value = strdup(yytext); return DOTRS;
 \.CHI	yylval.string_value = strdup(yytext); return DOTCHI;
 \.CLO	yylval.string_value = strdup(yytext); return DOTCLO;
@@ -271,6 +278,7 @@ NEU	yylval.string_value = strdup(yytext); return NEU;
 \.PSL	yylval.string_value = strdup(yytext); return DOTPSL;
 \.CBCC	yylval.string_value = strdup(yytext); return DOTCBCC;
 \.reuse	yylval.string_value = strdup(yytext); /* ignore reuse identifier */
+\.OR	yylval.string_value = strdup(yytext); return DOTOR;
 CC	yylval.string_value = strdup(yytext); return CC;
 
 	/*operand types*/
@@ -308,7 +316,7 @@ A{numeric}+	yylval.string_value = strdup(yytext); return OFFSETREGISTER;
 "o ["{hexliteral}\]	yylval.string_value = strdup(yytext); return PREDREGISTER2;
 C{numeric}	 yylval.string_value = strdup(yytext); return PREDREGISTER3;
 P{numeric}	 yylval.string_value = strdup(yytext); return NEWPREDREGISTER;
-PT
+PT	yylval.string_value = strdup(yytext); return NEWPREDREGISTER;
 "SR_"[^; \t]+	 yylval.string_value = strdup(yytext); return SREGISTER;
 
 	/*tex operand*/
