@@ -123,7 +123,10 @@ struct cache_block_t {
     virtual void set_ignore_on_fill(bool m_ignore, mem_access_sector_mask_t sector_mask) = 0;
     virtual void set_modified_on_fill(bool m_modified, mem_access_sector_mask_t sector_mask) = 0;
     virtual unsigned get_modified_size() = 0;
+    virtual void set_m_readable(bool readable, mem_access_sector_mask_t sector_mask)=0;
+    virtual bool is_readable(mem_access_sector_mask_t sector_mask)=0;
     virtual ~cache_block_t() {}
+
 
     new_addr_type    m_tag;
     new_addr_type    m_block_addr;
@@ -139,6 +142,7 @@ struct line_cache_block: public cache_block_t  {
 	        m_status=INVALID;
 	        m_ignore_on_fill_status = false;
 	        m_set_modified_on_fill = false;
+	        m_readable = true;
 	    }
 	    void allocate( new_addr_type tag, new_addr_type block_addr, unsigned time, mem_access_sector_mask_t sector_mask )
 	    {
@@ -153,8 +157,8 @@ struct line_cache_block: public cache_block_t  {
 	    }
 		void fill( unsigned time, mem_access_sector_mask_t sector_mask )
 	    {
-	    	if(!m_ignore_on_fill_status)
-	    		assert( m_status == RESERVED );
+	    	//if(!m_ignore_on_fill_status)
+	    	//	assert( m_status == RESERVED );
 
 	    	m_status = m_set_modified_on_fill? MODIFIED : VALID;
 
@@ -209,6 +213,13 @@ struct line_cache_block: public cache_block_t  {
 		{
 			return SECTOR_CHUNCK_SIZE * SECTOR_SIZE;   //i.e. cache line size
 		}
+		virtual void set_m_readable(bool readable, mem_access_sector_mask_t sector_mask)
+		{
+			m_readable = readable;
+		}
+		virtual bool is_readable(mem_access_sector_mask_t sector_mask) {
+			return m_readable;
+		}
 
 
 private:
@@ -218,6 +229,7 @@ private:
 	    cache_block_state    m_status;
 	    bool m_ignore_on_fill_status;
 	    bool m_set_modified_on_fill;
+	    bool m_readable;
 };
 
 struct sector_cache_block : public cache_block_t {
@@ -234,6 +246,7 @@ struct sector_cache_block : public cache_block_t {
 			m_status[i]= INVALID;
 			m_ignore_on_fill_status[i] = false;
 			m_set_modified_on_fill[i] = false;
+			m_readable[i] = true;
 			}
 			m_line_alloc_time=0;
 			m_line_last_access_time=0;
@@ -279,9 +292,15 @@ struct sector_cache_block : public cache_block_t {
 		m_sector_alloc_time[sidx]=time;
 		m_last_sector_access_time[sidx]=time;
 		m_sector_fill_time[sidx]=0;
+		if(m_status[sidx]==MODIFIED)    //this should be the case only for fetch-on-write policy //TO DO
+			m_set_modified_on_fill[sidx] = true;
+		else
+			m_set_modified_on_fill[sidx] = false;
+
 		m_status[sidx]=RESERVED;
 		m_ignore_on_fill_status[sidx] = false;
-		m_set_modified_on_fill[sidx] = false;
+		//m_set_modified_on_fill[sidx] = false;
+		m_readable[sidx] = true;
 
 		//set line stats
 		m_line_last_access_time=time;
@@ -292,8 +311,8 @@ struct sector_cache_block : public cache_block_t {
     {
     	unsigned sidx = get_sector_index(sector_mask);
 
-    	if(!m_ignore_on_fill_status[sidx])
-    	         assert( m_status[sidx] == RESERVED );
+    //	if(!m_ignore_on_fill_status[sidx])
+    //	         assert( m_status[sidx] == RESERVED );
 
     	m_status[sidx] = m_set_modified_on_fill[sidx]? MODIFIED : VALID;
 
@@ -362,6 +381,15 @@ struct sector_cache_block : public cache_block_t {
 		unsigned sidx = get_sector_index(sector_mask);
 		m_set_modified_on_fill[sidx] = m_modified;
 	}
+    virtual void set_m_readable(bool readable, mem_access_sector_mask_t sector_mask)
+    {
+    	unsigned sidx = get_sector_index(sector_mask);
+    	m_readable[sidx] = readable;
+    }
+    virtual bool is_readable(mem_access_sector_mask_t sector_mask) {
+    	unsigned sidx = get_sector_index(sector_mask);
+    	return m_readable[sidx];
+	}
 
     virtual unsigned  get_modified_size()
 	{
@@ -383,6 +411,7 @@ private:
     cache_block_state    m_status[SECTOR_CHUNCK_SIZE];
     bool m_ignore_on_fill_status[SECTOR_CHUNCK_SIZE];
     bool m_set_modified_on_fill[SECTOR_CHUNCK_SIZE];
+    bool m_readable[SECTOR_CHUNCK_SIZE];
 
     unsigned get_sector_index(mem_access_sector_mask_t sector_mask)
     {
@@ -690,11 +719,13 @@ public:
     ~tag_array();
 
     enum cache_request_status probe( new_addr_type addr, unsigned &idx, mem_fetch* mf ) const;
+    enum cache_request_status probe( new_addr_type addr, unsigned &idx, mem_access_sector_mask_t mask ) const;
     enum cache_request_status access( new_addr_type addr, unsigned time, unsigned &idx, mem_fetch* mf );
     enum cache_request_status access( new_addr_type addr, unsigned time, unsigned &idx, bool &wb, evicted_block_info &evicted, mem_fetch* mf );
 
     void fill( new_addr_type addr, unsigned time, mem_fetch* mf );
     void fill( unsigned idx, unsigned time, mem_fetch* mf );
+    void fill( new_addr_type addr, unsigned time, mem_access_sector_mask_t mask );
 
     unsigned size() const { return m_config.get_num_lines();}
     cache_block_t* get_block(unsigned idx) { return m_lines[idx];}
@@ -968,6 +999,15 @@ public:
     // accessors for cache bandwidth availability 
     bool data_port_free() const { return m_bandwidth_management.data_port_free(); } 
     bool fill_port_free() const { return m_bandwidth_management.fill_port_free(); } 
+
+    // This is a gapping hole we are poking in the system to quickly handle
+    // filling the cache on cudamemcopies. We don't care about anything other than
+    // L2 state after the memcopy - so just force the tag array to act as though
+    // something is read or written without doing anything else.
+    void force_tag_access( new_addr_type addr, unsigned time, mem_access_sector_mask_t mask )
+    {
+        m_tag_array->fill( addr, time, mask );
+    }
 
 protected:
     // Constructor that can be used by derived classes with custom tag arrays

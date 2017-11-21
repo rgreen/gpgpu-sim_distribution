@@ -141,7 +141,7 @@ suq	TC; ptx_lval.int_value = SUQ_OP; return OPCODE;
 tex	TC; BEGIN(NOT_OPCODE); ptx_lval.int_value = TEX_OP; return OPCODE;
 txq	TC; ptx_lval.int_value = TEX_OP; return OPCODE;
 trap	TC; ptx_lval.int_value = TRAP_OP; return OPCODE;
-vabsdiff TC; ptx_lval.int_value = VABSDIFF_OP; return OPCODE;
+vabsdiff.acc TC; ptx_lval.int_value = VABSDIFF_OP; return OPCODE;
 vadd    TC; ptx_lval.int_value = VADD_OP; return OPCODE;
 vmad    TC; ptx_lval.int_value = VMAD_OP; return OPCODE;
 vmax    TC; ptx_lval.int_value = VMAX_OP; return OPCODE;
@@ -268,6 +268,7 @@ icmp	TC; ptx_lval.int_value = ICMP_OP; return OPCODE;
 
 \.half  TC; return HALF_OPTION; /* ptxplus */
 \.cc	TC; return EXTP_OPTION; /* extended precision option */
+\.ccp	TC; return CCP_OPTION; /* need to write CC reg for ptxplus */
 
 \.equ	TC; return EQU_OPTION;
 \.neu	TC; return NEU_OPTION;

@@ -216,6 +216,8 @@ void cuobjdumpInstList::printPredNames(cuobjdumpEntry entry)
 		output(out);
 		output("\n");
 	}
+	output("\t.reg .u32 $cc;\n");
+	output("\n");
 
 }
 

@@ -370,9 +370,13 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			output(".geu");
 		else if( *basemod == "GT")
 			output(".gt");
+		else if( *basemod == ".GT")
+			output(".gt");
 		else if( *basemod == "GTU")
 			output(".gtu");
 		else if( *basemod == "LE")
+			output(".le");
+		else if( *basemod == ".LE")
 			output(".le");
 		else if( *basemod == "LEU")
 			output(".leu");
@@ -497,6 +501,10 @@ void cuobjdumpInst::printCuobjdumpBaseModifiers()
 			output(*basemod);
 		}
 		else if( *basemod == ".mus")
+		{
+			output(*basemod);
+		}
+		else if( *basemod == ".ccp")
 		{
 			output(*basemod);
 		}
@@ -684,6 +692,8 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			output("$");
 			printCuobjdumpOperandlohi(mod);
 		}
+	} else if(mod == "cc") {
+		output("$cc");
 	} else if((mod[0] == 'c' || mod[0] == 'p') && mod.length() == 2) { //predicate register (conditional code)
 		output("$p");
 		output(mod.substr(1,1).c_str());
@@ -726,7 +736,7 @@ void cuobjdumpInst::printCuobjdumpOperand(std::string currentPiece, std::string 
 			//Shared memory
 			output("s[");
 			const_sharedFlag=1;
-		} else if(mod.find("local") !=  std::string::npos) {
+		} else if(mod.substr(0,5) == "local") {
 			if((base=="LST")||
 				(base=="LLD"))
 			output("[");
@@ -1362,6 +1372,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	{
 		printCuobjdumpPredicate();
 		output("vabsdiff.acc");
+		output(".u32");
 		printCuobjdumpBaseModifiers();
 		printCuobjdumpTypeModifiers();
 		printCuobjdumpOperands();
@@ -2291,7 +2302,7 @@ void cuobjdumpInst::printCuobjdumpPtxPlus(std::list<std::string> labelList, std:
 	else if(m_base == "SYNC")
 	{
 		printCuobjdumpPredicate();
-		output("bar.sync 0x00000000;");
+		output("nop;");
 	}
 	else if(m_base == "LD")
 	{

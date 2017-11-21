@@ -190,11 +190,17 @@ void tag_array::init( int core_id, int type_id )
     m_type_id = type_id;
 }
 
+
 enum cache_request_status tag_array::probe( new_addr_type addr, unsigned &idx, mem_fetch* mf) const {
+    mem_access_sector_mask_t mask = mf->get_access_sector_mask();
+    return probe(addr, idx, mask);
+}
+
+
+enum cache_request_status tag_array::probe( new_addr_type addr, unsigned &idx, mem_access_sector_mask_t mask) const {
     //assert( m_config.m_write_policy == READ_ONLY );
     unsigned set_index = m_config.set_index(addr);
     new_addr_type tag = m_config.tag(addr);
-    mem_access_sector_mask_t mask = mf->get_access_sector_mask();
 
     unsigned invalid_line = (unsigned)-1;
     unsigned valid_line = (unsigned)-1;
@@ -213,9 +219,16 @@ enum cache_request_status tag_array::probe( new_addr_type addr, unsigned &idx, m
             } else if ( line->get_status(mask) == VALID ) {
                 idx = index;
                 return HIT;
-            } else if ( line->get_status(mask) == MODIFIED ) {
-                idx = index;
-                return HIT;
+            } else if ( line->get_status(mask) == MODIFIED) {
+            	if(line->is_readable(mask)) {
+					idx = index;
+					return HIT;
+            	}
+            	else {
+            		idx = index;
+            		return SECTOR_MISS;
+            	}
+
             } else if ( line->is_valid_line() && line->get_status(mask) == INVALID ) {
                 idx = index;
                 return SECTOR_MISS;
@@ -310,18 +323,23 @@ enum cache_request_status tag_array::access( new_addr_type addr, unsigned time, 
 
 void tag_array::fill( new_addr_type addr, unsigned time, mem_fetch* mf)
 {
-    assert( m_config.m_alloc_policy == ON_FILL );
+    fill(addr, time, mf->get_access_sector_mask());
+}
+
+void tag_array::fill( new_addr_type addr, unsigned time, mem_access_sector_mask_t mask )
+{
+    //assert( m_config.m_alloc_policy == ON_FILL );
     unsigned idx;
-    enum cache_request_status status = probe(addr,idx,mf);
-    assert(status==MISS||status==SECTOR_MISS); // MSHR should have prevented redundant memory request
+    enum cache_request_status status = probe(addr,idx,mask);
+    //assert(status==MISS||status==SECTOR_MISS); // MSHR should have prevented redundant memory request
     if(status==MISS)
-    	m_lines[idx]->allocate( m_config.tag(addr), m_config.block_addr(addr), time, mf->get_access_sector_mask() );
+    	m_lines[idx]->allocate( m_config.tag(addr), m_config.block_addr(addr), time, mask );
     else if (status==SECTOR_MISS) {
     	assert(m_config.m_cache_type == SECTOR);
-    	((sector_cache_block*)m_lines[idx])->allocate_sector( time, mf->get_access_sector_mask() );
+    	((sector_cache_block*)m_lines[idx])->allocate_sector( time, mask );
     }
 
-    m_lines[idx]->fill(time, mf->get_access_sector_mask());
+    m_lines[idx]->fill(time, mask);
 }
 
 void tag_array::fill( unsigned index, unsigned time, mem_fetch* mf)
@@ -1114,6 +1132,50 @@ data_cache::wr_miss_wa_fetch_on_write( new_addr_type addr,
 {
 
 	new_addr_type block_addr = m_config.block_addr(addr);
+	    new_addr_type mshr_addr = m_config.mshr_addr(mf->get_addr());
+
+
+			//if the request writes to the whole cache line/sector, then, write and set cache line Modified.
+			//and no need to send read request to memory or reserve mshr
+
+			if(miss_queue_full(0)) {
+				m_stats.inc_fail_stats(mf->get_access_type(), MISS_QUEUE_FULL);
+				return RESERVATION_FAIL; // cannot handle request this cycle
+			}
+
+			bool wb = false;
+			evicted_block_info evicted;
+
+			cache_request_status m_status =  m_tag_array->access(block_addr,time,cache_index,wb,evicted,mf);
+			assert(m_status != HIT);
+			cache_block_t* block = m_tag_array->get_block(cache_index);
+			block->set_status(MODIFIED, mf->get_access_sector_mask());
+			if(m_status == HIT_RESERVED) {
+				block->set_ignore_on_fill(true, mf->get_access_sector_mask());
+				block->set_modified_on_fill(true, mf->get_access_sector_mask());
+			}
+
+			if(mf->get_access_byte_mask().count() == m_config.get_atom_sz())
+			{
+				block->set_m_readable(true, mf->get_access_sector_mask());
+			} else
+			{
+				block->set_m_readable(false, mf->get_access_sector_mask());
+			}
+
+			if( m_status != RESERVATION_FAIL ){
+				   // If evicted block is modified and not a write-through
+				   // (already modified lower level)
+				   if( wb && (m_config.m_write_policy != WRITE_THROUGH) ) {
+					   mem_fetch *wb = m_memfetch_creator->alloc(evicted.m_block_addr,
+						   m_wrbk_type,evicted.m_modified_size,true);
+					   send_write_request(wb, cache_event(WRITE_BACK_REQUEST_SENT, evicted), time, events);
+				   }
+				   return MISS;
+			   }
+			return RESERVATION_FAIL;
+
+	/*new_addr_type block_addr = m_config.block_addr(addr);
     new_addr_type mshr_addr = m_config.mshr_addr(mf->get_addr());
 
 	if(mf->get_access_byte_mask().count() == m_config.get_atom_sz())
@@ -1222,7 +1284,7 @@ data_cache::wr_miss_wa_fetch_on_write( new_addr_type addr,
 				return MISS;
 			}
 	   return RESERVATION_FAIL;
-	}
+	}*/
 }
 
 /// No write-allocate miss: Simply send write request to lower level memory
