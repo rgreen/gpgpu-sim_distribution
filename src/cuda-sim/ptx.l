@@ -223,6 +223,7 @@ icmp	TC; ptx_lval.int_value = ICMP_OP; return OPCODE;
 "%warpid"  TC; ptx_lval.int_value = WARPID_REG; return SPECIAL_REGISTER;
 "WARP_SZ"  TC; ptx_lval.int_value = WARPSZ_REG; return SPECIAL_REGISTER;
 [\-]?"$rz"  TC; ptx_lval.int_value = RZ_REG; return SPECIAL_REGISTER;
+[\-]?"$pt"  TC; ptx_lval.int_value = PT_REG; return SPECIAL_REGISTER;
 
 [a-zA-Z_][a-zA-Z0-9_$]*  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;
 [$%][a-zA-Z0-9_$]+  TC; ptx_lval.string_value = strdup(yytext); return IDENTIFIER;

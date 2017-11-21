@@ -316,7 +316,7 @@ A{numeric}+	yylval.string_value = strdup(yytext); return OFFSETREGISTER;
 "o ["{hexliteral}\]	yylval.string_value = strdup(yytext); return PREDREGISTER2;
 C{numeric}	 yylval.string_value = strdup(yytext); return PREDREGISTER3;
 P{numeric}	 yylval.string_value = strdup(yytext); return NEWPREDREGISTER;
-PT
+PT	yylval.string_value = strdup(yytext); return NEWPREDREGISTER;
 "SR_"[^; \t]+	 yylval.string_value = strdup(yytext); return SREGISTER;
 
 	/*tex operand*/
