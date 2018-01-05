@@ -327,7 +327,7 @@ void warp_inst_t::generate_mem_accesses()
 	if (m_config->gperfect_param) {
 		cache_block_size = 0;
 	} else {
-		if( m_config->gpgpu_coalesce_arch == 13 || m_config->gpgpu_coalesce_arch == 20) {
+		if( m_config->gpgpu_coalesce_arch >= 13 || m_config->gpgpu_coalesce_arch <= 62) {
 			if(isatomic())
 				memory_coalescing_arch_atomic(is_write, access_type);
 			else
