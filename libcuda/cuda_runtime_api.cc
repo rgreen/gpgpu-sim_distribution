@@ -202,9 +202,9 @@ struct _cuda_device_id *gpgpu_context::GPGPUSim_Init() {
     prop->totalGlobalMem = 0x80000000 /* 2 GB */;
     prop->memPitch = 0;
     if (prop->major >= 2) {
-      prop->maxThreadsPerBlock = 1024;
-      prop->maxThreadsDim[0] = 1024;
-      prop->maxThreadsDim[1] = 1024;
+    prop->maxThreadsPerBlock = 1024;
+    prop->maxThreadsDim[0] = 1024;
+    prop->maxThreadsDim[1] = 1024;
     } else {
       prop->maxThreadsPerBlock = 512;
       prop->maxThreadsDim[0] = 512;
