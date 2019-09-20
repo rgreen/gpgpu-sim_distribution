@@ -667,6 +667,10 @@ void shader_core_stats::event_warp_issued(unsigned s_id, unsigned warp_id,
 }
 
 void shader_core_stats::visualizer_print(gzFile visualizer_file) {
+  // CTAs completed
+  gzprintf(visualizer_file, "CTAsCompleted: %d\n", n_ctas_completed);
+  n_ctas_completed = 0;
+
   // warp divergence breakdown
   gzprintf(visualizer_file, "WarpDivergenceBreakdown:");
   unsigned int total = 0;
@@ -2512,6 +2516,8 @@ void shader_core_ctx::register_cta_thread_exit(unsigned cta_num,
   m_cta_status[cta_num]--;
   if (!m_cta_status[cta_num]) {
     m_n_active_cta--;
+    // Update the number of CTAs that have completed
+    m_stats->n_ctas_completed += 1;
     m_barriers.deallocate_barrier(cta_num);
     shader_CTA_count_unlog(m_sid, 1);
 

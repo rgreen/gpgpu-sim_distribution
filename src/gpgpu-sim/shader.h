@@ -1621,6 +1621,9 @@ struct shader_core_stats_pod {
   unsigned *gpgpu_n_shmem_bank_access;
   long *n_simt_to_mem;  // Interconnect power stats
   long *n_mem_to_simt;
+
+  // Track the rate at which CTAs are completed
+  unsigned n_ctas_completed;
 };
 
 class shader_core_stats : public shader_core_stats_pod {
@@ -1726,6 +1729,9 @@ class shader_core_stats : public shader_core_stats_pod {
 
     m_shader_dynamic_warp_issue_distro.resize(config->num_shader());
     m_shader_warp_slot_issue_distro.resize(config->num_shader());
+
+    // Initialize the number of CTAs completed to 0
+    n_ctas_completed = 0;
   }
 
   ~shader_core_stats() {
