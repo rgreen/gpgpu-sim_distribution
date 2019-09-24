@@ -672,6 +672,7 @@ void shader_core_stats::visualizer_print(gzFile visualizer_file) {
   n_ctas_completed = 0;
 
   // warp divergence breakdown
+  /*
   gzprintf(visualizer_file, "WarpDivergenceBreakdown:");
   unsigned int total = 0;
   unsigned int cf =
@@ -694,8 +695,9 @@ void shader_core_stats::visualizer_print(gzFile visualizer_file) {
     last_shader_cycle_distro[i] = shader_cycle_distro[i];
   }
   gzprintf(visualizer_file, "\n");
-
+  */
   // warp issue breakdown
+  /*
   unsigned sid = m_config->gpgpu_warp_issue_shader;
   unsigned count = 0;
   unsigned warp_id_issued_sum = 0;
@@ -715,8 +717,9 @@ void shader_core_stats::visualizer_print(gzFile visualizer_file) {
     gzprintf(visualizer_file, " 0");
   }
   gzprintf(visualizer_file, "\n");
-
+  */
 #define DYNAMIC_WARP_PRINT_RESOLUTION 32
+  /*
   unsigned total_issued_this_resolution = 0;
   unsigned dynamic_id_issued_sum = 0;
   count = 0;
@@ -748,7 +751,7 @@ void shader_core_stats::visualizer_print(gzFile visualizer_file) {
     gzprintf(visualizer_file, " 0");
   }
   gzprintf(visualizer_file, "\n");
-
+  */
   // overall cache miss rates
   gzprintf(visualizer_file, "gpgpu_n_cache_bkconflict: %d\n",
            gpgpu_n_cache_bkconflict);
