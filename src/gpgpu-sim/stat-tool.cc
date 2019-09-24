@@ -169,17 +169,21 @@ void cflog_print(FILE *fout) {
 }
 
 void cflog_visualizer_print(FILE *fout) {
+  /*
   if (thread_CFlogger == NULL) return;  // this means no visualizer output
   for (int i = 0; i < n_thread_CFloggers; i++) {
     thread_CFlogger[i]->print_visualizer(fout);
   }
+  */
 }
 
 void cflog_visualizer_gzprint(gzFile fout) {
+  /*
   if (thread_CFlogger == NULL) return;  // this means no visualizer output
   for (int i = 0; i < n_thread_CFloggers; i++) {
     thread_CFlogger[i]->print_visualizer(fout);
   }
+  */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
