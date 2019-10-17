@@ -108,6 +108,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -2759,7 +2760,8 @@ __host__ cudaError_t CUDARTAPI cudaSetupArgument(const void *arg, size_t size,
   gpgpu_context *ctx;
   ctx = GPGPU_Context();
 
-  if (ctx->api->k_num == ctx->api->checkpoint_list[ctx->api->k_num]) {
+  std::vector<int> &v = ctx->api->checkpoint_list;
+  if (std::find(v.begin(), v.end(), ctx->api->k_num) != v.end()) {
     return cudaSuccess;
   }
 
@@ -2813,7 +2815,8 @@ __host__ cudaError_t CUDARTAPI cudaLaunch(const char *hostFun) {
   gpgpu_context *ctx;
   ctx = GPGPU_Context();
 
-  if (ctx->api->k_num == ctx->api->checkpoint_list[ctx->api->k_num]) {
+  std::vector<int> &v = ctx->api->checkpoint_list;
+  if (std::find(v.begin(), v.end(), ctx->api->k_num) != v.end()) {
     // Load in the checkpoint data
     load_data(ctx->api->k_num);
 
@@ -2824,6 +2827,8 @@ __host__ cudaError_t CUDARTAPI cudaLaunch(const char *hostFun) {
   }
 
   // Normal kernel launch
+  // Update the kernel number
+  ctx->api->k_num++;
   return cudaLaunchInternal(hostFun);
 }
 
