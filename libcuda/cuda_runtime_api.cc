@@ -2758,7 +2758,8 @@ __host__ cudaError_t CUDARTAPI cudaSetupArgument(const void *arg, size_t size,
   // If we are skipping this kernel, don't setup arguments
   gpgpu_context *ctx;
   ctx = GPGPU_Context();
-  if (ctx->api->k_num == ctx->api->checkpoints) {
+
+  if (ctx->api->k_num == ctx->api->checkpoint_list[ctx->api->k_num]) {
     return cudaSuccess;
   }
 
@@ -2811,7 +2812,8 @@ __host__ cudaError_t CUDARTAPI cudaLaunch(const char *hostFun) {
   // If we are skipping this kernel, just load in the memory and return
   gpgpu_context *ctx;
   ctx = GPGPU_Context();
-  if (ctx->api->k_num == ctx->api->checkpoints) {
+
+  if (ctx->api->k_num == ctx->api->checkpoint_list[ctx->api->k_num]) {
     // Load in the checkpoint data
     load_data(ctx->api->k_num);
 
@@ -3680,6 +3682,24 @@ void CUDARTAPI __cudaRegisterFunction(void **fatCubinHandle,
                                       const char *deviceName, int thread_limit,
                                       uint3 *tid, uint3 *bid, dim3 *bDim,
                                       dim3 *gDim) {
+  // Need the context to access the data
+  gpgpu_context *ctx;
+  ctx = GPGPU_Context();
+
+  // Only need to extract this string on the first call
+  // Bad. Do this outside of a random api call
+  if (!ctx->api->is_init) {
+    std::string s = ctx->api->checkpoints;
+    std::istringstream is(s);
+
+    // Get all the checkpoints from the string
+    int id;
+    while (is >> id) {
+      ctx->api->checkpoint_list.push_back(id);
+    }
+
+    ctx->api->is_init = true;
+  }
   cudaRegisterFunctionInternal(fatCubinHandle, hostFun, deviceFun, deviceName,
                                thread_limit, tid, bid, bDim, gDim);
 }

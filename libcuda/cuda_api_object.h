@@ -179,8 +179,8 @@ class cuda_runtime_api {
     g_active_device = 0;  // active gpu that runs the code
     gpgpu_ctx = ctx;
     alloc_num = 0;
-    checkpoints = 0;
     k_num = 0;
+    is_init = false;
   }
   // global list
   std::list<cuobjdumpSection *> cuobjdumpSectionList;
@@ -228,7 +228,9 @@ class cuda_runtime_api {
   std::unordered_map<void *, int> alloc_map;
 
   // Integer list of kernels to skip
+  bool is_init;
   int k_num;
-  int checkpoints;
+  char *checkpoints;
+  std::vector<int> checkpoint_list;
 };
 #endif /* __cuda_api_object_h__ */
