@@ -1024,7 +1024,11 @@ cudaError_t cudaMallocInternal(void **devPtr, size_t size,
            size, (unsigned long long)*devPtr);
     ctx->api->g_mallocPtr_Size[(unsigned long long)*devPtr] = size;
   }
+
+  // If nothing went wrong with the allocation
   if (*devPtr) {
+    // Track the allocation and increase the alloc #
+    ctx->api->alloc_map[*devPtr] = ctx->api->alloc_num++;
     return g_last_cudaError = cudaSuccess;
   } else {
     return g_last_cudaError = cudaErrorMemoryAllocation;
@@ -2149,6 +2153,7 @@ CUresult CUDAAPI cuLaunchKernelInternal(
   } else {
     ctx = GPGPU_Context();
   }
+
   if (g_debug_execution >= 3) {
     announce_call(__my_func__);
   }
@@ -2321,6 +2326,12 @@ __host__ cudaError_t CUDARTAPI cudaFree(void *devPtr) {
     announce_call(__my_func__);
   }
   // TODO...  manage g_global_mem space?
+  // Grab the context
+  gpgpu_context *ctx = GPGPU_Context();
+
+  // Erase what we just called free on
+  ctx->api->alloc_map.erase(devPtr);
+
   return g_last_cudaError = cudaSuccess;
 }
 __host__ cudaError_t CUDARTAPI cudaFreeHost(void *ptr) {
@@ -2744,10 +2755,73 @@ __host__ const char *CUDARTAPI cudaGetErrorString(cudaError_t error) {
 
 __host__ cudaError_t CUDARTAPI cudaSetupArgument(const void *arg, size_t size,
                                                  size_t offset) {
+  // If we are skipping this kernel, don't setup arguments
+  gpgpu_context *ctx;
+  ctx = GPGPU_Context();
+  if (ctx->api->k_num == ctx->api->checkpoints) {
+    return cudaSuccess;
+  }
+
   return cudaSetupArgumentInternal(arg, size, offset);
 }
 
+// Helper function for loading HW checkpoint into the simulator
+void load_data(int k_num) {
+  // Need the context to access the data
+  gpgpu_context *ctx;
+  ctx = GPGPU_Context();
+
+  // Get the root dir
+  std::string root_dir = ctx->api->checkpoints_dir;
+
+  // Load in all checkpoints
+  for (auto i : ctx->api->alloc_map) {
+    // Create the file name based on the kernel num. and allocate num
+    int alloc_num = i.second;
+    std::string name = root_dir + std::to_string(k_num) + "_" +
+                       std::to_string(alloc_num) + ".txt";
+
+    std::cout << name << std::endl;
+    // Buffer for storing intermediate data from file
+    std::vector<uint8_t> buffer;
+
+    // Open the file for reading
+    std::fstream fs(name, std::ios::in);
+
+    // Read in the line from the file
+    std::string s;
+    std::getline(fs, s);
+
+    // Split the line into uint8_t
+    std::istringstream is(s);
+    int j;
+    while (is >> j) {
+      buffer.push_back(j);
+    }
+    std::cout << std::endl;
+
+    // Copy the data into the functional model
+    cudaMemcpyInternal(i.first, buffer.data(), buffer.size(),
+                       cudaMemcpyHostToDevice);
+    fs.close();
+  }
+}
+
 __host__ cudaError_t CUDARTAPI cudaLaunch(const char *hostFun) {
+  // If we are skipping this kernel, just load in the memory and return
+  gpgpu_context *ctx;
+  ctx = GPGPU_Context();
+  if (ctx->api->k_num == ctx->api->checkpoints) {
+    // Load in the checkpoint data
+    load_data(ctx->api->k_num);
+
+    // Update the kernel number
+    ctx->api->k_num++;
+
+    return cudaSuccess;
+  }
+
+  // Normal kernel launch
   return cudaLaunchInternal(hostFun);
 }
 

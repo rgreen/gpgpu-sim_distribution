@@ -88,7 +88,7 @@ PROG     =cuda
 CXX_SRCS =  cuda_runtime_api.cc
 LEX_SRCS = cuobjdump.l
 YACC_SRCS = cuobjdump.y
-CXXFLAGS += -DCUDART_VERSION=$(CUDART_VERSION)
+CXXFLAGS += --std=c++11 -DCUDART_VERSION=$(CUDART_VERSION)
 LEX			= flex
 LEXFLAGS	= -B 
 YACC		= bison
