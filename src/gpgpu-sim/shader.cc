@@ -31,6 +31,7 @@
 #include <float.h>
 #include <limits.h>
 #include <string.h>
+#include <algorithm>
 #include "../../libcuda/gpgpu_context.h"
 #include "../cuda-sim/cuda-sim.h"
 #include "../cuda-sim/ptx-stats.h"
@@ -3044,10 +3045,16 @@ unsigned int shader_core_config::max_cta(const kernel_info_t &k) const {
   // Limit by CTA
   unsigned int result_cta = max_cta_per_core;
 
+  /*
   unsigned result = result_thread;
   result = gs_min2(result, result_shmem);
   result = gs_min2(result, result_regs);
   result = gs_min2(result, result_cta);
+
+  */
+  // Look how much nicer C++11 is...
+  unsigned result =
+      std::min({result_thread, result_shmem, result_regs, result_cta});
 
   static const struct gpgpu_ptx_sim_info *last_kinfo = NULL;
   if (last_kinfo !=
