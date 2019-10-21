@@ -1564,8 +1564,9 @@ enum cache_request_status read_only_cache::access(
   unsigned cache_index = (unsigned)-1;
   enum cache_request_status status =
       m_tag_array->probe(block_addr, cache_index, mf);
-  enum cache_request_status cache_status = RESERVATION_FAIL;
+  enum cache_request_status cache_status = HIT;
 
+  /*
   if (status == HIT) {
     cache_status = m_tag_array->access(block_addr, time, cache_index,
                                        mf);  // update LRU state
@@ -1590,6 +1591,8 @@ enum cache_request_status read_only_cache::access(
                     m_stats.select_stats_status(status, cache_status));
   m_stats.inc_stats_pw(mf->get_access_type(),
                        m_stats.select_stats_status(status, cache_status));
+
+  */
   return cache_status;
 }
 
