@@ -1983,4 +1983,4 @@ const shader_core_config *gpgpu_sim::getShaderCoreConfig() {
 
 const memory_config *gpgpu_sim::getMemoryConfig() { return m_memory_config; }
 
-simt_core_cluster *gpgpu_sim::getSIMTCluster() { return *m_cluster; }
+simt_core_cluster **gpgpu_sim::getSIMTCluster() { return m_cluster; }
