@@ -626,6 +626,11 @@ void gpgpu_sim_config::reg_options(option_parser_t opp) {
   option_parser_register(opp, "-gpgpu_kernel_checkpoint_dir", OPT_CSTR,
                          &(gpgpu_ctx->api->checkpoints_dir),
                          "Kernel checkpoints to load. Default: NULL", NULL);
+
+  // Per-kernels max CTA
+  option_parser_register(opp, "-gpgpu_kernel_max_cta", OPT_INT32,
+                         &gpu_kernel_max_cta, "Max CTAs per-kernel. Default: 0",
+                         "0");
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -850,6 +855,9 @@ gpgpu_sim::gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx)
   // Jin: functional simulation for CDP
   m_functional_sim = false;
   m_functional_sim_kernel = NULL;
+
+  // Support early exit
+  kernel_completed_cta = 0;
 }
 
 int gpgpu_sim::shared_mem_size() const {
@@ -1013,6 +1021,10 @@ void gpgpu_sim::update_stats() {
 
 void gpgpu_sim::print_stats() {
   gpgpu_ctx->stats->ptx_file_line_stats_write_file();
+
+  // Clear the number of completed CTAs after each kernel
+  clear_completed_cta();
+
   gpu_print_stat();
 
   if (g_network_mode) {

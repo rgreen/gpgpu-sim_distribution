@@ -392,6 +392,7 @@ class gpgpu_sim_config : public power_config,
   unsigned long long gpu_max_cycle_opt;
   unsigned long long gpu_max_insn_opt;
   unsigned gpu_max_cta_opt;
+  unsigned gpu_kernel_max_cta;
   char *gpgpu_runtime_stat;
   bool gpgpu_flush_l1_cache;
   bool gpgpu_flush_l2_cache;
@@ -497,12 +498,26 @@ class gpgpu_sim : public gpgpu_t {
            (m_config.gpu_max_cta_opt &&
             (gpu_tot_issued_cta >= m_config.gpu_max_cta_opt));
   }
+  
+  bool kernel_cta_max_hit() {
+    if (m_config.gpu_kernel_max_cta > 0 && kernel_completed_cta >= m_config.gpu_kernel_max_cta){
+      return true;
+    }
+
+    return false;
+  }
+
   void print_stats();
   void update_stats();
   void deadlock_check();
 
   void get_pdom_stack_top_info(unsigned sid, unsigned tid, unsigned *pc,
                                unsigned *rpc);
+
+  // Getters and setters for per-kernel CTA completion
+  void inc_completed_cta() { kernel_completed_cta++; }
+  unsigned get_completed_cta() { return kernel_completed_cta; }
+  void clear_completed_cta() { kernel_completed_cta = 0; }
 
   int shared_mem_size() const;
   int shared_mem_per_block() const;
@@ -628,8 +643,11 @@ class gpgpu_sim : public gpgpu_t {
   std::string executed_kernel_info_string();  //< format the kernel information
                                               // into a string for stat printout
   void clear_executed_kernel_info();  //< clear the kernel information after
-                                      // stat printout
 
+  // Track completed CTA for each kernel
+  unsigned kernel_completed_cta;
+
+  // stat printout
  public:
   unsigned long long gpu_sim_insn;
   unsigned long long gpu_tot_sim_insn;
