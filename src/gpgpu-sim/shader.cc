@@ -2512,8 +2512,6 @@ void shader_core_ctx::register_cta_thread_exit(unsigned cta_num,
   assert(m_cta_status[cta_num] > 0);
   m_cta_status[cta_num]--;
   if (!m_cta_status[cta_num]) {
-    // Keep track of the number of completed CTAs
-    m_gpu->inc_completed_cta();
     m_n_active_cta--;
     m_barriers.deallocate_barrier(cta_num);
     shader_CTA_count_unlog(m_sid, 1);
