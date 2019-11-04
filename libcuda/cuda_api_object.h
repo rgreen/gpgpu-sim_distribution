@@ -220,6 +220,9 @@ class cuda_runtime_api {
                           unsigned max_gaddr, gpgpu_t *gpu);
   int load_constants(symbol_table *symtab, addr_t min_gaddr, gpgpu_t *gpu);
 
+  // Checkpointing enabled?
+  bool checkpointing_enabled;
+
   // Directory for snapshots
   char *checkpoints_dir;
 

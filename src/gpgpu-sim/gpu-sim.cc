@@ -622,6 +622,10 @@ void gpgpu_sim_config::reg_options(option_parser_t opp) {
                          "Turn on CDP", "0");
 
   // GPU Checkpointing
+  option_parser_register(opp, "-gpgpu_enable_checkpointing", OPT_BOOL,
+                         &(gpgpu_ctx->api->checkpointing_enabled),
+                         "Enable kernel checkpointing. Default: 0 (off)", "0");
+
   option_parser_register(opp, "-gpgpu_kernel_checkpoint", OPT_CSTR,
                          &(gpgpu_ctx->api->checkpoints),
                          "Kernel checkpoints to load. Default: NULL", NULL);
