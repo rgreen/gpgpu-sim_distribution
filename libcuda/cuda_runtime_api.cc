@@ -2761,7 +2761,7 @@ __host__ cudaError_t CUDARTAPI cudaSetupArgument(const void *arg, size_t size,
   ctx = GPGPU_Context();
   if (ctx->api->checkpointing_enabled) {
     std::vector<int> &v = ctx->api->checkpoint_list;
-    if (std::find(v.begin(), v.end(), ctx->api->k_num) != v.end()) {
+    if (std::find(v.begin(), v.end(), ctx->api->k_num) == v.end()) {
       return cudaSuccess;
     }
   }
@@ -2817,7 +2817,7 @@ __host__ cudaError_t CUDARTAPI cudaLaunch(const char *hostFun) {
 
   if (ctx->api->checkpointing_enabled) {
     std::vector<int> &v = ctx->api->checkpoint_list;
-    if (std::find(v.begin(), v.end(), ctx->api->k_num) != v.end()) {
+    if (std::find(v.begin(), v.end(), ctx->api->k_num) == v.end()) {
       // Load in the checkpoint data
       load_data(ctx->api->k_num);
 
