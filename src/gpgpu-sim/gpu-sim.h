@@ -393,6 +393,7 @@ class gpgpu_sim_config : public power_config,
   unsigned long long gpu_max_insn_opt;
   unsigned gpu_max_cta_opt;
   unsigned gpu_max_completed_cta_opt;
+  unsigned gpu_delayed_cta_opt;
   char *gpgpu_runtime_stat;
   bool gpgpu_flush_l1_cache;
   bool gpgpu_flush_l2_cache;
@@ -504,6 +505,8 @@ class gpgpu_sim : public gpgpu_t {
   void update_stats();
   void deadlock_check();
   void inc_completed_cta() { gpu_completed_cta++; }
+  unsigned get_completed_cta() { return gpu_completed_cta; }
+  unsigned get_gpu_delayed_cta_opt() { return m_config.gpu_delayed_cta_opt; }
   void get_pdom_stack_top_info(unsigned sid, unsigned tid, unsigned *pc,
                                unsigned *rpc);
 
@@ -636,6 +639,8 @@ class gpgpu_sim : public gpgpu_t {
 
  public:
   unsigned long long gpu_sim_insn;
+  unsigned long long gpu_delayed_insn;
+  unsigned long long gpu_delayed_cycle;
   unsigned long long gpu_tot_sim_insn;
   unsigned long long gpu_sim_insn_last_update;
   unsigned gpu_sim_insn_last_update_sid;

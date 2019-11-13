@@ -1600,6 +1600,10 @@ void shader_core_ctx::warp_inst_complete(const warp_inst_t &inst) {
 
   m_stats->m_num_sim_winsn[m_sid]++;
   m_gpu->gpu_sim_insn += inst.active_count();
+  // Delayed insn stat update
+  if(m_gpu->get_gpu_delayed_cta_opt() >= m_gpu->get_completed_cta()){
+    m_gpu->gpu_delayed_insn += inst.active_count();
+  }
   inst.completed(m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle);
 }
 

@@ -531,6 +531,10 @@ void gpgpu_sim_config::reg_options(option_parser_t opp) {
   option_parser_register(opp, "-gpgpu_max_completed_cta", OPT_INT32,
                          &gpu_max_completed_cta_opt,
                          "terminates gpu simulation early (0 = no limit)", "0");
+  // Delay stat collection this many CTAs
+  option_parser_register(opp, "-gpgpu_delayed_cta", OPT_INT32,
+                         &gpu_delayed_cta_opt,
+                         "Delays stat collection by N CTAs (0 = no limit)", "0");
   option_parser_register(
       opp, "-gpgpu_runtime_stat", OPT_CSTR, &gpgpu_runtime_stat,
       "display runtime statistics such as dram utilization {<freq>:<flag>}",
@@ -621,7 +625,12 @@ void gpgpu_sim_config::reg_options(option_parser_t opp) {
                          &(gpgpu_ctx->device_runtime->g_cdp_enabled),
                          "Turn on CDP", "0");
 
+  // Skipping GPU stat collection for first few waves of CTAs
   // GPU Checkpointing
+  option_parser_register(opp, "-gpgpu_skip_waves", OPT_BOOL,
+                         &(gpgpu_ctx->api->wave_skipping),
+                         "Enable delayed stat collection. Default: 0 (off)", "0");
+  
   option_parser_register(opp, "-gpgpu_enable_checkpointing", OPT_BOOL,
                          &(gpgpu_ctx->api->checkpointing_enabled),
                          "Enable kernel checkpointing. Default: 0 (off)", "0");
@@ -799,6 +808,8 @@ gpgpu_sim::gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx)
                        m_shader_stats, m_memory_config, m_memory_stats);
 
   gpu_sim_insn = 0;
+  gpu_delayed_insn = 0;
+  gpu_delayed_cycle = 0;
   gpu_tot_sim_insn = 0;
   gpu_tot_issued_cta = 0;
   gpu_completed_cta = 0;
@@ -959,6 +970,8 @@ void gpgpu_sim::init() {
   // run a CUDA grid on the GPU microarchitecture simulator
   gpu_sim_cycle = 0;
   gpu_sim_insn = 0;
+  gpu_delayed_insn = 0;
+  gpu_delayed_cycle = 0;
   last_gpu_sim_insn = 0;
   m_total_cta_launched = 0;
   gpu_completed_cta = 0;
@@ -1205,6 +1218,9 @@ void gpgpu_sim::gpu_print_stat() {
 
   printf("gpu_sim_cycle = %lld\n", gpu_sim_cycle);
   printf("gpu_sim_insn = %lld\n", gpu_sim_insn);
+  printf("gpu_delayed_cycle = %lld\n", gpu_delayed_cycle);
+  printf("gpu_delayed_insn = %lld\n", gpu_delayed_insn);
+  printf("gpu_ipc = %12.4f\n", (float)gpu_delayed_insn / gpu_delayed_cycle);
   printf("gpu_ipc = %12.4f\n", (float)gpu_sim_insn / gpu_sim_cycle);
   printf("gpu_tot_sim_cycle = %lld\n", gpu_tot_sim_cycle + gpu_sim_cycle);
   printf("gpu_tot_sim_insn = %lld\n", gpu_tot_sim_insn + gpu_sim_insn);
@@ -1813,6 +1829,10 @@ void gpgpu_sim::cycle() {
       raise(SIGTRAP);  // Debug breakpoint
     }
     gpu_sim_cycle++;
+
+    if(m_config.gpu_delayed_cta_opt >= gpu_completed_cta){
+      gpu_delayed_cycle++;
+    }
 
     if (g_interactive_debugger_enabled) gpgpu_debug();
 
