@@ -1220,7 +1220,7 @@ void gpgpu_sim::gpu_print_stat() {
   printf("gpu_sim_insn = %lld\n", gpu_sim_insn);
   printf("gpu_delayed_cycle = %lld\n", gpu_delayed_cycle);
   printf("gpu_delayed_insn = %lld\n", gpu_delayed_insn);
-  printf("gpu_ipc = %12.4f\n", (float)gpu_delayed_insn / gpu_delayed_cycle);
+  printf("gpu_delayed_ipc = %12.4f\n", (float)gpu_delayed_insn / gpu_delayed_cycle);
   printf("gpu_ipc = %12.4f\n", (float)gpu_sim_insn / gpu_sim_cycle);
   printf("gpu_tot_sim_cycle = %lld\n", gpu_tot_sim_cycle + gpu_sim_cycle);
   printf("gpu_tot_sim_insn = %lld\n", gpu_tot_sim_insn + gpu_sim_insn);
@@ -1830,7 +1830,7 @@ void gpgpu_sim::cycle() {
     }
     gpu_sim_cycle++;
 
-    if(m_config.gpu_delayed_cta_opt >= gpu_completed_cta){
+    if(m_config.gpu_delayed_cta_opt <= gpu_completed_cta){
       gpu_delayed_cycle++;
     }
 
