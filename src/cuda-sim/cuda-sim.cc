@@ -2426,7 +2426,6 @@ void cuda_sim::gpgpu_cuda_ptx_sim_main_func(kernel_info_t &kernel,
   // functions work block wise
   while (!kernel.no_more_ctas_to_run()) {
     unsigned temp = kernel.get_next_cta_id_single();
-
     if (cp_op == 0 ||
         (cp_op == 1 && cta_launched < cp_cta_resume &&
          kernel.get_uid() == cp_kernel) ||
@@ -2570,7 +2569,6 @@ void functionalCoreSim::execute(int inst_count, unsigned ctaid_cp) {
       executeWarp(i, allAtBarrier, someOneLive);
       count++;
     }
-
     if (inst_count > 0 && count > inst_count &&
         (m_kernel->get_uid() == m_gpu->checkpoint_kernel) &&
         (ctaid_cp >= m_gpu->checkpoint_CTA) &&
@@ -2583,6 +2581,8 @@ void functionalCoreSim::execute(int inst_count, unsigned ctaid_cp) {
       for (unsigned i = 0; i < m_warp_count; i++) m_warpAtBarrier[i] = false;
     }
   }
+  
+  printf("CTA ID, %d, INSN COUNT, %d\n", ctaid_cp, count);
 
   checkpoint *g_checkpoint;
   g_checkpoint = new checkpoint();
