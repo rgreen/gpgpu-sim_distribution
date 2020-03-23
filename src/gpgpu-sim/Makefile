@@ -53,7 +53,7 @@ else
 	CXXFLAGS += 
 endif
 
-CXXFLAGS += --std=c++11 -I$(CUDA_INSTALL_PATH)/include
+CXXFLAGS += --std=c++0x -I$(CUDA_INSTALL_PATH)/include
 
 POWER_FLAGS=
 ifneq ($(GPGPUSIM_POWER_MODEL),)
